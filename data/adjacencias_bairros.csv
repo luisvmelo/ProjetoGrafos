@@ -1,0 +1,945 @@
+﻿bairro_origem,bairro_destino,logradouro,peso
+Alto José do Pinho,Mangabeira,Rua Aripibu,29.85
+Madalena,Prado,Praca Na Rua Joao Crescencio,37.33
+Encruzilhada,Espinheiro,Rua Conselheiro Portela,39.05
+Afogados,Mustardinha,Rua Orlandia,39.93
+Alto Santa Teresinha,Bomba do Hemetério,Rua Alto do Tiro,41.0
+Afogados,Mustardinha,Rua Maria Jose De Lima,47.02
+Campo Grande,Ponto de Parada,Rua Professor Jeronimo Gueiros,47.09
+Brasília Teimosa,Pina,Rua Dentudo,51.9
+Brasília Teimosa,Pina,Rua Copaiba,57.41
+Casa Amarela,Monteiro,Rua Iguatama,57.87
+Brejo de Beberibe,Passarinho,Avenida Presidente Cafe Filho,58.0
+Casa Amarela,Monteiro,Rua Piracanjuba,58.05
+Dois Unidos,Passarinho,Rua Vale Fundo,58.94
+Macaxeira,Nova Descoberta,Rua Nage,62.85
+Madalena,Prado,Rua Delfinopolis,65.76
+Alto do Mandu,Monteiro,Rua Tramandai,66.33
+Curado,Jardim São Paulo,Rua Raphael De Oliveira Alves,68.49
+Alto José do Pinho,Bomba do Hemetério,Rua Campos Belos,69.54
+Alto Santa Teresinha,Alto José Bonifácio,Rua Arlindo Cisneiros,72.0
+Alto Santa Teresinha,Linha do Tiro,Rua Arlindo Cisneiros,72.0
+Dois Unidos,Passarinho,Rua Doutor Antonio Da Rosa Borges,72.49
+Ilha do Retiro,Ilha Joana Bezerra,Avenida Beira Rio,76.03
+Água Fria,Bomba do Hemetério,Rua Turiuba,76.43
+Cordeiro,Torrões,Rua Daniel Lisboa,81.91
+Brejo da Guabiraba,Córrego do Jenipapo,Rua Assaituba,84.27
+Água Fria,Bomba do Hemetério,Rua Aline,85.04
+Afogados,Mustardinha,Rua Raimundo Jaco,86.96
+Macaxeira,Nova Descoberta,Rua Carnaiba,88.88
+Água Fria,Bomba do Hemetério,Rua Venus,89.31
+Santo Amaro,Santo Antônio,Rua Princesa Isabel,91.36
+Água Fria,Bomba do Hemetério,Rua Sao Jose Da Coroa Grande,93.24
+Afogados,Mustardinha,Rua Guaiba,94.55
+Santo Antônio,São José,Rua Do Porao,94.58
+Macaxeira,Nova Descoberta,Rua S D 3014,95.17
+Brejo de Beberibe,Dois Unidos,Rua Izaltino Lobo,95.66
+Espinheiro,Graças,Rua Conselheiro Portela,100.77
+Estância,Jiquiá,Rua Cassiano,102.45
+Alto José do Pinho,Mangabeira,Rua Baguari,102.86
+Casa Amarela,Monteiro,Rua Maraca,105.95
+Cohab,Barro,Rua José Caetano,108.0
+Cohab,Ibura,Rua José Caetano,108.0
+Brejo de Beberibe,Nova Descoberta,Rua Urandi,108.15
+Curado,Totó,Rua Garcia,108.58
+Apipucos,Macaxeira,Rua Do Banho,109.77
+Campo Grande,Ponto de Parada,Rua Petronila Botelho,112.79
+Campo Grande,Hipódromo,Rua Padre Villemain,113.6
+Brejo da Guabiraba,Passarinho,Avenida Presidente Cafe Filho,114.06
+Alto Santa Teresinha,Alto José do Pinho,Rua Arlindo Cisneiros,115.0
+Ibura,Jordão,Rua Boquira,115.52
+Brejo de Beberibe,Dois Unidos,Rua Da Paz,115.81
+Cidade Universitária,Várzea,Rua Barao De Mamore,116.77
+Rosarinho,Tamarineira,Rua Capitao Sampaio Xavier,117.37
+Curado,Totó,Rua Utinga,117.4
+Casa Amarela,Monteiro,Rua Euclides Frazao,118.19
+Alto José Bonifácio,Alto José do Pinho,Rua Corrego Jose Grande,120.48
+Brejo da Guabiraba,Nova Descoberta,Rua Teolandia,121.67
+Madalena,Zumbi,Rua Joao Da Mata,123.82
+Macaxeira,Nova Descoberta,Rua Luiza Da Costa Melo,124.2
+Encruzilhada,Graças,Rua Conselheiro Portela,124.63
+Nova Descoberta,Vasco da Gama,Rua Bemposta,124.87
+Coqueiral,Totó,Rua Escada,128.39
+Encruzilhada,Torreão,Rua Natividade Saldanha,128.73
+Jardim São Paulo,Tejipió,Rua Iraguacu,131.23
+Graças,Jaqueira,Rua Antonio Celso Uchoa Cavalcanti,132.18
+Brejo da Guabiraba,Brejo de Beberibe,Avenida Presidente Cafe Filho,133.4
+Alto José Bonifácio,Vasco da Gama,Rua Aratuba,135.17
+Barro,Tejipió,Rua Capy,135.95
+Brejo de Beberibe,Passarinho,Rua Doutor Antonio Da Rosa Borges,137.88
+Casa Amarela,Monteiro,Rua Guerra De Holanda,138.87
+Macaxeira,Nova Descoberta,Rua Juremal,140.98
+Brejo de Beberibe,Passarinho,Rua Selma,141.01
+Beberibe,Linha do Tiro,Avenida Hildebrando De Vasconcelos,142.86
+Alto José Bonifácio,Brejo de Beberibe,Rua Uriel De Holanda,143.9
+Boa Vista,Soledade,Rua Bispo Cardoso Ayres,144.74
+Dois Unidos,Linha do Tiro,Rua Izaltino Lobo,144.74
+Curado,Jardim São Paulo,Rua Gastao De Carvalho,145.6
+Água Fria,Fundão,Rua Contendas,145.65
+Engenho do Meio,Torrões,Rua Dr Miguel Vieira Ferreira,148.89
+Graças,Jaqueira,Rua Antenor Navarro,150.15
+Alto José Bonifácio,Vasco da Gama,Rua Alcantara Machado,152.5
+Brejo de Beberibe,Linha do Tiro,Rua Izaltino Lobo,154.96
+Apipucos,Macaxeira,Rua Correnteza,155.64
+Nova Descoberta,Vasco da Gama,Rua Brasitania,158.27
+Graças,Rosarinho,Rua Teles Junior,159.83
+Apipucos,Monteiro,Rua Mandacaru,160.86
+Derby,Ilha do Retiro,Avenida Beira Rio,161.09
+Derby,Madalena,Avenida Beira Rio,161.09
+Brejo da Guabiraba,Brejo de Beberibe,Rua Santa Tereza,161.11
+Estância,Jiquiá,Avenida Tapajos,162.66
+Alto José do Pinho,Mangabeira,Rua Barra Verde,162.94
+Alto Santa Teresinha,Alto José do Pinho,Rua Alto da Serrinha,163.0
+Alto Santa Teresinha,Bomba do Hemetério,Rua Alto da Serrinha,163.0
+Coqueiral,Totó,Rua Maracai,164.71
+Macaxeira,Nova Descoberta,Rua Sao Joao Eudes,165.42
+Casa Forte,Parnamirim,Rua Da Harmonia,168.23
+Arruda,Bomba do Hemetério,Rua Professor Manuel Torres,168.69
+Afogados,Bongi,Rua Professor Celestin Malzac,171.82
+Macaxeira,Nova Descoberta,Rua Francisco Passos,175.81
+Madalena,Torre,Avenida Beira Rio,177.05
+Areias,Barro,Rua Armando Sales De Oliveira,177.53
+Recife,Santo Antônio,Ponte Maurício de Nassau,180.0
+Nova Descoberta,Vasco da Gama,Rua Paraisopolis,181.44
+Boa Viagem,Pina,Rua Delegado Tercio Soares De Aquino,182.89
+Água Fria,Fundão,Rua Violeta,184.71
+Macaxeira,Nova Descoberta,Rua Buritirano,184.93
+Casa Amarela,Morro da Conceição,Rua Joaquim Teixeira,188.34
+Dois Unidos,Linha do Tiro,Rua Guaraja,191.22
+Água Fria,Bomba do Hemetério,Rua Sao Rafael,191.61
+Macaxeira,Nova Descoberta,Rua Bujaru,192.38
+Boa Viagem,Imbiribeira,Rua Capitao Vicente Da Mota,193.4
+Dois Unidos,Linha do Tiro,Rua Rio Tinto,193.7
+Nova Descoberta,Vasco da Gama,Rua N S Da Ajuda,194.39
+Casa Forte,Parnamirim,Rua Flamengo,194.67
+Casa Amarela,Casa Forte,Rua Joao Barbalho,194.98
+Recife,São José,Ponte 12 de Setembro,195.0
+Brejo de Beberibe,Passarinho,Rua Da Amizade,195.25
+Parnamirim,Tamarineira,Rua Albino Meira,196.16
+Campina do Barreto,Peixinhos,Rua Jornalista Paulo Matos,196.42
+Hipódromo,Ponto de Parada,Rua Costa Pinto,196.92
+Boa Viagem,Imbiribeira,Rua Adauto Carneiro Leal,197.03
+Ibura,Jordão,Rua Catole Do Rocha,197.54
+Cordeiro,Torrões,Rua Maravilha,199.83
+Cohab,Barro,Rua São Francisco,200.0
+Afogados,Bongi,Rua Maria Jose De Lima,201.2
+Cordeiro,Torrões,Rua Manoel Goncalves De Oliveira,201.86
+Alto do Mandu,Macaxeira,Rua Aroeira,202.19
+Barro,Tejipió,Rua Babaculandia,203.1
+Boa Viagem,Imbiribeira,Rua Dos Tijolos,203.8
+Casa Amarela,Monteiro,Rua Duas Barras,205.68
+Estância,Jardim São Paulo,Rua Alfredo Vieira De Melo,205.71
+Brejo de Beberibe,Dois Unidos,Rua Doutor Antonio Da Rosa Borges,206.1
+Casa Amarela,Morro da Conceição,Rua Guaicara,206.47
+Arruda,Mangabeira,Rua Jacob,206.67
+Bongi,Mustardinha,Rua Itapolis,206.94
+Nova Descoberta,Vasco da Gama,Rua Arapiraca,207.41
+Apipucos,Macaxeira,Rua Dolcinopolis,208.29
+Mustardinha,San Martin,Rua Itaquari,210.23
+Aflitos,Graças,Rua Teles Junior,212.27
+Boa Vista,Derby,Rua Paissandu,212.41
+Boa Vista,Coelhos,Rua Jornalista Edmundo Bittencourt,213.19
+Córrego do Jenipapo,Macaxeira,Rua Trajano De Morais,214.3
+Brejo da Guabiraba,Passarinho,Rua N S Da Piedade,217.76
+Afogados,Mustardinha,Rua Desembargador Medeiros Correia,218.67
+Arruda,Bomba do Hemetério,Rua Jacob,218.97
+Água Fria,Bomba do Hemetério,Rua Avelar,221.39
+Jaqueira,Tamarineira,Rua Simao Mendes,221.7
+Coqueiral,Tejipió,Rua Tutoia,222.82
+Casa Amarela,Tamarineira,Rua Desembargador Gois Cavalcante,224.14
+Alto José Bonifácio,Vasco da Gama,Rua Engenho Parol,226.75
+Casa Amarela,Morro da Conceição,Rua Bugari,227.46
+Boa Vista,Soledade,Rua Corredor Do Bispo,227.65
+Arruda,Campo Grande,Rua Petronila Botelho,229.73
+Alto José Bonifácio,Alto José do Pinho,Rua Padre Oliveira,230.46
+Aflitos,Encruzilhada,Rua Samuel Campelo,231.42
+Encruzilhada,Rosarinho,Rua Teles Junior,232.62
+Brejo da Guabiraba,Brejo de Beberibe,Rua Portelandia,233.43
+Alto José do Pinho,Mangabeira,Rua Avenca,234.38
+Alto José Bonifácio,Vasco da Gama,Rua Baulanadia,234.51
+Cabanga,São José,Rua Bom Sucesso,235.15
+Ibura,Jordão,Rua Campos Do Jordao,236.02
+Afogados,Mustardinha,Rua Uberaba,238.72
+Madalena,Torre,Rua Davino Pontual,238.85
+Campo Grande,Hipódromo,Rua Mateus Tartaruga,241.64
+Espinheiro,Graças,Rua Sao Salvador,241.99
+Areias,Estância,Rua Dr Adelino Filho,242.09
+Graças,Tamarineira,Rua Capitao Sampaio Xavier,244.62
+Poço,Monteiro,Estrada do Encanamento,245.0
+Bongi,Mustardinha,Rua Maria Jose De Lima,245.27
+Ilha do Leite,Paissandu,Rua Dr Joao Asfora,246.51
+Curado,Jardim São Paulo,Rua Euzebio De Matos,246.86
+Bongi,Prado,Rua Professor Mario Ramos,248.83
+Ibura,Jordão,Rua Campo Do Jordao,251.81
+Brasília Teimosa,Pina,Rua Robalo,253.42
+Apipucos,Macaxeira,Rua Dolores Salgado,253.92
+Cajueiro,Campina do Barreto,Rua Nadia,254.48
+Água Fria,Fundão,Rua Sao Joaquim Do Monte,255.13
+Brejo da Guabiraba,Nova Descoberta,Rua Portelandia,255.2
+Coqueiral,Totó,Rua Da Encosta,256.21
+Engenho do Meio,Torrões,Rua Pocao,258.31
+Alto José do Pinho,Bomba do Hemetério,Rua Arlindo Cisneiros,259.33
+Graças,Tamarineira,Rua Ricardo Hardman,262.44
+Boa Vista,Soledade,Rua Joaquim Felipe,262.69
+Alto do Mandu,Monteiro,Rua Siriji,262.88
+Aflitos,Espinheiro,Avenida Conselheiro Rosa E Silva,263.32
+Santo Antônio,São José,Rua Das Aguas Verdes,263.82
+Boa Vista,Soledade,Rua Goncalves Maia,264.4
+Encruzilhada,Ponto de Parada,Rua Costa Pinto,265.9
+Bomba do Hemetério,Mangabeira,Rua Jacob,266.48
+Afogados,Mangueira,Rua Vereador Francisco De Paula Santana,268.13
+Cordeiro,Torrões,Rua Rio Grande Do Norte,268.92
+Estância,Jiquiá,Rua Tuparetama,268.97
+Mangueira,San Martin,Rua Tanguara,270.67
+Boa Vista,Coelhos,Rua Do Jasmim,272.3
+Santo Antônio,São José,Rua Vinte E Quatro De Maio,272.58
+Água Fria,Campina do Barreto,Rua Coronel Urbano Ribeiro De Sena,272.88
+Graças,Jaqueira,Rua Deputado Pedro Pires Ferreira,272.91
+Casa Forte,Parnamirim,Rua Dr Samuel Lins,275.42
+Córrego do Jenipapo,Macaxeira,Rua Alto Santa Luzia,276.11
+Beberibe,Porto da Madeira,Rua Dona Virtuosa De Lucena,276.19
+Torre,Zumbi,Rua Souza Bandeira,277.3
+Estância,Jiquiá,Rua Andre Vieira De Melo,278.76
+Morro da Conceição,Vasco da Gama,Rua Corrego Do Ouro,279.5
+Casa Amarela,Parnamirim,Rua Da Estrela,280.12
+Aflitos,Encruzilhada,Rua Teles Junior,285.06
+Boa Vista,Soledade,Rua Osvaldo Cruz,285.64
+Encruzilhada,Ponto de Parada,Rua Deputado Pedro Velho,285.99
+Fundão,Porto da Madeira,Avenida Anibal Benevolo,287.89
+Alto Santa Teresinha,Bomba do Hemetério,Rua Arlindo Cisneiros,288.0
+Recife,Santo Antônio,Ponte Buarque de Macedo,288.0
+Brejo da Guabiraba,Brejo de Beberibe,Rua Francisco Camarino,288.05
+Torre,Zumbi,Rua Diogo Alvares,288.76
+Casa Forte,Parnamirim,Rua Dona Rita De Souza,289.98
+Alto Santa Teresinha,Linha do Tiro,Rua Alto da Serrinha,290.0
+Cordeiro,Torrões,Rua Ijui,291.72
+Ibura,Jordão,Rua Barra Dos Coqueiros,292.48
+Casa Forte,Parnamirim,Rua Lemos Torres,292.67
+Encruzilhada,Hipódromo,Rua Costa Pinto,293.18
+Arruda,Ponto de Parada,Rua Petronila Botelho,294.86
+Cidade Universitária,Várzea,Rua Isaac Buril,295.33
+Estância,Jiquiá,Rua Botuvera,295.51
+Encruzilhada,Ponto de Parada,Rua Mem De Sa,296.04
+Água Fria,Fundão,Rua Conselheiro Barros Barreto,296.26
+Brejo de Beberibe,Vasco da Gama,Rua Grijalva Costa,298.99
+Coelhos,Santo Antônio,Rua Doutor Jose Mariano,299.14
+Recife,Santo Amaro,Ponte do Limoeiro,300.0
+Cohab,Barro,Avenida Sonho Real,306.0
+Beberibe,Porto da Madeira,Rua Marajo,308.27
+Campo Grande,Torreão,Rua Da Fronteira,309.43
+Madalena,Prado,Rua Virginio Campelo,310.35
+Nova Descoberta,Vasco da Gama,Rua Alto Da Favela,310.87
+Jaqueira,Parnamirim,Rua Muniz Tavares,311.31
+Dois Unidos,Passarinho,Rua Coronel Pilar,311.81
+Cohab,Barro,Rua São Bento,312.0
+Água Fria,Bomba do Hemetério,Rua Conde De Sabugosa,315.24
+Cajueiro,Porto da Madeira,Rua Para,315.29
+Encruzilhada,Ponto de Parada,Rua Salvador De Sa,315.99
+Madalena,Prado,Rua Quatro De Outubro,318.95
+Afogados,Bongi,Rua Santa Edwirges,319.42
+Madalena,Prado,Rua Professor Lins E Silva,320.61
+Ilha do Retiro,Madalena,Rua Joao Ivo Da Silva,321.53
+Bongi,Mustardinha,Rua Moreira Reis,323.28
+Alto Santa Teresinha,Alto José Bonifácio,Rua Tamboara,324.0
+Coqueiral,Totó,Rua Limite De Municipio,325.02
+Apipucos,Dois Irmãos,Entrada Br 101-Avenida Norte,325.98
+Alto José Bonifácio,Vasco da Gama,Rua Alto Do Bambui,328.44
+Cajueiro,Porto da Madeira,Rua Belo Horizonte,330.19
+Cordeiro,Zumbi,Rua Padre Leonardo Greco,330.27
+Afogados,Mustardinha,Rua Mario Libanio,333.69
+Afogados,Mangueira,Rua Luiz Figueiroa,334.76
+Boa Vista,Santo Antônio,Rua Princesa Isabel,334.97
+Fundão,Porto da Madeira,Rua Alto Do Benjamim,336.57
+Casa Amarela,Parnamirim,Rua Desembargador Gois Cavalcante,337.32
+Imbiribeira,Ipsep,Rua Jose Fernandes Portugal,338.65
+Boa Viagem,Imbiribeira,Rua Barao De Tefe,338.91
+Derby,Paissandu,Rua Viscondessa Do Livramento,340.09
+Bongi,Prado,Rua Joaquim Da Silva Caldas,341.15
+Graças,Rosarinho,Rua Capitao Sampaio Xavier,341.2
+Brejo de Beberibe,Passarinho,Rua So Nos Dois,342.11
+Madalena,Torre,Rua Padre Landim,342.45
+Afogados,Mustardinha,Rua Carlopolis,343.58
+Coqueiral,Sancho,Rua Paulino De Farias,343.94
+Campo Grande,Encruzilhada,Rua Cristovao Jaques,344.86
+Alto José Bonifácio,Vasco da Gama,Rua Corrego Do Ouro,348.1
+Alto do Mandu,Apipucos,Rua Massaranduba,348.17
+Afogados,Mustardinha,Rua Adolfo Bezerra,348.21
+Areias,Barro,Rua Coronel Lamenha,350.88
+Bongi,Mustardinha,Avenida Consul Vilares Fragoso,351.44
+Estância,Jiquiá,Rua Professor Caldas Filho,353.64
+Cordeiro,Torrões,Rua Antonio Carlos,355.3
+Boa Vista,Santo Amaro,Rua Do Principe,355.79
+Bongi,Prado,Rua Santa Edwirges,361.69
+Poço,Casa Amarela,Rua Engenheiro Oscar Ferreira,363.0
+Boa Vista,Paissandu,Rua General Joaquim Inacio,363.79
+Encruzilhada,Hipódromo,Rua Professor Miranda Curio,364.53
+Coelhos,Ilha do Leite,Rua Jose De Alencar,367.04
+Água Fria,Bomba do Hemetério,Rua Rui Frazao,370.63
+Encruzilhada,Graças,Rua Teles Junior,372.38
+Ponto de Parada,Rosarinho,Rua Almirante Noronha De Carvalho,372.98
+Alto Santa Teresinha,Linha do Tiro,Rua Alto do Tiro,373.0
+Jiquiá,San Martin,Rua Cordelia Gois Silva,373.33
+Madalena,Prado,Rua Manicore,375.93
+Cordeiro,Torrões,Rua Dezesseis De Outubro,377.11
+Santo Amaro,Soledade,Rua Bispo Cardoso Ayres,377.79
+Cordeiro,Engenho do Meio,Rua Bom Pastor,378.02
+Água Fria,Arruda,Rua Sao Bento,379.35
+Boa Viagem,Pina,Rua Amazonas,382.21
+Coqueiral,Tejipió,Rua Lourenco Bezerra,382.79
+Encruzilhada,Rosarinho,Rua Salvador De Sa,382.84
+Boa Vista,Santo Amaro,Rua Princesa Isabel,384.09
+Santana,Torre,Avenida Beira Rio,384.28
+Alto José Bonifácio,Linha do Tiro,Rua Gustavo Barrozo,385.65
+Jiquiá,San Martin,Rua Bom Jardim,386.3
+Ilha do Leite,Paissandu,Rua Prefeito Jorge Martins,387.34
+Casa Forte,Parnamirim,Rua Alfredo Fernandes,388.42
+Ilha do Retiro,Madalena,Rua Senador Fabio De Barros,388.6
+Santo Antônio,São José,Rua Direita,390.39
+Casa Amarela,Monteiro,Avenida Doutor Eurico Chaves,394.1
+Alto José Bonifácio,Morro da Conceição,Rua Corrego Do Ouro,394.34
+Graças,Rosarinho,Rua Desembargador Martins Pereira,397.4
+Sancho,Tejipió,Rua Matoso Da Camara,399.87
+Alto do Mandu,Monteiro,Rua Quatro De Marco,399.88
+Encruzilhada,Hipódromo,Rua Dona Elvira,400.08
+Campo Grande,Encruzilhada,Rua Othon Paraiso,400.1
+Água Fria,Fundão,Rua Manoel Silva,400.21
+Ibura,Jordão,Rua Camocim,400.55
+Dois Unidos,Passarinho,Rua Do Agave,403.72
+Cajueiro,Campina do Barreto,Rua Coronel Urbano Ribeiro De Sena,403.74
+Alto José do Pinho,Mangabeira,Rua Monte Horeb,405.62
+Cordeiro,Torrões,Rua Felixlandia,408.31
+Ibura,Jordão,Rua Cafarnaum,410.77
+Alto José Bonifácio,Linha do Tiro,Rua Alto Da Serrinha,410.89
+Água Fria,Porto da Madeira,Rua Conselheiro Barros Barreto,413.84
+Barro,Tejipió,Rua Barao De Ladario,416.81
+Brejo de Beberibe,Nova Descoberta,Rua Cerro Azul,419.19
+Ilha do Leite,Paissandu,Rua Estado De Israel,419.22
+Água Fria,Campina do Barreto,Rua Constanca,419.25
+Encruzilhada,Torreão,Rua Padre Miguelinho,419.76
+Água Fria,Bomba do Hemetério,Rua Arapixuna,420.59
+Sancho,Totó,Rua Do Nascente,420.9
+Brejo de Beberibe,Nova Descoberta,Rua Portelandia,422.87
+Afogados,Jiquiá,Rua Bom Jardim,424.78
+Santo Antônio,São José,Rua Tobias Barreto,427.17
+Cordeiro,Iputinga,Avenida Camarao,428.68
+Beberibe,Porto da Madeira,Avenida Anibal Benevolo,429.44
+Cabanga,São José,Avenida Saturnino De Brito,432.08
+Macaxeira,Nova Descoberta,Rua Jose Carlos Novaes Da Mata Machado,432.52
+Campo Grande,Torreão,Rua Dom Joao Costa,434.4
+Poço,Monteiro,Rua Tapacurá,435.0
+Cordeiro,Zumbi,Rua Tomaz Gonzaga,436.79
+Derby,Graças,Rua Guilherme Pinto,437.43
+Coqueiral,Tejipió,Rua Guanabara,438.82
+Boa Vista,Soledade,Rua Do Principe,439.23
+Água Fria,Porto da Madeira,Rua Judith,439.55
+Nova Descoberta,Vasco da Gama,Rua Assuncao,442.05
+Poço,Casa Forte,Estrada do Encanamento,444.0
+Encruzilhada,Torreão,Rua Augusto Rodrigues,445.85
+Alto Santa Teresinha,Alto José Bonifácio,Rua Alto da Serrinha,448.0
+Córrego do Jenipapo,Nova Descoberta,Rua Alto Santa Luzia,448.61
+Boa Vista,Ilha do Leite,Rua Visconde De Goiana,450.56
+Encruzilhada,Rosarinho,Rua Caio Pereira,451.35
+Alto José do Pinho,Mangabeira,Rua Da Mangabeira,451.56
+Apipucos,Macaxeira,Rua Massaranduba,452.4
+Ibura,Jordão,Rua Elesbao Veloso,452.74
+Jaqueira,Parnamirim,Rua Leonardo Bezerra Cavalcanti,453.43
+Madalena,Prado,Rua Caratinga,457.11
+Madalena,Zumbi,Rua Caratinga,457.11
+Prado,Zumbi,Rua Caratinga,457.11
+Brasília Teimosa,Pina,Rua Francisco Valpassos,457.75
+Boa Vista,Soledade,Rua Das Ninfas,458.95
+Alto do Mandu,Macaxeira,Rua Massaranduba,463.11
+Boa Vista,Soledade,Rua Da Soledade,466.31
+Jaqueira,Tamarineira,Avenida Conselheiro Rosa E Silva,471.16
+Água Fria,Fundão,Rua Jornalista Jose Campelo Junior,475.92
+Curado,San Martin,Rua Dr Flavio Ferreira Da Silva Marojo,475.99
+Água Fria,Bomba do Hemetério,Rua Riolandia,479.0
+Boa Vista,Ilha do Leite,Rua General Joaquim Inacio,480.27
+Afogados,Mustardinha,Rua Apucarana,481.43
+Aflitos,Graças,Avenida Santos Dumont,481.96
+Ponto de Parada,Rosarinho,Rua Treze De Junho,483.54
+Estância,Jardim São Paulo,Rua Senador Alberto Pasqualini,484.23
+Cidade Universitária,Iputinga,Rua Mauriceia,484.48
+Casa Amarela,Tamarineira,Rua Guimaraes Peixoto,485.11
+Ilha do Leite,Paissandu,Rua Frei Matias Tevis,486.59
+Coqueiral,Tejipió,Rua Alcantara,487.71
+Bongi,San Martin,Rua Acajutiba,488.14
+Cordeiro,Zumbi,Rua Ribeiro Roma,489.29
+Rosarinho,Tamarineira,Rua General Abreu E Lima,491.7
+Parnamirim,Tamarineira,Rua Desembargador Gois Cavalcante,492.56
+Água Fria,Fundão,Rua Alto Bonito,493.18
+Estância,Jardim São Paulo,Rua Dr Gustavo Pinto,495.81
+Boa Vista,Soledade,Rua Do Progresso,495.84
+Boa Vista,Paissandu,Avenida Lins Petit,497.51
+Água Fria,Arruda,Rua Expedicionario Jamil Dagli,501.33
+Imbiribeira,Pina,Rua Sao Jose,504.4
+Bongi,Mustardinha,Rua Joao Trajano Da Silva,506.69
+Jaqueira,Tamarineira,Rua Do Futuro,506.98
+Cajueiro,Campina do Barreto,Rua Hercilia De Medeiros,507.33
+Alto José do Pinho,Mangabeira,Rua Severino Bernardino Pereira,507.41
+Boa Vista,Soledade,Avenida Joao De Barros,507.89
+Brasília Teimosa,Pina,Rua Comendador Morais,509.51
+Córrego do Jenipapo,Nova Descoberta,Avenida Norte Miguel Arraes De Alencar,509.77
+Casa Amarela,Parnamirim,Rua Ferreira Lopes,514.82
+Bongi,Mustardinha,Rua Dr Joao Costa,515.93
+Brejo da Guabiraba,Córrego do Jenipapo,Rua Alto Do Reservatorio,516.31
+Cidade Universitária,Várzea,Rua Eduardo Dubeux,517.14
+Mangueira,San Martin,Rua Bom Jardim,519.67
+Boa Vista,Santo Amaro,Rua Bispo Cardoso Ayres,520.19
+Beberibe,Linha do Tiro,Rua Alto Dos Coqueiros,525.92
+Boa Vista,Coelhos,Rua Dos Coelhos,526.07
+Areias,Estância,Avenida Estancia,526.18
+Ponto de Parada,Rosarinho,Rua Couto Magalhaes,527.26
+Água Fria,Fundão,Rua Dr Pereira Da Silva,527.96
+Encruzilhada,Hipódromo,Rua Frederico,528.04
+Alto José do Pinho,Mangabeira,Rua Lage De Una,528.89
+Jiquiá,San Martin,Rua Pedro Boulitreau,528.89
+Nova Descoberta,Vasco da Gama,Rua Luiz Cesario De Melo,530.05
+Curado,San Martin,Rua Coronel Mizael De Mendonca,530.85
+Campina do Barreto,Peixinhos,Avenida Poeta Vinicius De Morais,533.82
+Água Fria,Arruda,Rua Alegre,534.17
+Boa Vista,Santo Antônio,Rua Da Aurora,534.2
+Afogados,Prado,Rua Santa Edwirges,534.89
+Brejo da Guabiraba,Passarinho,Rua Santa Tereza,538.25
+Água Fria,Bomba do Hemetério,Rua Corrego Joao Francisco,542.16
+Cajueiro,Porto da Madeira,Rua Dr Alberto Wanderley,544.49
+Boa Vista,Soledade,Rua Barao De Sao Borja,545.67
+Morro da Conceição,Vasco da Gama,Rua Itaguatiara,547.05
+Cajueiro,Fundão,Avenida Nova Do Fundao,550.74
+Beberibe,Porto da Madeira,Rua Do Anil,551.11
+Madalena,Torre,Rua Padre Anchieta,551.18
+Graças,Rosarinho,Avenida Santos Dumont,553.15
+Afogados,Mustardinha,Rua Capitao Adolfo Taquis,553.53
+Afogados,Mangueira,Rua Bom Jardim,558.14
+San Martin,Torrões,Avenida Recife,559.87
+Cordeiro,Zumbi,Rua Gregorio Junior,560.34
+Ponto de Parada,Rosarinho,Rua Salvador De Sa,563.52
+Encruzilhada,Ponto de Parada,Rua Professor Jeronimo Gueiros,565.58
+Cordeiro,Iputinga,Rua Joao Rozendo,566.81
+Alto do Mandu,Apipucos,Rua Mandacaru,567.76
+Rosarinho,Tamarineira,Rua Doutor Jose Maria,568.63
+Bongi,Prado,Rua Dr Severino Jatoba,574.47
+Campo Grande,Encruzilhada,Rua Professor Jeronimo Gueiros,574.88
+Estância,Jardim São Paulo,Rua N S De Fatima,576.19
+Alto José Bonifácio,Linha do Tiro,Rua Bismarck De Freitas,576.61
+Brejo da Guabiraba,Córrego do Jenipapo,Rua Corrego Da Loura,576.91
+Ponto de Parada,Rosarinho,Avenida Santos Dumont,587.01
+Alto José Bonifácio,Vasco da Gama,Rua Ary Peter,590.72
+Boa Vista,Derby,Rua Henrique Dias,592.69
+Espinheiro,Graças,Rua Santo Elias,593.21
+Madalena,Zumbi,Rua Visconde Do Uruguai,594.87
+Sancho,Totó,Avenida Liberdade,595.6
+Água Fria,Bomba do Hemetério,Rua Antonio Meira,600.28
+Santo Amaro,Soledade,Rua Gervasio Pires,601.65
+Sítio dos Pintos,Dois Irmãos,Rua Dois Irmãos,602.0
+Brejo da Guabiraba,Guabiraba,Avenida Embaixador Assis Chateaubriand,603.06
+Cordeiro,Torrões,Rua Ocidental,603.21
+Coqueiral,Totó,Rua Paulino De Farias,604.24
+Curado,Jardim São Paulo,Rua Coronel Fernando Machado,604.24
+Cordeiro,Zumbi,Rua Gomes Taborda,606.31
+Cidade Universitária,Engenho do Meio,Rua General Vargas,609.94
+Aflitos,Espinheiro,Rua Conselheiro Portela,612.54
+Boa Vista,Santo Amaro,Rua Da Uniao,612.56
+Cajueiro,Porto da Madeira,Rua Arao Botler,613.0
+Cordeiro,Torrões,Rua Onze De Fevereiro,616.64
+Ponto de Parada,Rosarinho,Avenida Professor Jose Dos Anjos,617.41
+Fundão,Porto da Madeira,Rua Conselheiro Barros Barreto,618.3
+Ilha do Retiro,Madalena,Rua Comendador Bento Aguiar,618.88
+Mustardinha,San Martin,Rua Dom Expedito Lopes,618.88
+Santo Antônio,São José,Rua Da Palma,619.32
+Curado,Torrões,Rua Vinte E Um De Abril,620.72
+Madalena,Torre,Rua Dom Manoel Da Costa,620.97
+Madalena,Zumbi,Rua Dom Manoel Da Costa,620.97
+Torre,Zumbi,Rua Dom Manoel Da Costa,620.97
+Macaxeira,Nova Descoberta,Rua Carlos Marighella,623.62
+Boa Vista,Ilha do Leite,Rua Marques Amorim,625.93
+Areias,Barro,Rua Jose Natario,626.55
+Cordeiro,Iputinga,Rua N S Da Saude,627.36
+Brejo de Beberibe,Passarinho,Rua Santa Tereza,627.44
+Macaxeira,Nova Descoberta,Rua Antonio Carneiro,629.14
+Engenho do Meio,Torrões,Avenida Recife,630.36
+Apipucos,Macaxeira,Rua Dr Anauro Dornellas Camara,630.52
+Alto do Mandu,Monteiro,Rua Mandacaru,630.72
+Alto do Mandu,Casa Amarela,Avenida Doutor Eurico Chaves,632.25
+Jaqueira,Tamarineira,Rua Padre Roma,635.52
+Aflitos,Encruzilhada,Rua Conselheiro Portela,636.4
+Curado,Jardim São Paulo,Rua Jose Tavares De Holanda,636.67
+Dois Unidos,Linha do Tiro,Rua Eladio Camboim,636.97
+Cidade Universitária,Várzea,Rua Belem De Sao Francisco,637.31
+Boa Vista,Soledade,Rua Gervasio Pires,638.78
+Ibura,Jordão,Rua Assis Brasil,638.96
+Dois Unidos,Passarinho,Rua Engenheiro Celio De Carli,640.32
+Aflitos,Encruzilhada,Rua Quarenta E Oito,640.87
+Alto Santa Teresinha,Bomba do Hemetério,Rua Tamboara,641.0
+Água Fria,Arruda,Rua Raul Pompeia,641.46
+Coelhos,Ilha do Leite,Rua Prefeito Jorge Martins,643.63
+Jiquiá,Mangueira,Rua Bom Jardim,645.29
+Água Fria,Fundão,Rua Do Machado,646.61
+Água Fria,Campina do Barreto,Rua Das Mocas,646.72
+Alto do Mandu,Nova Descoberta,Avenida Norte Miguel Arraes De Alencar,655.79
+Campo Grande,Hipódromo,Rua Prudente De Moraes,656.17
+Campo Grande,Torreão,Rua Djalma Farias,661.57
+Bongi,San Martin,Rua Itapemirim,661.66
+Encruzilhada,Graças,Avenida Santos Dumont,664.84
+Jaqueira,Santana,Rua Leonardo Bezerra Cavalcanti,666.14
+Rosarinho,Tamarineira,Avenida Engenheiro Agamenon De Magalhaes Melo,668.39
+Sancho,Totó,Rua Paulino De Farias,673.59
+Boa Vista,Coelhos,Rua Doutor Jose Mariano,675.58
+Córrego do Jenipapo,Macaxeira,Rua Alto Do Formoso,675.93
+Curado,Totó,Rua Onze De Agosto,678.61
+San Martin,Torrões,Rua Delmiro Gouveia,679.1
+Alto Santa Teresinha,Bomba do Hemetério,Rua Córrego José Grande,681.0
+Alto Santa Teresinha,Linha do Tiro,Rua Córrego José Grande,681.0
+Água Fria,Bomba do Hemetério,Estrada Velha De Agua Fria,681.56
+Hipódromo,Ponto de Parada,Rua Professor Jeronimo Gueiros,682.07
+Madalena,Torre,Rua Pio Ix,683.52
+Bongi,Prado,Rua Randolfo Pinto Ferreira,683.97
+Poço,Casa Amarela,Estrada do Encanamento,684.0
+Jardim São Paulo,Tejipió,Avenida Liberdade,684.31
+Dois Unidos,Passarinho,Rua Compositor Raul Valenca,685.42
+San Martin,Torrões,Rua Dr Flavio Ferreira Da Silva Marojo,686.86
+Ilha do Leite,Paissandu,Rua General Joaquim Inacio,686.91
+Afogados,Mangueira,Rua Joao Leite,688.74
+Imbiribeira,Ipsep,Rua Potengy,688.88
+Campo Grande,Hipódromo,Rua Professor Jeronimo Gueiros,691.36
+Aflitos,Graças,Rua Conselheiro Portela,698.13
+Encruzilhada,Ponto de Parada,Avenida Santos Dumont,698.71
+Pina,São José,Avenida Antônio de Goes,700.0
+Cordeiro,Zumbi,Rua Souza Bandeira,700.67
+Estância,Jiquiá,Avenida Doutor Jose Rufino,705.71
+Macaxeira,Nova Descoberta,Rua Alto Santa Luzia,706.73
+Água Fria,Fundão,Rua Coronel Urbano Ribeiro De Sena,707.16
+Beberibe,Linha do Tiro,Avenida Anibal Benevolo,707.66
+Apipucos,Macaxeira,Rua Coronel Joao Batista Do Rego Barros,708.47
+Curado,Engenho do Meio,Avenida Visconde De Sao Leopoldo,708.99
+Parnamirim,Santana,Rua Leonardo Bezerra Cavalcanti,709.22
+Arruda,Mangabeira,Rua Desembargador Heraclito Cavalcanti,710.3
+Água Fria,Bomba do Hemetério,Rua Tamboara,710.89
+Ibura,Jordão,Rua Jose Martorano,711.76
+Ibura,Jordão,Rua Vinte E Dois De Agosto,715.21
+Aflitos,Encruzilhada,Rua Carneiro Vilela,715.98
+Ibura,Jordão,Rua Fernandes Belo,716.95
+Alto Santa Teresinha,Água Fria,Rua Tamboara,718.0
+Curado,Jardim São Paulo,Rua Agostinho Barbalho,720.99
+Água Fria,Campina do Barreto,Rua Marcilio Dias,723.25
+Boa Viagem,Imbiribeira,Rua Eladio Ramos,724.11
+Campo Grande,Encruzilhada,Rua Marechal Deodoro,725.37
+Cidade Universitária,Engenho do Meio,Rua Costa Sepulveda,727.51
+Bongi,Mustardinha,Rua Major Mario Portela,730.2
+Morro da Conceição,Vasco da Gama,Rua Dois De Fevereiro,732.99
+Ibura,Imbiribeira,Rua Goncalves De Magalhaes,734.33
+Madalena,Prado,Rua Antonio De Sa,735.14
+Água Fria,Arruda,Rua Bom Conselho,735.93
+Alto Santa Teresinha,Alto José do Pinho,Rua Córrego José Grande,736.0
+Jaqueira,Parnamirim,Rua Padre Roma,737.37
+Casa Forte,Santana,Avenida Dezessete De Agosto,739.83
+Santo Amaro,Soledade,Rua Do Principe,740.75
+Boa Viagem,Imbiribeira,Rua Doutor Luiz Correa De Oliveira,743.28
+Bongi,San Martin,Avenida Consul Vilares Fragoso,743.82
+Mustardinha,San Martin,Avenida Consul Vilares Fragoso,743.82
+Casa Amarela,Monteiro,Estrada Do Encanamento,744.39
+Alto Santa Teresinha,Alto José Bonifácio,Rua Córrego José Grande,747.0
+Cordeiro,Iputinga,Rua Coronel Fernando Furtado,749.28
+Alto José do Pinho,Mangabeira,Avenida Norte Miguel Arraes De Alencar,750.49
+Aflitos,Encruzilhada,Avenida Santos Dumont,751.49
+Areias,Caçote,Rua Aurora Cacote,752.91
+Bomba do Hemetério,Mangabeira,Rua Desembargador Heraclito Cavalcanti,753.72
+Cidade Universitária,Engenho do Meio,Rua Lindolfo Color,754.02
+Boa Vista,Santo Amaro,Rua Da Saudade,755.4
+Coelhos,Ilha do Leite,Rua Francisco Alves,756.61
+Beberibe,Linha do Tiro,Avenida Rio Morno,757.41
+Brejo de Beberibe,Linha do Tiro,Avenida Rio Morno,757.41
+Arruda,Campina do Barreto,Rua Expedicionario Jamil Dagli,759.53
+Boa Vista,Santo Antônio,Rua Doutor Jose Mariano,765.81
+Boa Viagem,Pina,Rua Tome Gibson,765.97
+Alto José Bonifácio,Vasco da Gama,Rua Alto Nossa Senhora De Fatima,766.21
+Arruda,Peixinhos,Rua Expedicionario Jamil Dagli,771.42
+Boa Vista,Ilha do Leite,Rua Jose De Alencar,773.86
+Campina do Barreto,Peixinhos,Rua Expedicionario Jamil Dagli,774.97
+Casa Amarela,Casa Forte,Estrada Das Ubaias,776.71
+Arruda,Bomba do Hemetério,Rua Desembargador Heraclito Cavalcanti,780.41
+Mangueira,Mustardinha,Rua Vinte E Um De Abril,783.53
+Coqueiral,Totó,Rua Ananias Catanho,786.22
+Areias,Caçote,Avenida Capitao Gregorio De Caldas,787.0
+Alto José do Pinho,Mangabeira,Rua Desembargador Heraclito Cavalcanti,787.97
+Cajueiro,Campina do Barreto,Rua Manoel Brandao,790.26
+Ilha do Retiro,Madalena,Estrada Dos Remedios,793.42
+Encruzilhada,Espinheiro,Rua Quarenta E Oito,794.08
+Sancho,Tejipió,Avenida Padre Ibiapina,798.33
+Areias,Estância,Avenida Tapajos,801.4
+Encruzilhada,Rosarinho,Rua Amaro Coutinho,802.12
+Imbiribeira,Ipsep,Rua Rio Oceanico,806.35
+Bongi,San Martin,Rua Dona Maria Augusta Nogueira,819.53
+Derby,Graças,Rua Joaquim Nabuco,821.69
+Encruzilhada,Rosarinho,Avenida Santos Dumont,822.68
+Campo Grande,Hipódromo,Rua Francisco Berenguer,824.15
+Encruzilhada,Torreão,Rua Othon Paraiso,828.87
+Encruzilhada,Hipódromo,Estrada De Belem,832.15
+Afogados,Mustardinha,Avenida Mustardinha,834.73
+Afogados,Mangueira,Rua Alexandre Rodrigues Ferreira,835.59
+Brejo da Guabiraba,Nova Descoberta,Rua Alto Do Reservatorio,835.73
+Madalena,Prado,Rua Ricardo Salazar,836.14
+Derby,Paissandu,Rua Paissandu,836.32
+Cajueiro,Fundão,Rua Coronel Urbano Ribeiro De Sena,838.02
+Macaxeira,Nova Descoberta,Rua Alto Jardim Progresso,838.84
+Cajueiro,Campina do Barreto,Rua Couto Soares,840.68
+Curado,Jardim São Paulo,Rua S D 5519,846.36
+Campo Grande,Santo Amaro,Rua Projetada,849.75
+Cabanga,Pina,Ponte Governador Paulo Guerra,850.0
+Brejo de Beberibe,Dois Unidos,Rua Tupiracaba,854.47
+Campina do Barreto,Fundão,Rua Coronel Urbano Ribeiro De Sena,856.13
+Santo Antônio,São José,Rua Floriano Peixoto,857.54
+Alto José do Pinho,Bomba do Hemetério,Rua Desembargador Heraclito Cavalcanti,858.08
+Areias,Jiquiá,Avenida Central,862.25
+Campo Grande,Torreão,Rua Othon Paraiso,869.39
+Cidade Universitária,Várzea,Rua Mario Campelo,873.82
+Jiquiá,San Martin,Rua Tenente Mindelo,878.0
+Santo Antônio,São José,Rua Da Concordia,878.34
+Arruda,Bomba do Hemetério,Estrada Velha De Agua Fria,880.72
+Alto Santa Teresinha,Bomba do Hemetério,Rua Professor José Amarino dos Reis,881.0
+Brasília Teimosa,Pina,Rua Delfim,886.0
+Beberibe,Dois Unidos,Avenida Rio Morno,886.9
+Brejo de Beberibe,Dois Unidos,Avenida Rio Morno,886.9
+Dois Unidos,Passarinho,Avenida Rio Morno,886.9
+Casa Forte,Parnamirim,Estrada Do Encanamento,891.13
+Boa Vista,Coelhos,Rua Jose De Alencar,892.54
+Alto do Mandu,Monteiro,Avenida Doutor Eurico Chaves,893.44
+Cidade Universitária,Iputinga,Rua General Vargas,894.11
+Engenho do Meio,Iputinga,Rua General Vargas,894.11
+Curado,Torrões,Rua Dr Flavio Ferreira Da Silva Marojo,901.68
+Ibura,Jordão,Avenida Centenario Alberto Santos Dumont,902.41
+Cidade Universitária,Engenho do Meio,Rua Governador Lopo Garro,902.77
+San Martin,Torrões,Rua Quinze De Marco,903.18
+Água Fria,Arruda,Estrada Velha De Agua Fria,904.04
+Apipucos,Córrego do Jenipapo,Avenida Norte Miguel Arraes De Alencar,905.91
+Cajueiro,Campina do Barreto,Avenida Sebastiao Salazar,907.25
+Arruda,Ponto de Parada,Avenida Beberibe,913.85
+Areias,Jiquiá,Avenida Tapajos,915.39
+Estância,Jiquiá,Rua Joao Teixeira,916.93
+Água Fria,Campina do Barreto,Rua Expedicionario Jamil Dagli,920.54
+Brejo de Beberibe,Passarinho,Avenida Canaa,920.81
+Afogados,Prado,Est. Do Bongi,930.66
+Santo Amaro,Soledade,Avenida Joao De Barros,931.64
+Nova Descoberta,Vasco da Gama,Avenida Norte Miguel Arraes De Alencar,933.3
+Espinheiro,Graças,Rua Do Espinheiro,934.29
+Sancho,Tejipió,Avenida Liberdade,934.86
+Cordeiro,Iputinga,Rua Dr Gastao Da Silveira,939.04
+Casa Amarela,Casa Forte,Estrada Do Encanamento,943.81
+Córrego do Jenipapo,Nova Descoberta,Rua Alto Do Reservatorio,945.33
+Caxangá,Iputinga,Rua Ministro Joao Alberto,946.87
+Curado,Jardim São Paulo,Rua S D 5513,948.04
+Ilha do Retiro,Madalena,Avenida Sport Clube Do Recife,959.94
+Cordeiro,Torre,Rua Souza Bandeira,965.6
+Alto José do Pinho,Morro da Conceição,Avenida Norte Miguel Arraes De Alencar,966.85
+Nova Descoberta,Vasco da Gama,Rua Alto 13 De Maio,967.96
+Graças,Tamarineira,Rua Do Futuro,968.17
+Cajueiro,Porto da Madeira,Avenida Sebastiao Salazar,973.69
+Areias,Barro,Rua Doutor Vilas Boa,976.31
+Espinheiro,Graças,Rua Amelia,976.51
+Boa Vista,Soledade,Rua Joao Fernandes Vieira,976.53
+Brejo de Beberibe,Nova Descoberta,Rua Teolandia,977.62
+Jiquiá,Mangueira,Avenida Central,980.0
+Curado,Jardim São Paulo,Rua Jundiai,985.81
+Ilha Joana Bezerra,São José,Rua Cabo Eutropio,987.16
+Boa Vista,Soledade,Avenida Manoel Borba,992.76
+Bongi,San Martin,Avenida Engenheiro Abdias De Carvalho,994.69
+Afogados,Bongi,Rua Padre Teofilo Tworz,995.23
+Sítio dos Pintos,Dois Irmãos,Estrada Sítio Sapucaia,996.0
+Casa Amarela,Casa Forte,Rua Da Harmonia,996.88
+Coqueiral,Tejipió,Rua Falcao De Lacerda,999.0
+Aflitos,Espinheiro,Rua Quarenta E Oito,1002.92
+Água Fria,Arruda,Rua Do Machado,1003.87
+Brejo de Beberibe,Nova Descoberta,Rua Alto Do Refugio,1005.16
+Curado,Jardim São Paulo,Avenida Liberdade,1010.42
+Cordeiro,Iputinga,Rua Conselheiro Silveira De Souza,1015.29
+Iputinga,Várzea,Rua Emiliano Braga,1015.78
+Espinheiro,Graças,Rua Da Hora,1016.35
+Bongi,Prado,Rua Padre Teofilo Tworz,1018.94
+Bongi,Prado,Est. Do Bongi,1037.86
+Córrego do Jenipapo,Macaxeira,Rua Erundina Negreiros De Araujo,1039.61
+Casa Amarela,Parnamirim,Rua Da Harmonia,1040.74
+Boa Vista,Paissandu,Rua Paissandu,1041.99
+Alto José do Pinho,Mangabeira,Rua Do Rio,1044.71
+Encruzilhada,Ponto de Parada,Avenida Beberibe,1045.45
+Sancho,Tejipió,Rua Aprigio Guimaraes,1045.46
+Curado,San Martin,Rua Vinte E Um De Abril,1047.74
+Dois Unidos,Linha do Tiro,Avenida Rio Morno,1050.66
+Dois Unidos,Linha do Tiro,Avenida Rio Morno,1050.66
+Alto do Mandu,Apipucos,Avenida Norte Miguel Arraes De Alencar,1051.93
+Ilha do Retiro,Madalena,Avenida Engenheiro Abdias De Carvalho,1052.25
+Encruzilhada,Rosarinho,Rua Doutor Jose Maria,1068.19
+Jardim São Paulo,San Martin,Avenida Recife,1069.97
+Arruda,Tamarineira,Estrada Velha De Agua Fria,1070.64
+Bongi,San Martin,Rua Isaac Markman,1070.9
+Brejo da Guabiraba,Brejo de Beberibe,Rua Teolandia,1075.11
+Graças,Madalena,Avenida Beira Rio,1079.0
+Curado,Jardim São Paulo,Avenida Piracicaba,1084.77
+Casa Amarela,Monteiro,Rua Santa Izabel,1085.43
+Mustardinha,San Martin,Rua Vinte E Um De Abril,1090.25
+Afogados,Ilha do Retiro,Rua Padre Teofilo Tworz,1094.38
+Brejo da Guabiraba,Nova Descoberta,Rua Alto Do Refugio,1108.78
+Parnamirim,Santana,Avenida Dezessete De Agosto,1113.13
+Ilha do Retiro,Prado,Rua Padre Teofilo Tworz,1118.1
+Cordeiro,Iputinga,Rua Bom Pastor,1118.54
+Engenho do Meio,Iputinga,Rua Bom Pastor,1122.28
+Campina do Barreto,Peixinhos,Rua Dr Elias Gomes,1125.08
+Casa Amarela,Parnamirim,Estrada Do Encanamento,1129.66
+Casa Forte,Parnamirim,Avenida Dezessete De Agosto,1130.68
+Espinheiro,Torreão,Avenida Norte Miguel Arraes De Alencar,1135.74
+Boa Vista,Santo Amaro,Rua Gervasio Pires,1137.53
+Ilha Joana Bezerra,São José,Avenida Rio Capibaribe,1138.16
+Curado,Várzea,Rua Historiador Luiz Do Nascimento,1139.6
+Cidade Universitária,Várzea,Rua Academico Helio Ramos,1145.33
+Brejo da Guabiraba,Brejo de Beberibe,Rua Alto Do Refugio,1155.63
+Boa Vista,Espinheiro,Avenida Joao De Barros,1172.63
+Água Fria,Arruda,Rua Zeferino Agra,1178.94
+Alto Santa Teresinha,Linha do Tiro,Rua Professor José Amarino dos Reis,1180.0
+Cordeiro,Engenho do Meio,Rua Dr Miguel Vieira Ferreira,1184.87
+Campo Grande,Hipódromo,Estrada De Belem,1188.78
+Areias,Estância,Avenida Central,1190.36
+Água Fria,Fundão,Avenida Anibal Benevolo,1196.21
+Água Fria,Porto da Madeira,Avenida Anibal Benevolo,1197.48
+Brejo de Beberibe,Passarinho,Avenida Tancredo Neves,1201.89
+Cordeiro,Torrões,Rua Antonio Valdevino Costa,1202.46
+Apipucos,Monteiro,Rua De Apipucos,1203.26
+Cidade Universitária,Curado,Avenida Professor Luiz Freire,1205.38
+Morro da Conceição,Vasco da Gama,Avenida Norte Miguel Arraes De Alencar,1207.69
+Encruzilhada,Hipódromo,Rua Professor Jeronimo Gueiros,1209.86
+Madalena,Prado,Rua Carlos Gomes,1216.28
+Cidade Universitária,Várzea,Avenida Professor Artur De Sa,1218.66
+Bongi,Mustardinha,Avenida Manoel Goncalves Da Luz,1222.91
+Cordeiro,Prado,Avenida General San Martin,1224.98
+Barro,Tejipió,Rua Da Esperanca,1225.54
+Boa Vista,Santo Amaro,Avenida Joao De Barros,1225.73
+Encruzilhada,Espinheiro,Avenida Joao De Barros,1226.72
+Derby,Graças,Avenida Beira Rio,1227.41
+Cordeiro,Torrões,Rua Dr Miguel Vieira Ferreira,1235.46
+Graças,Torre,Avenida Beira Rio,1240.84
+Curado,Sancho,Avenida Liberdade,1260.98
+Afogados,Mustardinha,Rua Vinte E Um De Abril,1272.6
+Areias,Jiquiá,Avenida Doutor Jose Rufino,1278.08
+Curado,Totó,Avenida Liberdade,1280.73
+Rosarinho,Tamarineira,Avenida Professor Jose Dos Anjos,1288.4
+Casa Amarela,Mangabeira,Avenida Professor Jose Dos Anjos,1291.58
+Boa Viagem,Jordão,Rua Canal Do Jordao,1305.13
+Cordeiro,Iputinga,Rua Ambrosio Machado,1317.4
+Ilha do Retiro,Prado,Rua Joao Ivo Da Silva,1319.02
+Parnamirim,Tamarineira,Rua Padre Roma,1322.18
+Engenho do Meio,Torrões,Rua Carneiro De Mariz,1325.59
+Água Fria,Beberibe,Avenida Anibal Benevolo,1337.76
+Campo Grande,Hipódromo,Rua Marques De Baipendi,1351.93
+Imbiribeira,Ipsep,Avenida Senador Robert Kennedy,1357.23
+Poço,Santana,Avenida Dezessete de Agosto,1360.0
+Dois Irmãos,Guabiraba,Rua Limite De Municipio,1360.47
+Estância,Jiquiá,Avenida Joao Cabral De Melo Neto,1371.64
+Poço,Casa Forte,Avenida Dezessete de Agosto,1377.0
+Areias,Estância,Avenida Doutor Jose Rufino,1378.27
+Bongi,Prado,Rua Carlos Gomes,1379.98
+Prado,Zumbi,Rua Gomes Taborda,1382.71
+Afogados,Prado,Rua Padre Teofilo Tworz,1389.84
+Arruda,Campina do Barreto,Rua Das Mocas,1392.09
+Graças,Jaqueira,Rua Do Futuro,1402.83
+Cordeiro,Torrões,Avenida Inacio Monteiro,1413.06
+Brejo de Beberibe,Linha do Tiro,Rua Uriel De Holanda,1416.69
+Afogados,Bongi,Est. Do Bongi,1416.88
+Alto José Bonifácio,Linha do Tiro,Rua Uriel De Holanda,1417.75
+Apipucos,Dois Irmãos,Rua Dois Irmaos,1423.62
+Caçote,Ipsep,Avenida Recife,1452.3
+Estância,Jiquiá,Avenida Central,1468.07
+Água Fria,Linha do Tiro,Avenida Anibal Benevolo,1475.7
+Água Fria,Arruda,Rua Da Regeneracao,1520.89
+Graças,Jaqueira,Avenida Conselheiro Rosa E Silva,1522.41
+Boa Vista,Santo Amaro,Rua Do Sossego,1527.4
+Água Fria,Arruda,Avenida Beberibe,1529.92
+San Martin,Torrões,Rua Vinte E Um De Abril,1551.05
+Campo Grande,Peixinhos,Avenida Correia De Brito,1553.3
+Cajueiro,Fundão,Avenida Beberibe,1569.11
+Iputinga,Várzea,Rua Joao Sales Menezes,1572.36
+Espinheiro,Graças,Avenida Conselheiro Rosa E Silva,1583.34
+Madalena,Prado,Rua Joao Ivo Da Silva,1587.39
+Ibura,Jordão,Rua Francisco Beltrao,1591.78
+Espinheiro,Santo Amaro,Avenida Joao De Barros,1596.38
+Curado,Tejipió,Avenida Liberdade,1619.99
+Boa Viagem,Imbiribeira,Rua Rio Jordao,1643.8
+Água Fria,Arruda,Rua Das Mocas,1656.13
+Poço,Monteiro,Avenida Dezessete de Agosto,1665.0
+Mangueira,San Martin,Rua Vinte E Um De Abril,1671.35
+Cohab,Ibura,Avenida Dois Rios,1676.0
+Curado,Jardim São Paulo,Estrada Do Curado,1677.39
+Aflitos,Graças,Avenida Conselheiro Rosa E Silva,1698.13
+Alto José Bonifácio,Morro da Conceição,Rua Corrego Do Euclides,1708.33
+Boa Vista,Santo Amaro,Rua Do Hospicio,1724.93
+Macaxeira,Nova Descoberta,Rua Corrego Da Areia,1725.5
+Casa Amarela,Tamarineira,Avenida Professor Jose Dos Anjos,1755.71
+Areias,Caçote,Rua Dona Ana Aurora,1764.07
+Iputinga,Várzea,Avenida Professor Moraes Rego,1769.92
+Beberibe,Linha do Tiro,Rua Uriel De Holanda,1790.2
+Cordeiro,Torrões,Estrada Do Forte Do Arraial Novo Do Bom Jesus,1793.87
+Imbiribeira,Ipsep,Rua Jean Emile Favre,1822.99
+Sítio dos Pintos,Dois Irmãos,Rua Córrego da Fortuna,1825.0
+Afogados,Cabanga,Avenida Sul Gov. Cid Sampaio,1826.89
+Afogados,Mangueira,Rua Vinte E Um De Abril,1853.7
+Areias,Barro,Avenida Central,1864.63
+Cidade Universitária,Engenho do Meio,Avenida Visconde De Sao Leopoldo,1879.7
+Madalena,Torre,Rua Jose Bonifacio,1890.85
+Prado,San Martin,Avenida General San Martin,1899.57
+Mangabeira,Tamarineira,Avenida Professor Jose Dos Anjos,1908.33
+Guabiraba,Passarinho,Rua Limite De Municipio,1917.32
+Cidade Universitária,Curado,Avenida Visconde De Sao Leopoldo,1932.69
+Boa Viagem,Jordão,Avenida Marechal Mascarenhas De Moraes,1941.04
+Cajueiro,Porto da Madeira,Avenida Beberibe,1943.89
+Afogados,Mustardinha,Rua Ernesto Cavalcanti,1951.39
+Cordeiro,Prado,Rua Gomes Taborda,1952.68
+Campo Grande,Encruzilhada,Estrada De Belem,1956.55
+Graças,Tamarineira,Avenida Conselheiro Rosa E Silva,1966.9
+Ibura,Jordão,Avenida Maria Irene,1967.5
+Apipucos,Caxangá,Avenida Da Recuperacao,2015.43
+Nova Descoberta,Vasco da Gama,Rua Vasco Da Gama,2017.36
+Areias,Jardim São Paulo,Avenida Central,2039.99
+Afogados,Ilha do Retiro,Estrada Dos Remedios,2082.4
+Mangabeira,Tamarineira,Avenida Norte Miguel Arraes De Alencar,2101.42
+Estância,San Martin,Avenida Recife,2102.86
+Cordeiro,San Martin,Avenida Engenheiro Abdias De Carvalho,2139.0
+Afogados,Jiquiá,Rua Sao Miguel,2211.61
+Água Fria,Fundão,Avenida Beberibe,2237.49
+Barro,Tejipió,Avenida Doutor Jose Rufino,2304.74
+Jardim São Paulo,Jiquiá,Avenida Central,2317.7
+Madalena,Torre,Rua Real Da Torre,2319.24
+Casa Amarela,Monteiro,Estrada Do Arraial,2331.64
+Cordeiro,Iputinga,Avenida Mario Alvares Pereira De Lyra,2343.65
+Macaxeira,Nova Descoberta,Avenida Norte Miguel Arraes De Alencar,2355.34
+Encruzilhada,Torreão,Avenida Norte Miguel Arraes De Alencar,2406.39
+Graças,Jaqueira,Avenida Rui Barbosa,2423.77
+Brejo de Beberibe,Nova Descoberta,Rua Nova Descoberta,2425.81
+Brejo da Guabiraba,Córrego do Jenipapo,Avenida Da Recuperacao,2435.26
+Cordeiro,Iputinga,Avenida Mauricio De Nassau,2514.97
+Água Fria,Beberibe,Avenida Beberibe,2528.07
+Campo Grande,Ponto de Parada,Avenida Professor Jose Dos Anjos,2528.63
+Coqueiral,Tejipió,Avenida Central,2529.99
+Guabiraba,Passarinho,Rua Projetada,2533.46
+Arruda,Rosarinho,Avenida Professor Jose Dos Anjos,2534.02
+Boa Viagem,Imbiribeira,Avenida Dom Joao Vi,2566.13
+Rosarinho,Tamarineira,Avenida Norte Miguel Arraes De Alencar,2592.52
+Cidade Universitária,Iputinga,Avenida Professor Moraes Rego,2593.45
+Cidade Universitária,Várzea,Avenida Professor Moraes Rego,2596.7
+Casa Amarela,Tamarineira,Estrada Do Arraial,2605.86
+Água Fria,Porto da Madeira,Avenida Beberibe,2612.27
+Campo Grande,Peixinhos,Avenida Professor Jose Dos Anjos,2615.89
+Brejo de Beberibe,Vasco da Gama,Avenida Vereador Otacilio Azevedo,2631.53
+Boa Viagem,Pina,Rua Rio Jordao,2635.32
+Estância,Jardim São Paulo,Avenida Central,2645.81
+Curado,Jardim São Paulo,Avenida Central,2696.53
+Córrego do Jenipapo,Macaxeira,Avenida Norte Miguel Arraes De Alencar,2701.9
+Apipucos,Macaxeira,Avenida Norte Miguel Arraes De Alencar,2751.48
+Água Fria,Fundão,Rua Sao Sebastiao,2751.65
+Ibura,Imbiribeira,Avenida Presidente Dutra,2752.45
+Encruzilhada,Rosarinho,Avenida Norte Miguel Arraes De Alencar,2776.7
+Água Fria,Bomba do Hemetério,Rua Sao Sebastiao,2778.27
+Estância,Jardim São Paulo,Avenida Recife,2797.54
+Boa Viagem,Imbiribeira,Avenida Desembargador Jose Neves,2841.9
+Alto do Mandu,Macaxeira,Avenida Norte Miguel Arraes De Alencar,2847.92
+Dois Unidos,Passarinho,Avenida Hildebrando De Vasconcelos,2859.62
+Fundão,Porto da Madeira,Avenida Beberibe,2873.64
+Curado,Torrões,Viaduto Alca Do Complexo Ceasa,2876.51
+Curado,Torrões,Viaduto Alca Do Complexo Ceasa,2876.51
+Boa Vista,Santo Amaro,Rua Da Aurora,2889.47
+Santo Amaro,Santo Antônio,Rua Da Aurora,2889.47
+Casa Amarela,Nova Descoberta,Avenida Norte Miguel Arraes De Alencar,2916.34
+Boa Vista,Ilha do Leite,Avenida Governador Agamenon Magalhaes,2920.03
+Areias,Barro,Avenida Doutor Jose Rufino,2943.01
+Arruda,Ponto de Parada,Avenida Professor Jose Dos Anjos,2947.1
+Beberibe,Dois Unidos,Avenida Hildebrando De Vasconcelos,2954.19
+Curado,Tejipió,Avenida Central,2969.58
+Casa Amarela,Mangabeira,Avenida Norte Miguel Arraes De Alencar,2974.36
+Dois Unidos,Linha do Tiro,Avenida Hildebrando De Vasconcelos,2985.91
+Madalena,Zumbi,Avenida Caxanga,2986.82
+Apipucos,Córrego do Jenipapo,Avenida Da Recuperacao,3015.26
+Encruzilhada,Espinheiro,Avenida Norte Miguel Arraes De Alencar,3021.29
+Arruda,Peixinhos,Avenida Professor Jose Dos Anjos,3034.36
+Curado,Várzea,Avenida Central,3038.63
+Cordeiro,San Martin,Avenida General San Martin,3106.45
+Bongi,Prado,Avenida Engenheiro Abdias De Carvalho,3147.91
+Arruda,Mangabeira,Avenida Professor Jose Dos Anjos,3153.96
+Beberibe,Porto da Madeira,Avenida Beberibe,3164.23
+Dois Irmãos,Guabiraba,Estrada Dos Macacos,3177.0
+Casa Amarela,Morro da Conceição,Avenida Norte Miguel Arraes De Alencar,3190.72
+San Martin,Torrões,Avenida Engenheiro Abdias De Carvalho,3201.17
+Ilha do Leite,Paissandu,Avenida Governador Agamenon Magalhaes,3247.47
+Madalena,Prado,Avenida Engenheiro Abdias De Carvalho,3272.15
+Curado,San Martin,Avenida Recife,3273.46
+Barro,Jardim São Paulo,Avenida Central,3320.07
+Derby,Graças,Avenida Governador Agamenon Magalhaes,3341.14
+Curado,Engenho do Meio,Avenida Recife,3343.95
+Areias,Ipsep,Avenida Recife,3352.46
+Boa Vista,Soledade,Avenida Conde Da Boa Vista,3392.26
+Brejo da Guabiraba,Brejo de Beberibe,Avenida Vereador Otacilio Azevedo,3392.77
+Alto do Mandu,Casa Amarela,Avenida Norte Miguel Arraes De Alencar,3408.92
+Santo Amaro,Torreão,Avenida Norte Miguel Arraes De Alencar,3421.94
+Alto José do Pinho,Casa Amarela,Avenida Norte Miguel Arraes De Alencar,3445.6
+Curado,Torrões,Avenida Recife,3458.04
+Caxangá,Várzea,Avenida Caxanga,3470.48
+Areias,Caçote,Avenida Recife,3471.85
+Cordeiro,Torrões,Avenida Engenheiro Abdias De Carvalho,3488.85
+Dois Unidos,Passarinho,Avenida Chagas Ferreira,3538.5
+Sítio dos Pintos,Dois Irmãos,Rua Limite de Município,3559.0
+Areias,Jardim São Paulo,Avenida Recife,3568.33
+Barro,Tejipió,Avenida Central,3593.12
+Arruda,Tamarineira,Avenida Professor Jose Dos Anjos,3618.09
+Ilha Joana Bezerra,São José,Avenida Central,3664.29
+Casa Amarela,Vasco da Gama,Avenida Norte Miguel Arraes De Alencar,3686.43
+Caxangá,Várzea,Avenida Joaquim Ribeiro,3720.93
+Jardim São Paulo,Tejipió,Avenida Central,3768.49
+Afogados,Mangueira,Avenida Central,3773.57
+Santo Antônio,São José,Avenida Dantas Barreto,3808.18
+Imbiribeira,Pina,Rua Rio Jordao,3878.71
+Boa Vista,Graças,Avenida Governador Agamenon Magalhaes,3893.66
+Afogados,Jiquiá,Avenida Central,3933.53
+Ilha do Retiro,Prado,Avenida Engenheiro Abdias De Carvalho,3937.87
+Curado,Jardim São Paulo,Avenida Recife,3968.14
+Cabanga,São José,Avenida Engenheiro Jose Estelita,3983.26
+Prado,San Martin,Avenida Engenheiro Abdias De Carvalho,4004.55
+Espinheiro,Santo Amaro,Avenida Norte Miguel Arraes De Alencar,4036.84
+Caxangá,Dois Irmãos,Avenida Da Recuperacao,4094.03
+Cordeiro,Zumbi,Avenida Caxanga,4159.77
+Ibura,Jordão,Avenida Marechal Mascarenhas De Moraes,4198.55
+Cordeiro,Prado,Avenida Engenheiro Abdias De Carvalho,4292.22
+Ibura,Ipsep,Avenida Recife,4394.66
+Arruda,Campo Grande,Avenida Professor Jose Dos Anjos,4445.24
+Boa Vista,Derby,Avenida Governador Agamenon Magalhaes,4489.83
+Caçote,Ibura,Avenida Recife,4514.06
+Afogados,São José,Avenida Sul Gov. Cid Sampaio,4529.21
+Areias,Estância,Avenida Recife,4601.22
+Espinheiro,Graças,Avenida Governador Agamenon Magalhaes,4620.63
+Iputinga,Várzea,Avenida Caxanga,4646.25
+Cabanga,São José,Avenida Sul Gov. Cid Sampaio,4670.36
+Pau-ferro,Guabiraba,Estrada do Orfanato,4710.0
+Casa Amarela,Tamarineira,Avenida Norte Miguel Arraes De Alencar,4796.53
+Derby,Paissandu,Avenida Governador Agamenon Magalhaes,4817.27
+Afogados,Ilha Joana Bezerra,Avenida Central,4928.92
+Córrego do Jenipapo,Dois Irmãos,Avenida Da Recuperacao,5093.86
+Boa Viagem,Pina,Avenida Conselheiro Aguiar,5133.6
+Apipucos,Dois Irmãos,Avenida Da Recuperacao,5182.0
+Boa Vista,Paissandu,Avenida Governador Agamenon Magalhaes,5369.79
+Brejo da Guabiraba,Passarinho,Avenida Da Recuperacao,5376.79
+Espinheiro,Torreão,Avenida Governador Agamenon Magalhaes,5384.94
+Campo Grande,Torreão,Avenida Governador Agamenon Magalhaes,5435.57
+Afogados,São José,Avenida Central,5462.47
+Boa Viagem,Ibura,Avenida Marechal Mascarenhas De Moraes,5557.85
+Boa Vista,Espinheiro,Avenida Governador Agamenon Magalhaes,5769.32
+Caxangá,Iputinga,Avenida Caxanga,6319.87
+Santo Amaro,Torreão,Avenida Governador Agamenon Magalhaes,6325.3
+Areias,Ibura,Avenida Recife,6414.22
+Boa Vista,Santo Amaro,Avenida Governador Agamenon Magalhaes,6709.68
+Cordeiro,Iputinga,Avenida Caxanga,6893.67
+Espinheiro,Santo Amaro,Avenida Governador Agamenon Magalhaes,7436.65
+Campo Grande,Santo Amaro,Avenida Governador Agamenon Magalhaes,7487.28
+Afogados,Imbiribeira,Avenida Sul Gov. Cid Sampaio,7645.21
+Brejo da Guabiraba,Guabiraba,Avenida Da Recuperacao,7886.04
+Boa Viagem,Imbiribeira,Avenida Sul Gov. Cid Sampaio,8313.38
+Córrego do Jenipapo,Guabiraba,Avenida Da Recuperacao,8377.9
+Boa Viagem,Pina,Avenida Boa Viagem,8497.01
+Boa Viagem,Pina,Avenida Engenheiro Domingos Ferreira,10089.24
+Dois Irmãos,Guabiraba,Avenida Da Recuperacao,10544.64
+Boa Viagem,Imbiribeira,Avenida Marechal Mascarenhas De Moraes,10549.41
+Guabiraba,Passarinho,Avenida Da Recuperacao,11319.43
+Ibura,Imbiribeira,Avenida Marechal Mascarenhas De Moraes,12806.92
