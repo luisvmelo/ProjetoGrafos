@@ -1,5 +1,8 @@
 import json
+import math
+import random
 from graph import construir_grafo_bairros
+from algorithms import dijkstra
 
 grafo = construir_grafo_bairros()
 
@@ -32,9 +35,6 @@ with open('out/percurso_nova_descoberta_setubal.json', 'r', encoding='utf-8') as
         par = tuple(sorted([percurso['caminho'][i], percurso['caminho'][i+1]]))
         arestas_destaque.add(par)
 
-import math
-import random
-
 random.seed(42)
 
 microrregioes_agrupadas = {}
@@ -49,24 +49,12 @@ for micro in microrregioes_agrupadas:
     microrregioes_agrupadas[micro] = list(set(microrregioes_agrupadas[micro]))
 
 posicoes_clusters = {
-    '1.1': (1000, 1000),
-    '1.2': (2500, 1000),
-    '1.3': (4000, 1000),
-    '2.1': (500, 2500),
-    '2.2': (2000, 2500),
-    '2.3': (3500, 2500),
-    '3.1': (5000, 2500),
-    '3.2': (1000, 4000),
-    '3.3': (2500, 4000),
-    '4.1': (4000, 4000),
-    '4.2': (5500, 4000),
-    '4.3': (500, 5500),
-    '5.1': (2000, 5500),
-    '5.2': (3500, 5500),
-    '5.3': (5000, 5500),
-    '6.1': (1500, 7000),
-    '6.2': (3500, 7000),
-    '6.3': (5000, 7000),
+    '1.1': (1000, 1000), '1.2': (2500, 1000), '1.3': (4000, 1000),
+    '2.1': (500, 2500), '2.2': (2000, 2500), '2.3': (3500, 2500),
+    '3.1': (5000, 2500), '3.2': (1000, 4000), '3.3': (2500, 4000),
+    '4.1': (4000, 4000), '4.2': (5500, 4000), '4.3': (500, 5500),
+    '5.1': (2000, 5500), '5.2': (3500, 5500), '5.3': (5000, 5500),
+    '6.1': (1500, 7000), '6.2': (3500, 7000), '6.3': (5000, 7000),
     'N/A': (3000, 1000)
 }
 
@@ -87,6 +75,16 @@ for micro, bairros_micro in microrregioes_agrupadas.items():
             y = centro_cluster[1] + raio_cluster * math.sin(angulo) + jitter_y
             posicoes[bairro] = {'x': x, 'y': y}
 
+cores_microrregioes = {
+    '1.1': '#e74c3c', '1.2': '#e67e22', '1.3': '#f39c12',
+    '2.1': '#f1c40f', '2.2': '#2ecc71', '2.3': '#27ae60',
+    '3.1': '#16a085', '3.2': '#1abc9c', '3.3': '#3498db',
+    '4.1': '#2980b9', '4.2': '#9b59b6', '4.3': '#8e44ad',
+    '5.1': '#e91e63', '5.2': '#ff5722', '5.3': '#795548',
+    '6.1': '#607d8b', '6.2': '#34495e', '6.3': '#95a5a6',
+    'N/A': '#bdc3c7'
+}
+
 bairros_lista = sorted(grafo.vertices)
 bairro_to_id = {bairro: i for i, bairro in enumerate(bairros_lista)}
 
@@ -95,8 +93,9 @@ for i, bairro in enumerate(bairros_lista):
     grau = graus_dict.get(bairro, 0)
     densidade_ego = densidade_ego_dict.get(bairro, 0.0)
     micro = microrregiao_dict.get(bairro, 'N/A')
-
     eh_destaque = bairro in caminho_destaque
+    micros_lista = [m.strip() for m in micro.split('/')]
+    cores = [cores_microrregioes.get(m, '#bdc3c7') for m in micros_lista]
 
     nodes.append({
         'id': i,
@@ -106,25 +105,45 @@ for i, bairro in enumerate(bairros_lista):
         'grau': grau,
         'microrregiao': micro,
         'densidade_ego': round(densidade_ego, 4),
-        'destaque': eh_destaque
+        'destaque': eh_destaque,
+        'cores': cores
     })
 
+pares_contador = {}
+for aresta in grafo.arestas:
+    origem = aresta['origem']
+    destino = aresta['destino']
+    par = tuple(sorted([origem, destino]))
+    if par not in pares_contador:
+        pares_contador[par] = 0
+    else:
+        pares_contador[par] += 1
+
 edges = []
+pares_atual = {}
 for aresta in grafo.arestas:
     origem = aresta['origem']
     destino = aresta['destino']
     logradouro = aresta['logradouro']
     peso = aresta['peso']
-
     par = tuple(sorted([origem, destino]))
     eh_destaque = par in arestas_destaque
+
+    if par not in pares_atual:
+        pares_atual[par] = 0
+
+    total_arestas_par = pares_contador[par] + 1
+    indice_aresta = pares_atual[par]
+    pares_atual[par] += 1
 
     edges.append({
         'from': bairro_to_id[origem],
         'to': bairro_to_id[destino],
         'label': logradouro,
         'peso': peso,
-        'destaque': eh_destaque
+        'destaque': eh_destaque,
+        'curva_indice': indice_aresta,
+        'curva_total': total_arestas_par
     })
 
 html_content = f'''<!DOCTYPE html>
@@ -158,18 +177,23 @@ html_content = f'''<!DOCTYPE html>
         }}
         #controls {{
             display: flex;
-            gap: 15px;
+            gap: 10px;
             align-items: center;
             flex-wrap: wrap;
         }}
-        #searchBox {{
+        .search-group {{
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }}
+        input[type="text"] {{
             padding: 8px 12px;
             border: 2px solid #ddd;
             border-radius: 4px;
             font-size: 14px;
-            width: 300px;
+            width: 200px;
         }}
-        #searchBox:focus {{
+        input[type="text"]:focus {{
             outline: none;
             border-color: #4ecdc4;
         }}
@@ -186,12 +210,21 @@ html_content = f'''<!DOCTYPE html>
         button:hover {{
             background: #3db8af;
         }}
-        button:active {{
-            background: #2da39a;
+        #pathResult {{
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-size: 13px;
+            display: none;
         }}
-        #info {{
-            font-size: 12px;
-            color: #666;
+        #pathResult h3 {{
+            margin: 0 0 8px 0;
+            font-size: 14px;
+        }}
+        #pathResult ul {{
+            margin: 5px 0;
+            padding-left: 20px;
         }}
         #canvasContainer {{
             flex: 1;
@@ -219,28 +252,6 @@ html_content = f'''<!DOCTYPE html>
             max-width: 250px;
             line-height: 1.4;
         }}
-        #legend {{
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            font-size: 12px;
-        }}
-        .legend-item {{
-            display: flex;
-            align-items: center;
-            margin: 5px 0;
-        }}
-        .legend-color {{
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            margin-right: 8px;
-            border: 2px solid #333;
-        }}
     </style>
 </head>
 <body>
@@ -248,41 +259,36 @@ html_content = f'''<!DOCTYPE html>
         <div id="header">
             <h1>Grafo Interativo - Bairros de Recife</h1>
             <div id="controls">
-                <input type="text" id="searchBox" placeholder="Digite o nome de um bairro...">
+                <div class="search-group">
+                    <input type="text" id="origemBox" placeholder="Bairro origem">
+                    <span>→</span>
+                    <input type="text" id="destinoBox" placeholder="Bairro destino">
+                    <button id="btnCalcular">Calcular Caminho</button>
+                </div>
                 <button id="btnDestaque">Realçar Nova Descoberta → Boa Viagem</button>
-                <button id="btnReset">Resetar Visualização</button>
-                <span id="info">94 bairros, 944 vias</span>
+                <button id="btnReset">Resetar</button>
             </div>
+            <div id="pathResult"></div>
         </div>
         <div id="canvasContainer">
             <canvas id="canvas"></canvas>
             <div id="tooltip"></div>
-            <div id="legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #4ecdc4;"></div>
-                    <span>Bairro normal</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #ff6b6b;"></div>
-                    <span>Caminho destacado</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #ffd93d;"></div>
-                    <span>Busca ativa</span>
-                </div>
-            </div>
         </div>
     </div>
     <script>
         const nodes = {json.dumps(nodes)};
         const edges = {json.dumps(edges)};
+        const bairros = {json.dumps(bairros_lista)};
 
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const tooltip = document.getElementById('tooltip');
-        const searchBox = document.getElementById('searchBox');
+        const origemBox = document.getElementById('origemBox');
+        const destinoBox = document.getElementById('destinoBox');
+        const btnCalcular = document.getElementById('btnCalcular');
         const btnDestaque = document.getElementById('btnDestaque');
         const btnReset = document.getElementById('btnReset');
+        const pathResult = document.getElementById('pathResult');
 
         let offsetX = 0;
         let offsetY = 0;
@@ -290,7 +296,7 @@ html_content = f'''<!DOCTYPE html>
         let isDragging = false;
         let startX, startY;
         let destaqueAtivo = false;
-        let buscaAtiva = null;
+        let caminhoCalculado = null;
 
         function resizeCanvas() {{
             const container = document.getElementById('canvasContainer');
@@ -337,18 +343,13 @@ html_content = f'''<!DOCTYPE html>
             const rect = canvas.getBoundingClientRect();
             const mouseX = e.clientX - rect.left;
             const mouseY = e.clientY - rect.top;
-
             const worldX = (mouseX - offsetX) / scale;
             const worldY = (mouseY - offsetY) / scale;
-
             const delta = e.deltaY > 0 ? 0.9 : 1.1;
             const newScale = Math.max(0.1, Math.min(5, scale * delta));
-
             scale = newScale;
-
             offsetX = mouseX - worldX * scale;
             offsetY = mouseY - worldY * scale;
-
             draw();
         }});
 
@@ -381,30 +382,161 @@ html_content = f'''<!DOCTYPE html>
             }}
         }}
 
-        searchBox.addEventListener('input', (e) => {{
-            const termo = e.target.value.toLowerCase().trim();
-            if (termo === '') {{
-                buscaAtiva = null;
+        btnCalcular.addEventListener('click', () => {{
+            const origem = origemBox.value.trim();
+            const destino = destinoBox.value.trim();
+
+            if (!origem || !destino) {{
+                alert('Digite ambos os bairros');
+                return;
+            }}
+
+            const origemEncontrada = bairros.find(b => b.toLowerCase() === origem.toLowerCase());
+            const destinoEncontrado = bairros.find(b => b.toLowerCase() === destino.toLowerCase());
+
+            if (!origemEncontrada || !destinoEncontrado) {{
+                alert('Bairro não encontrado');
+                return;
+            }}
+
+            const resultado = calcularCaminhoLocal(origemEncontrada, destinoEncontrado);
+            if (resultado) {{
+                caminhoCalculado = resultado;
+                destaqueAtivo = false;
+                mostrarCaminho(resultado);
+                draw();
             }} else {{
-                const encontrado = nodes.find(n => n.label.toLowerCase().includes(termo));
-                if (encontrado) {{
-                    buscaAtiva = encontrado.id;
-                    const targetX = canvas.width / 2 - encontrado.x * scale;
-                    const targetY = canvas.height / 2 - encontrado.y * scale;
-                    offsetX = targetX;
-                    offsetY = targetY;
-                }} else {{
-                    buscaAtiva = null;
+                alert('Caminho não encontrado');
+            }}
+        }});
+
+        function calcularCaminhoLocal(origem, destino) {{
+            const grafo = {{}};
+            nodes.forEach(n => grafo[n.label] = []);
+            edges.forEach(e => {{
+                const from = nodes[e.from].label;
+                const to = nodes[e.to].label;
+                grafo[from].push({{destino: to, via: e.label, peso: e.peso}});
+                grafo[to].push({{destino: from, via: e.label, peso: e.peso}});
+            }});
+
+            const distancias = {{}};
+            const anteriores = {{}};
+            const visitados = new Set();
+
+            bairros.forEach(b => {{
+                distancias[b] = Infinity;
+                anteriores[b] = null;
+            }});
+            distancias[origem] = 0;
+
+            while (visitados.size < bairros.length) {{
+                let atual = null;
+                let menorDist = Infinity;
+
+                for (const v of bairros) {{
+                    if (!visitados.has(v) && distancias[v] < menorDist) {{
+                        menorDist = distancias[v];
+                        atual = v;
+                    }}
+                }}
+
+                if (!atual || distancias[atual] === Infinity) break;
+                visitados.add(atual);
+                if (atual === destino) break;
+
+                for (const viz of grafo[atual]) {{
+                    if (!visitados.has(viz.destino)) {{
+                        const novaDist = distancias[atual] + viz.peso;
+                        if (novaDist < distancias[viz.destino]) {{
+                            distancias[viz.destino] = novaDist;
+                            anteriores[viz.destino] = {{bairro: atual, via: viz.via}};
+                        }}
+                    }}
                 }}
             }}
-            draw();
-        }});
+
+            if (distancias[destino] === Infinity) return null;
+
+            const caminho = [];
+            const vias = [];
+            let atual = destino;
+
+            while (atual) {{
+                caminho.unshift(atual);
+                const ant = anteriores[atual];
+                if (ant) {{
+                    vias.unshift(ant.via);
+                    atual = ant.bairro;
+                }} else {{
+                    atual = null;
+                }}
+            }}
+
+            return {{
+                caminho: caminho,
+                vias: vias,
+                custo: distancias[destino].toFixed(2)
+            }};
+        }}
+
+        function mostrarCaminho(data) {{
+            let html = `<h3>Caminho encontrado (custo: ${{data.custo}}m)</h3><ul>`;
+            for (let i = 0; i < data.caminho.length - 1; i++) {{
+                html += `<li>${{data.caminho[i]}} --[${{data.vias[i]}}]--> ${{data.caminho[i+1]}}</li>`;
+            }}
+            html += '</ul>';
+            pathResult.innerHTML = html;
+            pathResult.style.display = 'block';
+        }}
 
         btnDestaque.addEventListener('click', () => {{
             destaqueAtivo = !destaqueAtivo;
-            btnDestaque.textContent = destaqueAtivo ?
-                'Ocultar Caminho Destacado' :
-                'Realçar Nova Descoberta → Boa Viagem';
+            caminhoCalculado = null;
+
+            if (destaqueAtivo) {{
+                const caminhoND = {json.dumps(percurso['caminho'])};
+                const viasND = {json.dumps(percurso['vias'])};
+                const custoND = {json.dumps(percurso['custo'])};
+
+                const grafo = {{}};
+                nodes.forEach(n => grafo[n.label] = []);
+                edges.forEach(e => {{
+                    const from = nodes[e.from].label;
+                    const to = nodes[e.to].label;
+                    grafo[from].push({{destino: to, via: e.label, peso: e.peso}});
+                    grafo[to].push({{destino: from, via: e.label, peso: e.peso}});
+                }});
+
+                let html = `<h3>Caminho Nova Descoberta → Boa Viagem (Setúbal)</h3>`;
+                html += `<p><strong>Distância total: ${{custoND}}m</strong></p>`;
+                html += `<ul>`;
+
+                for (let i = 0; i < caminhoND.length - 1; i++) {{
+                    const bairroAtual = caminhoND[i];
+                    const proximoBairro = caminhoND[i + 1];
+                    const via = viasND[i];
+
+                    let pesoVia = 0;
+                    const vizinhos = grafo[bairroAtual];
+                    for (const viz of vizinhos) {{
+                        if (viz.destino === proximoBairro && viz.via === via) {{
+                            pesoVia = viz.peso;
+                            break;
+                        }}
+                    }}
+
+                    html += `<li>${{bairroAtual}} --[${{via}}]--> ${{proximoBairro}} (${{pesoVia.toFixed(2)}}m)</li>`;
+                }}
+
+                html += '</ul>';
+                pathResult.innerHTML = html;
+                pathResult.style.display = 'block';
+            }} else {{
+                pathResult.style.display = 'none';
+            }}
+
+            btnDestaque.textContent = destaqueAtivo ? 'Ocultar Caminho' : 'Realçar Nova Descoberta → Boa Viagem';
             draw();
         }});
 
@@ -413,9 +545,10 @@ html_content = f'''<!DOCTYPE html>
             offsetX = canvas.width / 2 - 3000;
             offsetY = canvas.height / 2 - 4000;
             destaqueAtivo = false;
-            buscaAtiva = null;
-            searchBox.value = '';
-            btnDestaque.textContent = 'Realçar Nova Descoberta → Boa Viagem';
+            caminhoCalculado = null;
+            origemBox.value = '';
+            destinoBox.value = '';
+            pathResult.style.display = 'none';
             draw();
         }});
 
@@ -425,49 +558,88 @@ html_content = f'''<!DOCTYPE html>
             ctx.translate(offsetX, offsetY);
             ctx.scale(scale, scale);
 
+            const caminhoAtivo = caminhoCalculado || (destaqueAtivo ? {{caminho: {json.dumps(percurso['caminho'])}, vias: {json.dumps(percurso['vias'])}}} : null);
+            const caminhoSet = caminhoAtivo ? new Set(caminhoAtivo.caminho) : null;
+            const viasSet = new Set();
+
+            if (caminhoAtivo && caminhoAtivo.vias) {{
+                for (let i = 0; i < caminhoAtivo.vias.length; i++) {{
+                    const bairro1 = caminhoAtivo.caminho[i];
+                    const bairro2 = caminhoAtivo.caminho[i + 1];
+                    const via = caminhoAtivo.vias[i];
+                    const chave = [bairro1, bairro2].sort().join('|') + '::' + via;
+                    viasSet.add(chave);
+                }}
+            }}
+
             edges.forEach(edge => {{
                 const fromNode = nodes[edge.from];
                 const toNode = nodes[edge.to];
+                const par = [fromNode.label, toNode.label].sort().join('|');
+                const chaveCompleta = par + '::' + edge.label;
 
-                if (destaqueAtivo && !edge.destaque) {{
-                    ctx.strokeStyle = '#e0e0e0';
-                    ctx.lineWidth = 0.5;
-                }} else if (edge.destaque && destaqueAtivo) {{
+                if (caminhoSet && viasSet.has(chaveCompleta)) {{
                     ctx.strokeStyle = '#ff6b6b';
-                    ctx.lineWidth = 3;
+                    ctx.lineWidth = 4;
+                }} else if (caminhoSet) {{
+                    ctx.strokeStyle = '#ddd';
+                    ctx.lineWidth = 0.5;
                 }} else {{
-                    ctx.strokeStyle = '#ccc';
+                    ctx.strokeStyle = '#000';
                     ctx.lineWidth = 1;
                 }}
 
                 ctx.beginPath();
-                ctx.moveTo(fromNode.x, fromNode.y);
-                ctx.lineTo(toNode.x, toNode.y);
+
+                if (edge.curva_total === 1) {{
+                    ctx.moveTo(fromNode.x, fromNode.y);
+                    ctx.lineTo(toNode.x, toNode.y);
+                }} else {{
+                    const dx = toNode.x - fromNode.x;
+                    const dy = toNode.y - fromNode.y;
+                    const distancia = Math.sqrt(dx * dx + dy * dy);
+
+                    const offsetMax = Math.min(distancia * 0.3, 150);
+                    const step = offsetMax / (edge.curva_total - 1);
+                    const offset = (edge.curva_indice - (edge.curva_total - 1) / 2) * step;
+
+                    const perpX = -dy / distancia;
+                    const perpY = dx / distancia;
+
+                    const midX = (fromNode.x + toNode.x) / 2 + perpX * offset;
+                    const midY = (fromNode.y + toNode.y) / 2 + perpY * offset;
+
+                    ctx.moveTo(fromNode.x, fromNode.y);
+                    ctx.quadraticCurveTo(midX, midY, toNode.x, toNode.y);
+                }}
+
                 ctx.stroke();
             }});
 
             nodes.forEach(node => {{
-                let cor = '#4ecdc4';
-                let raio = 12;
+                const raio = 12;
 
-                if (node.id === buscaAtiva) {{
-                    cor = '#ffd93d';
-                    raio = 18;
-                }} else if (destaqueAtivo && node.destaque) {{
-                    cor = '#ff6b6b';
-                    raio = 15;
-                }} else if (destaqueAtivo && !node.destaque) {{
-                    cor = '#d0d0d0';
-                    raio = 10;
+                if (node.cores.length === 1) {{
+                    ctx.fillStyle = caminhoSet && !caminhoSet.has(node.label) ? '#d0d0d0' : node.cores[0];
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, raio, 0, Math.PI * 2);
+                    ctx.fill();
+                }} else {{
+                    for (let i = 0; i < node.cores.length; i++) {{
+                        const startAngle = (i * 2 * Math.PI) / node.cores.length;
+                        const endAngle = ((i + 1) * 2 * Math.PI) / node.cores.length;
+                        ctx.fillStyle = caminhoSet && !caminhoSet.has(node.label) ? '#d0d0d0' : node.cores[i];
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, raio, startAngle, endAngle);
+                        ctx.lineTo(node.x, node.y);
+                        ctx.fill();
+                    }}
                 }}
-
-                ctx.fillStyle = cor;
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, raio, 0, Math.PI * 2);
-                ctx.fill();
 
                 ctx.strokeStyle = '#333';
                 ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, raio, 0, Math.PI * 2);
                 ctx.stroke();
 
                 if (scale > 0.4) {{
