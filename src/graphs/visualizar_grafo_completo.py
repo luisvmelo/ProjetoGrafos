@@ -356,7 +356,7 @@ html_content = f'''<!DOCTYPE html>
                     const dy = mouseY - node.y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
 
-                    if (dist < 30) {{
+                    if (dist < 40) {{
                         if (bairroSelecionado === node.label) {{
                             bairroSelecionado = null;
                         }} else {{
@@ -414,7 +414,7 @@ html_content = f'''<!DOCTYPE html>
                 const dy = mouseY - node.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
 
-                if (dist < 30) {{
+                if (dist < 40) {{
                     tooltip.innerHTML = `<strong>${{node.label}}</strong><br>
                         Grau: ${{node.grau}}<br>
                         Microrregião: ${{node.microrregiao}}<br>
@@ -697,7 +697,7 @@ html_content = f'''<!DOCTYPE html>
             }});
 
             nodes.forEach(node => {{
-                let raio = 12;
+                let raio = 18;
                 let shouldDim = false;
 
                 if (caminhoSet && !caminhoSet.has(node.label)) {{
@@ -707,7 +707,7 @@ html_content = f'''<!DOCTYPE html>
                 }}
 
                 if (vizinhosSet && node.label === bairroSelecionado) {{
-                    raio = 16;
+                    raio = 24;
                 }}
 
                 if (node.cores.length === 1) {{
@@ -728,16 +728,16 @@ html_content = f'''<!DOCTYPE html>
                 }}
 
                 ctx.strokeStyle = (vizinhosSet && node.label === bairroSelecionado) ? '#4ecdc4' : '#333';
-                ctx.lineWidth = (vizinhosSet && node.label === bairroSelecionado) ? 3 : 2;
+                ctx.lineWidth = (vizinhosSet && node.label === bairroSelecionado) ? 4 : 2.5;
                 ctx.beginPath();
                 ctx.arc(node.x, node.y, raio, 0, Math.PI * 2);
                 ctx.stroke();
 
                 if (scale > 0.4) {{
                     ctx.fillStyle = '#333';
-                    ctx.font = 'bold 14px Arial';
+                    ctx.font = 'bold 16px Arial';
                     ctx.textAlign = 'center';
-                    ctx.fillText(node.label, node.x, node.y + raio + 18);
+                    ctx.fillText(node.label, node.x, node.y + raio + 20);
                 }}
             }});
 
