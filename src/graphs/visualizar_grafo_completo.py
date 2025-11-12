@@ -297,6 +297,7 @@ html_content = f'''<!DOCTYPE html>
         let startX, startY;
         let destaqueAtivo = false;
         let caminhoCalculado = null;
+        let bairroSelecionado = null;
 
         function resizeCanvas() {{
             const container = document.getElementById('canvasContainer');
@@ -310,25 +311,74 @@ html_content = f'''<!DOCTYPE html>
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
+        let mouseDownX = 0;
+        let mouseDownY = 0;
+        let hasMoved = false;
+
         canvas.addEventListener('mousedown', (e) => {{
+            const rect = canvas.getBoundingClientRect();
+            mouseDownX = e.clientX - rect.left;
+            mouseDownY = e.clientY - rect.top;
+            hasMoved = false;
             isDragging = true;
             startX = e.clientX - offsetX;
             startY = e.clientY - offsetY;
-            canvas.classList.add('dragging');
         }});
 
         canvas.addEventListener('mousemove', (e) => {{
             if (isDragging) {{
-                offsetX = e.clientX - startX;
-                offsetY = e.clientY - startY;
-                draw();
+                const rect = canvas.getBoundingClientRect();
+                const currentX = e.clientX - rect.left;
+                const currentY = e.clientY - rect.top;
+                const distMoved = Math.sqrt(Math.pow(currentX - mouseDownX, 2) + Math.pow(currentY - mouseDownY, 2));
+
+                if (distMoved > 5) {{
+                    hasMoved = true;
+                    canvas.classList.add('dragging');
+                    offsetX = e.clientX - startX;
+                    offsetY = e.clientY - startY;
+                    draw();
+                }}
             }} else {{
                 handleMouseMove(e);
             }}
         }});
 
-        canvas.addEventListener('mouseup', () => {{
+        canvas.addEventListener('mouseup', (e) => {{
+            if (!hasMoved) {{
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = (e.clientX - rect.left - offsetX) / scale;
+                const mouseY = (e.clientY - rect.top - offsetY) / scale;
+
+                let clicouEmBairro = false;
+                for (const node of nodes) {{
+                    const dx = mouseX - node.x;
+                    const dy = mouseY - node.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 30) {{
+                        if (bairroSelecionado === node.label) {{
+                            bairroSelecionado = null;
+                        }} else {{
+                            bairroSelecionado = node.label;
+                            caminhoCalculado = null;
+                            destaqueAtivo = false;
+                            pathResult.style.display = 'none';
+                        }}
+                        clicouEmBairro = true;
+                        draw();
+                        break;
+                    }}
+                }}
+
+                if (!clicouEmBairro && bairroSelecionado) {{
+                    bairroSelecionado = null;
+                    draw();
+                }}
+            }}
+
             isDragging = false;
+            hasMoved = false;
             canvas.classList.remove('dragging');
         }});
 
@@ -546,6 +596,7 @@ html_content = f'''<!DOCTYPE html>
             offsetY = canvas.height / 2 - 4000;
             destaqueAtivo = false;
             caminhoCalculado = null;
+            bairroSelecionado = null;
             origemBox.value = '';
             destinoBox.value = '';
             pathResult.style.display = 'none';
@@ -572,6 +623,29 @@ html_content = f'''<!DOCTYPE html>
                 }}
             }}
 
+            let vizinhosSet = null;
+            let arestasVizinhos = new Set();
+
+            if (bairroSelecionado && !caminhoSet) {{
+                vizinhosSet = new Set();
+                vizinhosSet.add(bairroSelecionado);
+
+                edges.forEach(edge => {{
+                    const fromNode = nodes[edge.from];
+                    const toNode = nodes[edge.to];
+
+                    if (fromNode.label === bairroSelecionado) {{
+                        vizinhosSet.add(toNode.label);
+                        const chave = [fromNode.label, toNode.label].sort().join('|') + '::' + edge.label;
+                        arestasVizinhos.add(chave);
+                    }} else if (toNode.label === bairroSelecionado) {{
+                        vizinhosSet.add(fromNode.label);
+                        const chave = [fromNode.label, toNode.label].sort().join('|') + '::' + edge.label;
+                        arestasVizinhos.add(chave);
+                    }}
+                }});
+            }}
+
             edges.forEach(edge => {{
                 const fromNode = nodes[edge.from];
                 const toNode = nodes[edge.to];
@@ -582,6 +656,12 @@ html_content = f'''<!DOCTYPE html>
                     ctx.strokeStyle = '#ff6b6b';
                     ctx.lineWidth = 4;
                 }} else if (caminhoSet) {{
+                    ctx.strokeStyle = '#ddd';
+                    ctx.lineWidth = 0.5;
+                }} else if (vizinhosSet && arestasVizinhos.has(chaveCompleta)) {{
+                    ctx.strokeStyle = '#4ecdc4';
+                    ctx.lineWidth = 3;
+                }} else if (vizinhosSet) {{
                     ctx.strokeStyle = '#ddd';
                     ctx.lineWidth = 0.5;
                 }} else {{
@@ -617,10 +697,21 @@ html_content = f'''<!DOCTYPE html>
             }});
 
             nodes.forEach(node => {{
-                const raio = 12;
+                let raio = 12;
+                let shouldDim = false;
+
+                if (caminhoSet && !caminhoSet.has(node.label)) {{
+                    shouldDim = true;
+                }} else if (vizinhosSet && !vizinhosSet.has(node.label)) {{
+                    shouldDim = true;
+                }}
+
+                if (vizinhosSet && node.label === bairroSelecionado) {{
+                    raio = 16;
+                }}
 
                 if (node.cores.length === 1) {{
-                    ctx.fillStyle = caminhoSet && !caminhoSet.has(node.label) ? '#d0d0d0' : node.cores[0];
+                    ctx.fillStyle = shouldDim ? '#d0d0d0' : node.cores[0];
                     ctx.beginPath();
                     ctx.arc(node.x, node.y, raio, 0, Math.PI * 2);
                     ctx.fill();
@@ -628,7 +719,7 @@ html_content = f'''<!DOCTYPE html>
                     for (let i = 0; i < node.cores.length; i++) {{
                         const startAngle = (i * 2 * Math.PI) / node.cores.length;
                         const endAngle = ((i + 1) * 2 * Math.PI) / node.cores.length;
-                        ctx.fillStyle = caminhoSet && !caminhoSet.has(node.label) ? '#d0d0d0' : node.cores[i];
+                        ctx.fillStyle = shouldDim ? '#d0d0d0' : node.cores[i];
                         ctx.beginPath();
                         ctx.arc(node.x, node.y, raio, startAngle, endAngle);
                         ctx.lineTo(node.x, node.y);
@@ -636,8 +727,8 @@ html_content = f'''<!DOCTYPE html>
                     }}
                 }}
 
-                ctx.strokeStyle = '#333';
-                ctx.lineWidth = 2;
+                ctx.strokeStyle = (vizinhosSet && node.label === bairroSelecionado) ? '#4ecdc4' : '#333';
+                ctx.lineWidth = (vizinhosSet && node.label === bairroSelecionado) ? 3 : 2;
                 ctx.beginPath();
                 ctx.arc(node.x, node.y, raio, 0, Math.PI * 2);
                 ctx.stroke();
