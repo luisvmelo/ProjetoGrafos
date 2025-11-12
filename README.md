@@ -1,6 +1,10 @@
 # Projeto Grafos - Bairros do Recife
 
-Projeto desenvolvido para a disciplina de Grafos que mapeia os bairros do Recife como um grafo, onde cada bairro é um vértice e as vias que conectam os bairros são as arestas. O objetivo é aplicar algoritmos de grafos para analisar a estrutura da cidade e calcular caminhos mínimos entre diferentes localizações.
+Projeto que mapeia os bairros do Recife como um grafo, onde cada bairro é um vértice e as vias que conectam os bairros são as arestas. O objetivo é aplicar algoritmos de grafos para analisar a estrutura da cidade e calcular caminhos mínimos entre diferentes localizações.
+
+- O grafo é não-direcionado
+- Existem arestas paralelas
+- Os pesos são distâncias em metros calculadas a partir de dados geográficos reais
 
 ## O que o projeto faz
 
@@ -135,13 +139,7 @@ São José -> Pina -> Boa Viagem
 Distância: 2682.05m
 ```
 
-## Observações
-
-- O grafo é **não-direcionado** (as vias conectam bairros em ambas as direções)
-- Existem **arestas paralelas** (múltiplas vias conectando o mesmo par de bairros)
-- Os pesos são distâncias em metros calculadas a partir de dados geográficos reais
-- Nem todos os pares de bairros têm conexão direta - por isso o Dijkstra é necessário
-
-## Autor
-
-Luis Melo - 6º período de Ciência da Computação
+Brandon Hunt
+Lucas Rosati 
+Luis Melo 
+Ronaldo Tavares Souto Maior
