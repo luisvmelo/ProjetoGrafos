@@ -76,9 +76,9 @@ pip install pandas
 
 ### 1. Calcular métricas do grafo
 
+From Project Root run
 ```bash
-cd src/graphs
-python metrics.py
+python src/graphs/metricas.py
 ```
 
 Gera `recife_global.json` e `recife_local.json` com:
@@ -99,7 +99,7 @@ Calcula o menor caminho (Dijkstra) entre 6 pares de endereços pré-definidos e 
 ### 3. Gerar visualização interativa
 
 ```bash
-python visualizar_grafo_completo.py
+python src/graphs/visualizar_grafo_completo.py
 ```
 
 Gera o arquivo `out/grafo_interativo.html` com toda a interatividade.
