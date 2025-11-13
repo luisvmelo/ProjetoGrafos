@@ -74,6 +74,15 @@ ProjetoGrafos/
 pip install pandas
 ```
 
+OBS: Para Sistemas Linux e MacOS, Ao invés de utilizar o comando 
+```bash
+python
+```
+Utilize o comando
+```bash 
+python3
+```
+
 ### 1. Calcular métricas do grafo
 
 Da Root do projeto, rode:
