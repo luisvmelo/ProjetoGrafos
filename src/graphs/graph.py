@@ -4,10 +4,8 @@ class Grafo:
     def __init__(self):
         self.vertices = set()
         self.arestas = []
-
     def adicionar_vertice(self, vertice):
         self.vertices.add(vertice)
-
     def adicionar_aresta(self, origem, destino, logradouro, peso):
         self.vertices.add(origem)
         self.vertices.add(destino)
@@ -34,7 +32,6 @@ class Grafo:
                     'peso': aresta['peso']
                 })
         return vizinhos
-
     def obter_aresta(self, origem, destino):
         for aresta in self.arestas:
             if (aresta['origem'] == origem and aresta['destino'] == destino) or \
@@ -44,7 +41,6 @@ class Grafo:
 
     def total_vertices(self):
         return len(self.vertices)
-
     def total_arestas(self):
         return len(self.arestas)
 
@@ -60,7 +56,6 @@ def construir_grafo_bairros():
         peso = row['peso']
 
         grafo.adicionar_aresta(bairro_origem, bairro_destino, logradouro, peso)
-
     return grafo
 
 if __name__ == '__main__':
