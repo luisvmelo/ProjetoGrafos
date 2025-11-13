@@ -147,7 +147,7 @@ Distância: 2682.05m
 
 Grupo: 
 
-Brandon Hunt
-Lucas Rosati 
-Luis Melo 
+Brandon de Oliveira Hunt
+Lucas Rosati Cavalcanti Pereira
+Luis Eduardo Vieira Melo 
 Ronaldo Tavares Souto Maior
