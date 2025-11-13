@@ -76,7 +76,7 @@ pip install pandas
 
 ### 1. Calcular métricas do grafo
 
-From Project Root run
+Da Root do projeto, rode:
 ```bash
 python src/graphs/metricas.py
 ```
@@ -91,7 +91,7 @@ Gera `recife_global.json` e `recife_local.json` com:
 ### 2. Calcular caminhos entre endereços
 
 ```bash
-python calcular_distancias_enderecos.py
+python src/graphs/calcular_distancias_enderecos.py
 ```
 
 Calcula o menor caminho (Dijkstra) entre 6 pares de endereços pré-definidos e salva em `distancias_enderecos.csv`.
@@ -103,6 +103,12 @@ python src/graphs/visualizar_grafo_completo.py
 ```
 
 Gera o arquivo `out/grafo_interativo.html` com toda a interatividade.
+
+Para que você consiga acessar esse arquivo, rode:
+
+```bash
+open out/grafo_interativo.html
+```
 
 ## Algoritmos Implementados
 
@@ -138,6 +144,8 @@ Bomba do Hemetério -> Arruda -> Campo Grande -> Santo Amaro -> Santo Antônio -
 São José -> Pina -> Boa Viagem
 Distância: 2682.05m
 ```
+
+Grupo: 
 
 Brandon Hunt
 Lucas Rosati 
