@@ -339,6 +339,67 @@ html_content = f'''<!DOCTYPE html>
             overflow: hidden;
             background: white;
         }}
+        #painelRelatorio {{
+            position: absolute;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100%;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            z-index: 50;
+            padding: 20px;
+        }}
+        #painelRelatorio.aberto {{
+            right: 0;
+        }}
+        .fechar-painel {{
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 10px 0;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 15px;
+        }}
+        .relatorio-item {{
+            margin: 15px 0;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #e74c3c;
+        }}
+        .relatorio-item.positiva {{
+            border-left-color: #27ae60;
+        }}
+        .relatorio-titulo {{
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }}
+        .relatorio-descricao {{
+            font-size: 13px;
+            color: #555;
+            line-height: 1.4;
+        }}
+        .legenda-arestas {{
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }}
+        .legenda-aresta-item {{
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }}
+        .legenda-aresta-linha {{
+            width: 30px;
+            height: 3px;
+        }}
         #canvas {{
             display: block;
             cursor: grab;
@@ -387,6 +448,7 @@ html_content = f'''<!DOCTYPE html>
                 <label for="inputBusca"><strong>Buscar Bairro:</strong></label>
                 <input type="text" id="inputBusca" placeholder="Digite o nome do bairro...">
                 <button id="btnResetFiltro">Resetar Visualização</button>
+                <button id="btnRelatorio">📊 Ver Relatório de Conexões</button>
             </div>
             <div id="legenda">
                 <div class="legenda-item">
@@ -406,10 +468,36 @@ html_content = f'''<!DOCTYPE html>
                     <span><strong>Crítico</strong> (&lt; 0.5 × OCDE)</span>
                 </div>
             </div>
+            <div class="legenda-arestas">
+                <strong>Conexões:</strong>
+                <div class="legenda-aresta-item">
+                    <div class="legenda-aresta-linha" style="background: #27ae60;"></div>
+                    <span>Bom↔Bom</span>
+                </div>
+                <div class="legenda-aresta-item">
+                    <div class="legenda-aresta-linha" style="background: #3498db;"></div>
+                    <span>Bom↔Crítico</span>
+                </div>
+                <div class="legenda-aresta-item">
+                    <div class="legenda-aresta-linha" style="background: #f39c12;"></div>
+                    <span>Regular↔Regular</span>
+                </div>
+                <div class="legenda-aresta-item">
+                    <div class="legenda-aresta-linha" style="background: #e74c3c;"></div>
+                    <span>Crítico↔Crítico</span>
+                </div>
+            </div>
         </div>
         <div id="canvasContainer">
             <canvas id="canvas"></canvas>
             <div id="tooltip"></div>
+            <div id="painelRelatorio">
+                <div class="fechar-painel">
+                    <h2 style="margin: 0 0 10px 0;">Relatório de Conexões</h2>
+                    <button onclick="fecharPainel()">✕ Fechar</button>
+                </div>
+                <div id="conteudoRelatorio"></div>
+            </div>
         </div>
     </div>
     <script>
@@ -423,6 +511,8 @@ html_content = f'''<!DOCTYPE html>
         const selectMicro = document.getElementById('selectMicro');
         const btnResetFiltro = document.getElementById('btnResetFiltro');
         const inputBusca = document.getElementById('inputBusca');
+        const btnRelatorio = document.getElementById('btnRelatorio');
+        const painelRelatorio = document.getElementById('painelRelatorio');
 
         let offsetX = 0;
         let offsetY = 0;
@@ -432,6 +522,134 @@ html_content = f'''<!DOCTYPE html>
         let bairroSelecionado = null;
         let microSelecionada = 'todas';
         let bairroBuscado = null;
+
+        // Função para calcular score de qualidade da conexão
+        function calcularScoreConexao(indice1, indice2) {{
+            // Média dos índices - quanto maior, melhor a conexão
+            return (indice1 + indice2) / 2;
+        }}
+
+        function getCategoriaConexao(fromNode, toNode) {{
+            const indice1 = fromNode.indice_ocde;
+            const indice2 = toNode.indice_ocde;
+            const ambosBonus = (indice1 >= 1.0 && indice2 >= 1.0);
+            const ambosCriticos = (indice1 < 0.5 && indice2 < 0.5);
+            const umBomUmRuim = (indice1 >= 1.0 && indice2 < 1.0) || (indice2 >= 1.0 && indice1 < 1.0);
+
+            if (ambosBonus) return 'excelente';
+            if (umBomUmRuim) return 'compensatoria';
+            if (ambosCriticos) return 'critica';
+            return 'regular';
+        }}
+
+        function getCorConexao(categoria) {{
+            switch(categoria) {{
+                case 'excelente': return '#27ae60';
+                case 'compensatoria': return '#3498db';
+                case 'regular': return '#f39c12';
+                case 'critica': return '#e74c3c';
+                default: return '#999';
+            }}
+        }}
+
+        btnRelatorio.addEventListener('click', () => {{
+            painelRelatorio.classList.add('aberto');
+            gerarRelatorio();
+        }});
+
+        function fecharPainel() {{
+            painelRelatorio.classList.remove('aberto');
+        }}
+
+        function gerarRelatorio() {{
+            const conexoes = [];
+
+            edges.forEach(edge => {{
+                const fromNode = nodes[edge.from];
+                const toNode = nodes[edge.to];
+                const categoria = getCategoriaConexao(fromNode, toNode);
+                const score = calcularScoreConexao(fromNode.indice_ocde, toNode.indice_ocde);
+
+                conexoes.push({{
+                    de: fromNode.label,
+                    para: toNode.label,
+                    indice_de: fromNode.indice_ocde,
+                    indice_para: toNode.indice_ocde,
+                    categoria: categoria,
+                    score: score,
+                    logradouro: edge.label
+                }});
+            }});
+
+            // Separar por tipo
+            const criticas = conexoes.filter(c => c.categoria === 'critica').sort((a, b) => a.score - b.score);
+            const compensatorias = conexoes.filter(c => c.categoria === 'compensatoria').sort((a, b) => b.score - a.score);
+            const excelentes = conexoes.filter(c => c.categoria === 'excelente').sort((a, b) => b.score - a.score);
+
+            let html = `
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #e74c3c;">⚠️ Conexões Críticas (${{criticas.length}})</h3>
+                    <p style="font-size: 13px; color: #666;">Ambos bairros com índice OCDE abaixo de 0.5</p>
+                </div>
+            `;
+
+            criticas.slice(0, 10).forEach(c => {{
+                html += `
+                    <div class="relatorio-item">
+                        <div class="relatorio-titulo">${{c.de}} ↔ ${{c.para}}</div>
+                        <div class="relatorio-descricao">
+                            Índices: ${{c.indice_de.toFixed(2)}} ↔ ${{c.indice_para.toFixed(2)}}<br>
+                            Logradouro: ${{c.logradouro}}<br>
+                            <strong>Situação:</strong> Ambos abaixo do padrão OCDE - área crítica
+                        </div>
+                    </div>
+                `;
+            }});
+
+            html += `
+                <div style="margin: 30px 0 20px 0;">
+                    <h3 style="color: #3498db;">🔄 Conexões Compensatórias (${{compensatorias.length}})</h3>
+                    <p style="font-size: 13px; color: #666;">Um bairro bom conectado a um crítico/regular</p>
+                </div>
+            `;
+
+            compensatorias.slice(0, 10).forEach(c => {{
+                const melhor = c.indice_de > c.indice_para ? c.de : c.para;
+                const pior = c.indice_de > c.indice_para ? c.para : c.de;
+                html += `
+                    <div class="relatorio-item positiva">
+                        <div class="relatorio-titulo">${{c.de}} ↔ ${{c.para}}</div>
+                        <div class="relatorio-descricao">
+                            Índices: ${{c.indice_de.toFixed(2)}} ↔ ${{c.indice_para.toFixed(2)}}<br>
+                            Logradouro: ${{c.logradouro}}<br>
+                            <strong>Benefício:</strong> ${{melhor}} pode atender ${{pior}}
+                        </div>
+                    </div>
+                `;
+            }});
+
+            html += `
+                <div style="margin: 30px 0 20px 0;">
+                    <h3 style="color: #27ae60;">✅ Conexões Excelentes (${{excelentes.length}})</h3>
+                    <p style="font-size: 13px; color: #666;">Ambos bairros atendem ao padrão OCDE</p>
+                </div>
+            `;
+
+            excelentes.slice(0, 5).forEach(c => {{
+                html += `
+                    <div class="relatorio-item positiva">
+                        <div class="relatorio-titulo">${{c.de}} ↔ ${{c.para}}</div>
+                        <div class="relatorio-descricao">
+                            Índices: ${{c.indice_de.toFixed(2)}} ↔ ${{c.indice_para.toFixed(2)}}<br>
+                            Logradouro: ${{c.logradouro}}<br>
+                            <strong>Situação:</strong> Região bem servida de saúde
+                        </div>
+                    </div>
+                `;
+            }});
+
+            document.getElementById('conteudoRelatorio').innerHTML = html;
+        }}
 
         // Popul ar dropdown de microrregiões
         const microregioesUnicas = [...new Set(nodes.map(n => n.microrregiao))].sort();
@@ -782,6 +1000,8 @@ html_content = f'''<!DOCTYPE html>
                 if (!labelsFiltrados.has(fromNode.label) || !labelsFiltrados.has(toNode.label)) return;
 
                 const chave = `${{edge.from}}-${{edge.to}}`;
+                const categoriaConexao = getCategoriaConexao(fromNode, toNode);
+                const corConexao = getCorConexao(categoriaConexao);
 
                 if (vizinhosSet && arestasVizinhos.has(chave)) {{
                     ctx.strokeStyle = '#4ecdc4';
@@ -790,14 +1010,17 @@ html_content = f'''<!DOCTYPE html>
                     ctx.strokeStyle = '#ddd';
                     ctx.lineWidth = 0.5;
                 }} else {{
-                    ctx.strokeStyle = '#999';
-                    ctx.lineWidth = 1;
+                    // Usar cor baseada na qualidade da conexão
+                    ctx.strokeStyle = corConexao;
+                    ctx.lineWidth = categoriaConexao === 'critica' ? 2 : 1.5;
+                    ctx.globalAlpha = categoriaConexao === 'critica' ? 0.8 : 0.6;
                 }}
 
                 ctx.beginPath();
                 ctx.moveTo(fromNode.x, fromNode.y);
                 ctx.lineTo(toNode.x, toNode.y);
                 ctx.stroke();
+                ctx.globalAlpha = 1.0;
             }});
 
             // 3. Desenhar nós com halo individual

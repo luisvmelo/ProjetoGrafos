@@ -1,0 +1,94 @@
+﻿bairro_normalizado,total_empresas,top_3_atividades,microrregiao
+Aflitos,675,"[{'atividade': 'SAUDE', 'quantidade': 109}, {'atividade': 'EDUCACAO', 'quantidade': 83}, {'atividade': 'JURIDICO, ECONOMICO E TECNICO ADMINISTRATIVO', 'quantidade': 59}]",3.1
+Afogados,1771,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 373}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 192}, {'atividade': 'COMERCIO ATACADISTA', 'quantidade': 145}]",5.1
+Agua Fria,518,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 238}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 26}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 24}]",2.2
+Alto Do Mandu,105,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 45}, {'atividade': 'COMERCIO ATACADISTA', 'quantidade': 10}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 8}]",3.1
+Alto Jose Bonifacio,59,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 24}, {'atividade': 'TRANSPORTE E COMUNICACAO', 'quantidade': 5}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 5}]",3.2
+Alto Jose Do Pinho,108,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 46}, {'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 12}, {'atividade': 'EDUCACAO', 'quantidade': 11}]",3.2
+Alto Santa Teresinha,20,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 8}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 3}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 2}]",2.2
+Apipucos,78,"[{'atividade': 'TRANSPORTE E COMUNICACAO', 'quantidade': 17}, {'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 15}, {'atividade': 'OUTROS SERVICOS', 'quantidade': 9}]",3.1
+Areias,606,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 141}, {'atividade': 'EDUCACAO', 'quantidade': 47}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 42}]",5.2
+Arruda,337,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 70}, {'atividade': 'COMERCIO ATACADISTA', 'quantidade': 32}, {'atividade': 'REPRESENTACAO, AGENCIAMENTO, CORRETAGEM', 'quantidade': 30}]",2.1
+Barro,298,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 65}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 34}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 30}]",5.3
+Beberibe,154,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 67}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 13}, {'atividade': 'EDUCACAO', 'quantidade': 9}]",2.2 / 2.3
+Boa Viagem,14239,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 2445}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 1526}, {'atividade': 'JURIDICO, ECONOMICO E TECNICO ADMINISTRATIVO', 'quantidade': 1221}]",6.1
+Boa Vista,5145,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 827}, {'atividade': 'SAUDE', 'quantidade': 555}, {'atividade': 'JURIDICO, ECONOMICO E TECNICO ADMINISTRATIVO', 'quantidade': 418}]",1.2
+Bomba Do Hemeterio,138,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 67}, {'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 9}, {'atividade': 'EDUCACAO', 'quantidade': 7}]",2.2
+Bongi,161,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 40}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 21}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 17}]",5.1
+Brasilia Teimosa,178,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 80}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 12}, {'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 12}]",6.1
+Brejo Da Guabiraba,78,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 30}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 12}, {'atividade': 'TRANSPORTE E COMUNICACAO', 'quantidade': 9}]",3.3
+Brejo De Beberibe,87,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 57}, {'atividade': 'EDUCACAO', 'quantidade': 5}, {'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 4}]",3.3
+Cabanga,168,"[{'atividade': 'SERVICOS DE INFORMATICA', 'quantidade': 22}, {'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 18}, {'atividade': 'JURIDICO, ECONOMICO E TECNICO ADMINISTRATIVO', 'quantidade': 13}]",1.2
+Cacote,59,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 33}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 4}, {'atividade': 'SUPERMERCADOS E LOJAS DE DEPARTAMENTOS', 'quantidade': 3}]",5.2
+Cajueiro,113,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 26}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 12}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 9}]",2.2
+Campina Do Barreto,71,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 27}, {'atividade': 'EDUCACAO', 'quantidade': 9}, {'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 8}]",2.1
+Campo Grande,796,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 149}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 89}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 59}]",2.1
+Casa Amarela,1827,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 435}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 201}, {'atividade': 'SAUDE', 'quantidade': 151}]",3.1
+Casa Forte,1230,"[{'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 153}, {'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 129}, {'atividade': 'JURIDICO, ECONOMICO E TECNICO ADMINISTRATIVO', 'quantidade': 114}]",3.1
+Caxanga,184,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 33}, {'atividade': 'COMERCIO ATACADISTA', 'quantidade': 16}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 16}]",4.3
+Cidade Universitaria,66,"[{'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 43}, {'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 4}, {'atividade': 'EDUCACAO', 'quantidade': 4}]",4.3
+Coelhos,428,"[{'atividade': 'SAUDE', 'quantidade': 76}, {'atividade': 'JURIDICO, ECONOMICO E TECNICO ADMINISTRATIVO', 'quantidade': 70}, {'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 36}]",1.3
+Cohab,418,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 164}, {'atividade': 'EDUCACAO', 'quantidade': 41}, {'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 28}]",6.3
+Coqueiral,69,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 22}, {'atividade': 'EDUCACAO', 'quantidade': 9}, {'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 8}]",5.3
+Cordeiro,1471,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 299}, {'atividade': 'EDUCACAO', 'quantidade': 142}, {'atividade': 'SAUDE', 'quantidade': 108}]",4.1
+Corrego Do Jenipapo,42,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 18}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 5}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 5}]",3.3
+Curado,1061,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 438}, {'atividade': 'COMERCIO ATACADISTA', 'quantidade': 288}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 56}]",5.3
+Derby,346,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 92}, {'atividade': 'SAUDE', 'quantidade': 65}, {'atividade': 'EDUCACAO', 'quantidade': 48}]",3.1
+Dois Irmaos,42,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 11}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 5}, {'atividade': 'GUARDA E LOCACAO DE BENS MOVEIS', 'quantidade': 4}]",3.1
+Dois Unidos,124,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 37}, {'atividade': 'EDUCACAO', 'quantidade': 15}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 14}]",2.2 / 2.3
+Encruzilhada,1967,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 247}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 243}, {'atividade': 'SAUDE', 'quantidade': 178}]",2.1
+Engenho Do Meio,197,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 57}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 17}, {'atividade': 'EDUCACAO', 'quantidade': 13}]",4.2
+Espinheiro,2271,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 294}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 265}, {'atividade': 'JURIDICO, ECONOMICO E TECNICO ADMINISTRATIVO', 'quantidade': 230}]",3.1
+Estancia,392,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 124}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 44}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 26}]",5.2
+Fundao,77,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 33}, {'atividade': 'EDUCACAO', 'quantidade': 7}, {'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 5}]",2.2
+Gracas,4055,"[{'atividade': 'SAUDE', 'quantidade': 583}, {'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 544}, {'atividade': 'EDUCACAO', 'quantidade': 422}]",3.1
+Guabiraba,95,"[{'atividade': 'INDUSTRIA GERAL', 'quantidade': 18}, {'atividade': 'COMERCIO ATACADISTA', 'quantidade': 16}, {'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 12}]",3.3
+Hipodromo,143,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 23}, {'atividade': 'EDUCACAO', 'quantidade': 23}, {'atividade': 'OUTROS SERVICOS', 'quantidade': 18}]",2.1
+Ibura,1071,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 287}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 120}, {'atividade': 'TRANSPORTE E COMUNICACAO', 'quantidade': 106}]",6.2
+Ilha Do Leite,1398,"[{'atividade': 'SAUDE', 'quantidade': 276}, {'atividade': 'JURIDICO, ECONOMICO E TECNICO ADMINISTRATIVO', 'quantidade': 167}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 158}]",1.2
+Ilha Do Retiro,424,"[{'atividade': 'INSTITUICOES FINANCEIRAS E SECURITARIAS', 'quantidade': 42}, {'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 39}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 37}]",4.1
+Ilha Joana Bezerra,24,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 8}, {'atividade': 'EDUCACAO', 'quantidade': 4}, {'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 3}]",1.3
+Imbiribeira,4652,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 559}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 451}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 385}]",6.1
+Ipsep,789,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 182}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 100}, {'atividade': 'ELETRODOMESTICO, VEICULO, PECAS E ACESSORIOS', 'quantidade': 63}]",6.1
+Iputinga,1239,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 267}, {'atividade': 'OUTROS SERVICOS', 'quantidade': 104}, {'atividade': 'EDUCACAO', 'quantidade': 81}]",4.1
+Jaqueira,95,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 25}, {'atividade': 'SAUDE', 'quantidade': 16}, {'atividade': 'EDUCACAO', 'quantidade': 12}]",3.1
+Jardim Sao Paulo,691,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 172}, {'atividade': 'SAUDE', 'quantidade': 62}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 53}]",5.3
+Jiquia,177,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 41}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 32}, {'atividade': 'COMERCIO ATACADISTA', 'quantidade': 19}]",5.2
+Jordao,289,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 88}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 27}, {'atividade': 'COMERCIO ATACADISTA', 'quantidade': 25}]",6.2
+Linha Do Tiro,94,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 34}, {'atividade': 'EDUCACAO', 'quantidade': 12}, {'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 10}]",2.2 / 2.3
+Macaxeira,117,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 30}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 15}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 11}]",3.3
+Madalena,2221,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 353}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 185}, {'atividade': 'EDUCACAO', 'quantidade': 168}]",4.1
+Mangabeira,52,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 14}, {'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 6}, {'atividade': 'FOTOGRAFICO, CINEMATOGRAFICO, REPROGRAFICO', 'quantidade': 5}]",3.2
+Mangueira,95,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 34}, {'atividade': 'COMERCIO ATACADISTA', 'quantidade': 9}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 8}]",5.1
+Monteiro,70,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 16}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 9}, {'atividade': 'OUTROS SERVICOS', 'quantidade': 7}]",3.1
+Morro Da Conceicao,67,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 21}, {'atividade': 'EDUCACAO', 'quantidade': 12}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 7}]",3.2
+Mustardinha,166,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 71}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 11}, {'atividade': 'SAUDE', 'quantidade': 11}]",5.1
+Nova Descoberta,207,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 117}, {'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 13}, {'atividade': 'EDUCACAO', 'quantidade': 12}]",3.3
+Paissandu,952,"[{'atividade': 'SAUDE', 'quantidade': 203}, {'atividade': 'JURIDICO, ECONOMICO E TECNICO ADMINISTRATIVO', 'quantidade': 93}, {'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 82}]",1.2
+Parnamirim,960,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 314}, {'atividade': 'SAUDE', 'quantidade': 68}, {'atividade': 'EDUCACAO', 'quantidade': 58}]",3.1
+Passarinho,70,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 17}, {'atividade': 'COMERCIO ATACADISTA', 'quantidade': 11}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 8}]",3.3
+Peixinhos,6,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 2}, {'atividade': 'EDUCACAO', 'quantidade': 2}, {'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 1}]",2.1
+Pina,7205,"[{'atividade': 'SAUDE', 'quantidade': 1028}, {'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 931}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 753}]",6.1
+Poco,2771,"[{'atividade': 'SAUDE', 'quantidade': 316}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 307}, {'atividade': 'EDUCACAO', 'quantidade': 275}]",3.1
+Ponto De Parada,89,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 21}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 8}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 6}]",2.1
+Porto Da Madeira,100,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 40}, {'atividade': 'EDUCACAO', 'quantidade': 7}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 6}]",2.2
+Prado,556,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 77}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 69}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 47}]",4.1
+Recife,3264,"[{'atividade': 'SERVICOS DE INFORMATICA', 'quantidade': 901}, {'atividade': 'EDUCACAO', 'quantidade': 265}, {'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 236}]",1.1
+Rosarinho,185,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 51}, {'atividade': 'EDUCACAO', 'quantidade': 24}, {'atividade': 'BELEZA E HIGIENE PESSOAL', 'quantidade': 13}]",2.1
+San Martin,581,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 149}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 47}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 45}]",5.1
+Sancho,52,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 22}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 7}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 3}]",5.3
+Santana,346,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 90}, {'atividade': 'JURIDICO, ECONOMICO E TECNICO ADMINISTRATIVO', 'quantidade': 49}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 38}]",3.1
+Santo Amaro,2907,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 572}, {'atividade': 'JURIDICO, ECONOMICO E TECNICO ADMINISTRATIVO', 'quantidade': 238}, {'atividade': 'SERVICOS PUBLICOS, COMUNITARIOS E SOCIAIS', 'quantidade': 213}]",1.1
+Santo Antonio,2232,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 647}, {'atividade': 'INSTITUICOES FINANCEIRAS E SECURITARIAS', 'quantidade': 170}, {'atividade': 'REPRESENTACAO, AGENCIAMENTO, CORRETAGEM', 'quantidade': 165}]",1.2
+Sao Jose,1706,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 717}, {'atividade': 'COMERCIO ATACADISTA', 'quantidade': 266}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 133}]",1.2
+Sitio Dos Pintos,20,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 8}, {'atividade': 'EDUCACAO', 'quantidade': 2}, {'atividade': 'SAUDE', 'quantidade': 2}]",3.1
+Soledade,497,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 111}, {'atividade': 'EDUCACAO', 'quantidade': 50}, {'atividade': 'JURIDICO, ECONOMICO E TECNICO ADMINISTRATIVO', 'quantidade': 41}]",1.2
+Tamarineira,733,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 170}, {'atividade': 'SAUDE', 'quantidade': 80}, {'atividade': 'EDUCACAO', 'quantidade': 65}]",3.1
+Tejipio,220,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 48}, {'atividade': 'EDUCACAO', 'quantidade': 17}, {'atividade': 'OUTROS SERVICOS', 'quantidade': 16}]",5.3
+Torre,592,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 142}, {'atividade': 'EDUCACAO', 'quantidade': 53}, {'atividade': 'OUTROS SERVICOS', 'quantidade': 47}]",4.1
+Torreao,277,"[{'atividade': 'JURIDICO, ECONOMICO E TECNICO ADMINISTRATIVO', 'quantidade': 51}, {'atividade': 'CONSTRUCAO CIVIL', 'quantidade': 42}, {'atividade': 'SAUDE', 'quantidade': 25}]",2.1
+Torroes,272,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 68}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 33}, {'atividade': 'ELETRODOMESTICO, VEICULO, PECAS E ACESSORIOS', 'quantidade': 21}]",4.2
+Toto,40,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 18}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 5}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 3}]",5.3
+Varzea,1641,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 314}, {'atividade': 'TRANSPORTE E COMUNICACAO', 'quantidade': 181}, {'atividade': 'EDUCACAO', 'quantidade': 124}]",4.3
+Vasco Da Gama,261,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 96}, {'atividade': 'INDUSTRIA GERAL', 'quantidade': 22}, {'atividade': 'EDUCACAO', 'quantidade': 19}]",3.2
+Zumbi,296,"[{'atividade': 'OUTRAS ATIVIDADES VAREJISTAS', 'quantidade': 66}, {'atividade': 'CONSERVAÇÃO E LIMPEZA', 'quantidade': 36}, {'atividade': 'OUTROS SERVICOS', 'quantidade': 20}]",4.1

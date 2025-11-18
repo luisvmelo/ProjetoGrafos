@@ -1,0 +1,246 @@
+﻿bairro_a,bairro_b,mode
+Boa Viagem,Pina,onibus
+Ilha Joana Bezerra,Pina,onibus
+Ilha Joana Bezerra,Paissandu,onibus
+Boa Vista,Paissandu,onibus
+Boa Vista,Graças,onibus
+Derby,Graças,onibus
+Derby,Paissandu,onibus
+Cabanga,Ilha Joana Bezerra,onibus
+Cabanga,Pina,onibus
+Santo Antônio,São José,onibus
+Boa Vista,Santo Antônio,onibus
+Boa Vista,Coelhos,onibus
+Coelhos,Ilha do Leite,onibus
+Ilha do Leite,Paissandu,onibus
+Coelhos,Santo Antônio,onibus
+Brasília Teimosa,Pina,onibus
+Cabanga,São José,onibus
+Boa Vista,Soledade,onibus
+Derby,Soledade,onibus
+Recife,Santo Antônio,onibus
+Boa Viagem,Imbiribeira,onibus
+Ibura,Imbiribeira,onibus
+Boa Viagem,Ibura,onibus
+Campo Grande,Torreão,onibus
+Espinheiro,Torreão,onibus
+Espinheiro,Graças,onibus
+Boa Vista,Santo Amaro,onibus
+Boa Viagem,Ilha Joana Bezerra,onibus
+Areias,Estância,onibus
+Areias,Caçote,onibus
+Caçote,Ibura,onibus
+Cohab,Ibura,onibus
+Barro,Cohab,onibus
+Ibura,Ipsep,onibus
+Areias,Ipsep,onibus
+Ibura,Jardim São Paulo,onibus
+Barro,Jardim São Paulo,onibus
+Ilha Joana Bezerra,Ilha do Leite,onibus
+Estância,Jiquiá,onibus
+Areias,Jiquiá,onibus
+Recife,Santo Amaro,onibus
+Curado,Jardim São Paulo,onibus
+Cohab,Jordão,onibus
+Afogados,Imbiribeira,onibus
+Santo Amaro,Santo Antônio,onibus
+Imbiribeira,Ipsep,onibus
+Afogados,Cabanga,onibus
+Afogados,São José,onibus
+Ibura,Jordão,onibus
+Boa Viagem,Jordão,onibus
+Ilha Joana Bezerra,São José,onibus
+Coelhos,Ilha Joana Bezerra,onibus
+Boa Vista,São José,onibus
+Córrego do Jenipapo,Dois Irmãos,onibus
+Córrego do Jenipapo,Guabiraba,onibus
+Brejo da Guabiraba,Guabiraba,onibus
+Brejo da Guabiraba,Passarinho,onibus
+Dois Irmãos,Guabiraba,onibus
+Paissandu,Pina,onibus
+Cabanga,Paissandu,onibus
+Recife,São José,onibus
+Santo Amaro,São José,onibus
+Santo Amaro,Torreão,onibus
+Boa Vista,Espinheiro,onibus
+Boa Vista,Derby,onibus
+Boa Vista,Ilha do Leite,onibus
+Barro,Tejipió,onibus
+Areias,Barro,onibus
+Afogados,Jiquiá,onibus
+Coqueiral,Tejipió,onibus
+Curado,Engenho do Meio,onibus
+Cidade Universitária,Engenho do Meio,onibus
+Cidade Universitária,Várzea,onibus
+Caxangá,Várzea,onibus
+Caxangá,Dois Irmãos,onibus
+Apipucos,Dois Irmãos,onibus
+Dois Irmãos,Sítio dos Pintos,onibus
+Caxangá,Sítio dos Pintos,onibus
+Cidade Universitária,Curado,onibus
+Jardim São Paulo,Tejipió,onibus
+Sancho,Tejipió,onibus
+Coqueiral,Sancho,onibus
+Cohab,Coqueiral,onibus
+Barro,Coqueiral,onibus
+Estância,Jardim São Paulo,onibus
+Graças,Madalena,onibus
+Madalena,Zumbi,onibus
+Cordeiro,Zumbi,onibus
+Cordeiro,Iputinga,onibus
+Caxangá,Iputinga,onibus
+Iputinga,Várzea,onibus
+Derby,Madalena,onibus
+Estância,San Martin,onibus
+Curado,San Martin,onibus
+Curado,Torrões,onibus
+Engenho do Meio,Torrões,onibus
+Cidade Universitária,Iputinga,onibus
+Apipucos,Iputinga,onibus
+Curado,Totó,onibus
+Coqueiral,Totó,onibus
+Sancho,Totó,onibus
+Curado,Tejipió,onibus
+Curado,Várzea,onibus
+Cordeiro,Torrões,onibus
+Engenho do Meio,Iputinga,onibus
+Madalena,Torre,onibus
+Cordeiro,Torre,onibus
+Torre,Zumbi,onibus
+Boa Vista,Ilha Joana Bezerra,onibus
+Parnamirim,Torre,onibus
+Parnamirim,Tamarineira,onibus
+Rosarinho,Tamarineira,onibus
+Casa Amarela,Tamarineira,onibus
+Casa Amarela,Parnamirim,onibus
+Boa Vista,Recife,onibus
+Madalena,Prado,onibus
+Prado,Zumbi,onibus
+Cordeiro,Prado,onibus
+Campo Grande,Hipódromo,onibus
+Encruzilhada,Hipódromo,onibus
+Aflitos,Encruzilhada,onibus
+Aflitos,Graças,onibus
+Graças,Torre,onibus
+Encruzilhada,Espinheiro,onibus
+Campo Grande,Encruzilhada,onibus
+Graças,Tamarineira,onibus
+Casa Amarela,Casa Forte,onibus
+Casa Forte,Poço,onibus
+Monteiro,Poço,onibus
+Apipucos,Monteiro,onibus
+Jaqueira,Parnamirim,onibus
+Graças,Jaqueira,onibus
+Curado,Sancho,onibus
+Bongi,San Martin,onibus
+Bongi,Mustardinha,onibus
+Mustardinha,San Martin,onibus
+Jiquiá,San Martin,onibus
+Jiquiá,Mangueira,onibus
+Afogados,Mangueira,onibus
+Afogados,Ilha do Retiro,onibus
+Ilha do Retiro,Paissandu,onibus
+Afogados,Prado,onibus
+Mangueira,Mustardinha,onibus
+Mangueira,San Martin,onibus
+Afogados,Mustardinha,onibus
+Afogados,Bongi,onibus
+Madalena,Paissandu,onibus
+Bongi,Prado,onibus
+Prado,San Martin,onibus
+Ilha do Retiro,Prado,onibus
+Ilha do Retiro,Madalena,onibus
+San Martin,Torrões,onibus
+Cordeiro,San Martin,onibus
+Casa Amarela,Vasco da Gama,onibus
+Jaqueira,Tamarineira,onibus
+Casa Amarela,Morro da Conceição,onibus
+Areias,Jardim São Paulo,onibus
+Tejipió,Várzea,onibus
+Coqueiral,Curado,onibus
+Parnamirim,Santana,onibus
+Cordeiro,Engenho do Meio,onibus
+Casa Amarela,Nova Descoberta,onibus
+Nova Descoberta,Vasco da Gama,onibus
+Iputinga,Monteiro,onibus
+Alto do Mandu,Monteiro,onibus
+Alto do Mandu,Casa Amarela,onibus
+Macaxeira,Nova Descoberta,onibus
+Alto do Mandu,Macaxeira,onibus
+Casa Forte,Parnamirim,onibus
+Espinheiro,Santo Amaro,onibus
+Graças,Santo Amaro,onibus
+Parnamirim,Poço,onibus
+Encruzilhada,Rosarinho,onibus
+Encruzilhada,Santo Amaro,onibus
+Mangabeira,Tamarineira,onibus
+Alto José do Pinho,Mangabeira,onibus
+Alto José do Pinho,Morro da Conceição,onibus
+Casa Amarela,Poço,onibus
+Casa Amarela,Monteiro,onibus
+Encruzilhada,Graças,onibus
+Guabiraba,Passarinho,onibus
+Apipucos,Macaxeira,onibus
+Córrego do Jenipapo,Macaxeira,onibus
+Aflitos,Espinheiro,onibus
+Brejo de Beberibe,Vasco da Gama,onibus
+Brejo de Beberibe,Nova Descoberta,onibus
+Morro da Conceição,Vasco da Gama,onibus
+Brejo da Guabiraba,Brejo de Beberibe,onibus
+Brejo de Beberibe,Passarinho,onibus
+Passarinho,São José,onibus
+Encruzilhada,Tamarineira,onibus
+Apipucos,Córrego do Jenipapo,onibus
+Brejo da Guabiraba,Córrego do Jenipapo,onibus
+Bomba do Hemetério,Água Fria,onibus
+Alto José do Pinho,Bomba do Hemetério,onibus
+Alto José Bonifácio,Alto José do Pinho,onibus
+Alto José Bonifácio,Linha do Tiro,onibus
+Beberibe,Linha do Tiro,onibus
+Beberibe,Porto da Madeira,onibus
+Fundão,Porto da Madeira,onibus
+Fundão,Água Fria,onibus
+Arruda,Água Fria,onibus
+Arruda,Ponto de Parada,onibus
+Encruzilhada,Ponto de Parada,onibus
+Cajueiro,Fundão,onibus
+Cajueiro,Porto da Madeira,onibus
+Brejo de Beberibe,Linha do Tiro,onibus
+Alto José Bonifácio,Brejo de Beberibe,onibus
+Alto José Bonifácio,Morro da Conceição,onibus
+Alto José do Pinho,Casa Amarela,onibus
+Arruda,Bomba do Hemetério,onibus
+Alto José Bonifácio,Alto Santa Teresinha,onibus
+Alto Santa Teresinha,Linha do Tiro,onibus
+Alto Santa Teresinha,Água Fria,onibus
+Alto Santa Teresinha,Bomba do Hemetério,onibus
+Porto da Madeira,Água Fria,onibus
+Alto José do Pinho,Alto Santa Teresinha,onibus
+Alto Santa Teresinha,Morro da Conceição,onibus
+Alto Santa Teresinha,Recife,onibus
+Dois Unidos,Linha do Tiro,onibus
+Arruda,Campina do Barreto,onibus
+Cajueiro,Campina do Barreto,onibus
+Campina do Barreto,Água Fria,onibus
+Campina do Barreto,Fundão,onibus
+Dois Unidos,Passarinho,onibus
+Beberibe,Dois Unidos,onibus
+Brejo de Beberibe,Dois Unidos,onibus
+Arruda,Fundão,onibus
+Ponto de Parada,Santo Amaro,onibus
+Linha do Tiro,Água Fria,onibus
+Bomba do Hemetério,Mangabeira,onibus
+Arruda,Tamarineira,onibus
+Campo Grande,Peixinhos,onibus
+Campo Grande,Santo Amaro,onibus
+Campo Grande,Ilha Joana Bezerra,onibus
+Passarinho,Peixinhos,onibus
+Ilha Joana Bezerra,Jardim São Paulo,onibus
+Ilha Joana Bezerra,Recife,metro
+Afogados,Ilha Joana Bezerra,metro
+Cajueiro,Mangueira,metro
+Cajueiro,Coqueiral,metro
+Afogados,Tejipió,metro
+Afogados,Boa Viagem,metro
+Imbiribeira,Pina,metro
+Afogados,Engenho do Meio,vlt
