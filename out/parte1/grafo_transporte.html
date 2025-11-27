@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Grafo de Transporte Público - Recife</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            background: #f5f5f5;
+        }
+        #app {
+            display: flex;
+            height: 100vh;
+        }
+        #sidebar {
+            width: 320px;
+            background: white;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 10;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        h2 {
+            font-size: 18px;
+            margin: 20px 0 10px 0;
+            color: #555;
+        }
+        #filtroMicro {
+            margin-bottom: 20px;
+        }
+        #filtroMicro label {
+            display: block;
+            margin: 10px 0 5px 0;
+            font-weight: 600;
+        }
+        #filtroMicro select, #filtroMicro input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        #filtroMicro button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background: #4ecdc4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        #filtroMicro button:hover {
+            background: #45b7b0;
+        }
+        #legenda {
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .legenda-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+        }
+        .legenda-cor {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #333;
+        }
+        .legenda-linha {
+            width: 40px;
+            height: 3px;
+            border-radius: 2px;
+        }
+        #canvasContainer {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: white;
+        }
+        #canvas {
+            display: block;
+            cursor: grab;
+        }
+        #canvas.dragging {
+            cursor: grabbing;
+        }
+        #tooltip {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            pointer-events: none;
+            display: none;
+            z-index: 1000;
+            max-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .tooltip-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 6px;
+        }
+        .tooltip-row {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+        .tooltip-label {
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="sidebar">
+            <h1>Transporte Público</h1>
+            <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
+                Conexões de ônibus, metrô e VLT entre bairros de Recife
+            </p>
+            <div id="filtroMicro">
+                <label for="selectMicro"><strong>Filtrar por Microrregião:</strong></label>
+                <select id="selectMicro">
+                    <option value="todas">Todas as Microrregiões</option>
+                </select>
+                <label for="inputBusca"><strong>Buscar Bairro:</strong></label>
+                <input type="text" id="inputBusca" placeholder="Digite o nome do bairro...">
+                <button id="btnResetFiltro">Resetar Visualização</button>
+            </div>
+            <div id="legenda">
+                <h2 style="margin-top: 0;">Legenda - Vértices</h2>
+                <div class="legenda-item">
+                    <div class="legenda-cor" style="background: #4ecdc4;"></div>
+                    <span>Com transporte público</span>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-cor" style="background: #95a5a6;"></div>
+                    <span>Sem transporte público</span>
+                </div>
+                <h2>Legenda - Conexões</h2>
+                <div class="legenda-item">
+                    <div class="legenda-linha" style="background: #f39c12;"></div>
+                    <span>Ruas (adjacência)</span>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-linha" style="background: #2ecc71;"></div>
+                    <span>Linhas de ônibus</span>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-linha" style="background: #e91e63;"></div>
+                    <span>Linhas de metrô</span>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-linha" style="background: #ff9800;"></div>
+                    <span>Linhas de VLT</span>
+                </div>
+                <p style="margin-top: 15px; color: #666; font-size: 13px;">
+                    <strong>Total:</strong><br>
+                    93 bairros com transporte<br>
+                    237 conexões de ônibus<br>
+                    7 conexões de metrô<br>
+                    1 conexões de VLT
+                </p>
+            </div>
+        </div>
+        <div id="canvasContainer">
+            <canvas id="canvas"></canvas>
+            <div id="tooltip"></div>
+        </div>
+    </div>
+    <script>
+        const nodes = [{"id": 0, "label": "Aflitos", "x": 5258.427991320244, "y": 3166.536184012939, "microrregiao": "3.1", "tem_transporte": true}, {"id": 1, "label": "Afogados", "x": 2123.388300284472, "y": 5185.213872881878, "microrregiao": "5.1", "tem_transporte": true}, {"id": 2, "label": "Alto Jos\u00e9 Bonif\u00e1cio", "x": 703.4487899286507, "y": 4246.709818539938, "microrregiao": "3.2", "tem_transporte": true}, {"id": 3, "label": "Alto Jos\u00e9 do Pinho", "x": 1083.100142465767, "y": 3673.111769256288, "microrregiao": "3.2", "tem_transporte": true}, {"id": 4, "label": "Alto Santa Teresinha", "x": 1605.3788291856526, "y": 2694.753274928162, "microrregiao": "2.2", "tem_transporte": true}, {"id": 5, "label": "Alto do Mandu", "x": 4382.081383310137, "y": 2257.14899783972, "microrregiao": "3.1", "tem_transporte": true}, {"id": 6, "label": "Apipucos", "x": 4749.855351137893, "y": 3101.795309248921, "microrregiao": "3.1", "tem_transporte": true}, {"id": 7, "label": "Areias", "x": 3215.286869606389, "y": 5511.966058316161, "microrregiao": "5.2", "tem_transporte": true}, {"id": 8, "label": "Arruda", "x": 22.51276732228333, "y": 2631.8482688119425, "microrregiao": "2.1", "tem_transporte": true}, {"id": 9, "label": "Barro", "x": 4892.418702710845, "y": 5901.864972858211, "microrregiao": "5.3", "tem_transporte": true}, {"id": 10, "label": "Beberibe", "x": 3384.473483759774, "y": 2235.7691690167494, "microrregiao": "2.2 / 2.3", "tem_transporte": true}, {"id": 11, "label": "Boa Viagem", "x": 1627.0552685039386, "y": 6656.392049818092, "microrregiao": "6.1", "tem_transporte": true}, {"id": 12, "label": "Boa Vista", "x": 2749.573695078811, "y": 1296.6104578981503, "microrregiao": "1.2", "tem_transporte": true}, {"id": 13, "label": "Bomba do Hemet\u00e9rio", "x": 2119.6163793174114, "y": 2076.250391526329, "microrregiao": "2.2", "tem_transporte": true}, {"id": 14, "label": "Bongi", "x": 1721.6039838397703, "y": 5719.515337603672, "microrregiao": "5.1", "tem_transporte": true}, {"id": 15, "label": "Bras\u00edlia Teimosa", "x": 1646.9081575526297, "y": 7323.389179788228, "microrregiao": "6.1", "tem_transporte": true}, {"id": 16, "label": "Brejo da Guabiraba", "x": 2222.61254068134, "y": 4278.365417126609, "microrregiao": "3.3", "tem_transporte": true}, {"id": 17, "label": "Brejo de Beberibe", "x": 2229.298152179156, "y": 3738.1017741214446, "microrregiao": "3.3", "tem_transporte": true}, {"id": 18, "label": "Cabanga", "x": 2367.7066708053635, "y": 1435.5284001337795, "microrregiao": "1.2", "tem_transporte": true}, {"id": 19, "label": "Cajueiro", "x": 2474.7318386821025, "y": 2480.1778269800466, "microrregiao": "2.2", "tem_transporte": true}, {"id": 20, "label": "Campina do Barreto", "x": 286.25051910825164, "y": 2903.726149648347, "microrregiao": "2.1", "tem_transporte": true}, {"id": 21, "label": "Campo Grande", "x": 972.0348065695268, "y": 2535.6541646024552, "microrregiao": "2.1", "tem_transporte": true}, {"id": 22, "label": "Casa Amarela", "x": 5679.085389551788, "y": 2451.5383706033704, "microrregiao": "3.1", "tem_transporte": true}, {"id": 23, "label": "Casa Forte", "x": 4488.0310872465025, "y": 2981.77156057902, "microrregiao": "3.1", "tem_transporte": true}, {"id": 24, "label": "Caxang\u00e1", "x": 742.2779396904717, "y": 5509.759030806245, "microrregiao": "4.3", "tem_transporte": true}, {"id": 25, "label": "Ca\u00e7ote", "x": 3831.1330474031624, "y": 5450.861068248514, "microrregiao": "5.2", "tem_transporte": true}, {"id": 26, "label": "Cidade Universit\u00e1ria", "x": 351.45426797910255, "y": 5738.23434924055, "microrregiao": "4.3", "tem_transporte": true}, {"id": 27, "label": "Coelhos", "x": 3789.5306087185722, "y": 991.7589111322627, "microrregiao": "1.3", "tem_transporte": true}, {"id": 28, "label": "Cohab", "x": 5000, "y": 7000, "microrregiao": "6.3", "tem_transporte": true}, {"id": 29, "label": "Coqueiral", "x": 5206.175867535136, "y": 5859.30788769418, "microrregiao": "5.3", "tem_transporte": true}, {"id": 30, "label": "Cordeiro", "x": 4405.356857908511, "y": 4038.9833678519044, "microrregiao": "4.1", "tem_transporte": true}, {"id": 31, "label": "Curado", "x": 4620.958139005173, "y": 5658.892212112259, "microrregiao": "5.3", "tem_transporte": true}, {"id": 32, "label": "C\u00f3rrego do Jenipapo", "x": 2794.111550279778, "y": 4303.786543693418, "microrregiao": "3.3", "tem_transporte": true}, {"id": 33, "label": "Derby", "x": 5529.914117376697, "y": 1993.2254287766216, "microrregiao": "3.1", "tem_transporte": true}, {"id": 34, "label": "Dois Irm\u00e3os", "x": 4414.681507257042, "y": 2782.385457826986, "microrregiao": "3.1", "tem_transporte": true}, {"id": 35, "label": "Dois Unidos", "x": 3769.6395175218886, "y": 2503.773156157564, "microrregiao": "2.2 / 2.3", "tem_transporte": true}, {"id": 36, "label": "Encruzilhada", "x": 617.4218801459429, "y": 2974.5277544449164, "microrregiao": "2.1", "tem_transporte": true}, {"id": 37, "label": "Engenho do Meio", "x": 5805.128670486423, "y": 3981.6543118087347, "microrregiao": "4.2", "tem_transporte": true}, {"id": 38, "label": "Espinheiro", "x": 4744.550154359917, "y": 1846.1930343085453, "microrregiao": "3.1", "tem_transporte": true}, {"id": 39, "label": "Est\u00e2ncia", "x": 3489.068607046383, "y": 5150.800801079214, "microrregiao": "5.2", "tem_transporte": true}, {"id": 40, "label": "Fund\u00e3o", "x": 1586.9272105051723, "y": 2299.3099729216897, "microrregiao": "2.2", "tem_transporte": true}, {"id": 41, "label": "Gra\u00e7as", "x": 5520.016438804984, "y": 2972.323530331846, "microrregiao": "3.1", "tem_transporte": true}, {"id": 42, "label": "Guabiraba", "x": 2492.2364856285367, "y": 4443.012505440347, "microrregiao": "3.3", "tem_transporte": true}, {"id": 43, "label": "Hip\u00f3dromo", "x": 572.6360547094516, "y": 2055.489374919787, "microrregiao": "2.1", "tem_transporte": true}, {"id": 44, "label": "Ibura", "x": 3789.319394059108, "y": 6991.545545820249, "microrregiao": "6.2", "tem_transporte": true}, {"id": 45, "label": "Ilha Joana Bezerra", "x": 4263.967115436727, "y": 1033.5249140573044, "microrregiao": "1.3", "tem_transporte": true}, {"id": 46, "label": "Ilha do Leite", "x": 2718.5834901474764, "y": 695.6420947983497, "microrregiao": "1.2", "tem_transporte": true}, {"id": 47, "label": "Ilha do Retiro", "x": 3641.4680344351123, "y": 4159.252014108753, "microrregiao": "4.1", "tem_transporte": true}, {"id": 48, "label": "Imbiribeira", "x": 1800.3841513316345, "y": 6994.294654209038, "microrregiao": "6.1", "tem_transporte": true}, {"id": 49, "label": "Ipsep", "x": 1211.1884781829758, "y": 6803.3341802981, "microrregiao": "6.1", "tem_transporte": true}, {"id": 50, "label": "Iputinga", "x": 3878.6198354228495, "y": 3641.6174412512405, "microrregiao": "4.1", "tem_transporte": true}, {"id": 51, "label": "Jaqueira", "x": 4979.460556337022, "y": 1852.715146710281, "microrregiao": "3.1", "tem_transporte": true}, {"id": 52, "label": "Jardim S\u00e3o Paulo", "x": 5299.918598648154, "y": 5190.093902063721, "microrregiao": "5.3", "tem_transporte": true}, {"id": 53, "label": "Jiqui\u00e1", "x": 3459.01549764675, "y": 5854.183625630911, "microrregiao": "5.2", "tem_transporte": true}, {"id": 54, "label": "Jord\u00e3o", "x": 3251.6636639008266, "y": 6958.731716709935, "microrregiao": "6.2", "tem_transporte": true}, {"id": 55, "label": "Linha do Tiro", "x": 3384.432583099404, "y": 2747.7867520841687, "microrregiao": "2.2 / 2.3", "tem_transporte": true}, {"id": 56, "label": "Macaxeira", "x": 2541.0049228317785, "y": 3569.712259193667, "microrregiao": "3.3", "tem_transporte": true}, {"id": 57, "label": "Madalena", "x": 3593.344687953633, "y": 3805.9615411389614, "microrregiao": "4.1", "tem_transporte": true}, {"id": 58, "label": "Mangabeira", "x": 1341.244818832728, "y": 4026.110541480248, "microrregiao": "3.2", "tem_transporte": true}, {"id": 59, "label": "Mangueira", "x": 2134.6760314294297, "y": 5825.102871608642, "microrregiao": "5.1", "tem_transporte": true}, {"id": 60, "label": "Monteiro", "x": 4334.9248356833505, "y": 2461.771861146473, "microrregiao": "3.1", "tem_transporte": true}, {"id": 61, "label": "Morro da Concei\u00e7\u00e3o", "x": 1112.7542486179948, "y": 4363.720533153063, "microrregiao": "3.2", "tem_transporte": true}, {"id": 62, "label": "Mustardinha", "x": 2343.7990528666805, "y": 5548.296496651219, "microrregiao": "5.1", "tem_transporte": true}, {"id": 63, "label": "Nova Descoberta", "x": 2937.420696266132, "y": 4020.0830670015384, "microrregiao": "3.3", "tem_transporte": true}, {"id": 64, "label": "Paissandu", "x": 2389.658466523419, "y": 645.3710864538034, "microrregiao": "1.2", "tem_transporte": true}, {"id": 65, "label": "Parnamirim", "x": 5258.28089462057, "y": 1849.6577991577578, "microrregiao": "3.1", "tem_transporte": true}, {"id": 66, "label": "Passarinho", "x": 2846.1856569352544, "y": 3715.2875378966273, "microrregiao": "3.3", "tem_transporte": true}, {"id": 67, "label": "Pau-ferro", "x": 2012.1659668051805, "y": 3989.58183517769, "microrregiao": "3.3", "tem_transporte": false}, {"id": 68, "label": "Peixinhos", "x": 860.1444929611736, "y": 2758.4181198606257, "microrregiao": "2.1", "tem_transporte": true}, {"id": 69, "label": "Pina", "x": 1171.5614984259244, "y": 7252.751408956245, "microrregiao": "6.1", "tem_transporte": true}, {"id": 70, "label": "Ponto de Parada", "x": 300.4372016537048, "y": 2065.8748817870232, "microrregiao": "2.1", "tem_transporte": true}, {"id": 71, "label": "Porto da Madeira", "x": 2343.9457664277543, "y": 2161.843651416613, "microrregiao": "2.2", "tem_transporte": true}, {"id": 72, "label": "Po\u00e7o", "x": 5660.418510032319, "y": 2192.4166309208767, "microrregiao": "3.1", "tem_transporte": true}, {"id": 73, "label": "Prado", "x": 4219.635650563424, "y": 4279.86959472248, "microrregiao": "4.1", "tem_transporte": true}, {"id": 74, "label": "Recife", "x": 1239.525295895434, "y": 978.5861744792821, "microrregiao": "1.1", "tem_transporte": true}, {"id": 75, "label": "Rosarinho", "x": 106.12960536948871, "y": 2290.7375851672296, "microrregiao": "2.1", "tem_transporte": true}, {"id": 76, "label": "San Martin", "x": 1699.0483793142455, "y": 5322.305993550845, "microrregiao": "5.1", "tem_transporte": true}, {"id": 77, "label": "Sancho", "x": 5443.533163838612, "y": 5479.838026619414, "microrregiao": "5.3", "tem_transporte": true}, {"id": 78, "label": "Santana", "x": 5615.490956410419, "y": 2729.3240675239163, "microrregiao": "3.1", "tem_transporte": true}, {"id": 79, "label": "Santo Amaro", "x": 708.9792170894292, "y": 956.7811288088184, "microrregiao": "1.1", "tem_transporte": true}, {"id": 80, "label": "Santo Ant\u00f4nio", "x": 2131.397514286244, "y": 1184.7259083306847, "microrregiao": "1.2", "tem_transporte": true}, {"id": 81, "label": "Soledade", "x": 2922.1526185350413, "y": 976.6639694628486, "microrregiao": "1.2", "tem_transporte": true}, {"id": 82, "label": "S\u00e3o Jos\u00e9", "x": 2145.2693586055448, "y": 776.3537305706162, "microrregiao": "1.2", "tem_transporte": true}, {"id": 83, "label": "S\u00edtio dos Pintos", "x": 5014.334331286366, "y": 3209.549813335107, "microrregiao": "3.1", "tem_transporte": true}, {"id": 84, "label": "Tamarineira", "x": 4497.047931144183, "y": 1992.838113724476, "microrregiao": "3.1", "tem_transporte": true}, {"id": 85, "label": "Tejipi\u00f3", "x": 4610.063511007709, "y": 5293.744531032639, "microrregiao": "5.3", "tem_transporte": true}, {"id": 86, "label": "Torre", "x": 3868.0077756617293, "y": 4418.4059881538205, "microrregiao": "4.1", "tem_transporte": true}, {"id": 87, "label": "Torre\u00e3o", "x": 872.9069246295633, "y": 2226.4008614735094, "microrregiao": "2.1", "tem_transporte": true}, {"id": 88, "label": "Torr\u00f5es", "x": 5198.54460804931, "y": 4018.781250978574, "microrregiao": "4.2", "tem_transporte": true}, {"id": 89, "label": "Tot\u00f3", "x": 4879.822318858945, "y": 5097.012757761176, "microrregiao": "5.3", "tem_transporte": true}, {"id": 90, "label": "Vasco da Gama", "x": 680.4537503605072, "y": 3809.5116477172064, "microrregiao": "3.2", "tem_transporte": true}, {"id": 91, "label": "V\u00e1rzea", "x": 376.3893321366476, "y": 5252.702163228801, "microrregiao": "4.3", "tem_transporte": true}, {"id": 92, "label": "Zumbi", "x": 4269.609057202251, "y": 3671.227965958119, "microrregiao": "4.1", "tem_transporte": true}, {"id": 93, "label": "\u00c1gua Fria", "x": 1742.3002431113982, "y": 2876.530435641192, "microrregiao": "2.2", "tem_transporte": true}];
+        const edgesRuas = [{"from": 3, "to": 58, "label": "Rua Aripibu", "tipo": "rua"}, {"from": 57, "to": 73, "label": "Praca Na Rua Joao Crescencio", "tipo": "rua"}, {"from": 36, "to": 38, "label": "Rua Conselheiro Portela", "tipo": "rua"}, {"from": 1, "to": 62, "label": "Rua Orlandia", "tipo": "rua"}, {"from": 4, "to": 13, "label": "Rua Alto do Tiro", "tipo": "rua"}, {"from": 21, "to": 70, "label": "Rua Professor Jeronimo Gueiros", "tipo": "rua"}, {"from": 15, "to": 69, "label": "Rua Dentudo", "tipo": "rua"}, {"from": 22, "to": 60, "label": "Rua Iguatama", "tipo": "rua"}, {"from": 17, "to": 66, "label": "Avenida Presidente Cafe Filho", "tipo": "rua"}, {"from": 35, "to": 66, "label": "Rua Vale Fundo", "tipo": "rua"}, {"from": 56, "to": 63, "label": "Rua Nage", "tipo": "rua"}, {"from": 5, "to": 60, "label": "Rua Tramandai", "tipo": "rua"}, {"from": 31, "to": 52, "label": "Rua Raphael De Oliveira Alves", "tipo": "rua"}, {"from": 3, "to": 13, "label": "Rua Campos Belos", "tipo": "rua"}, {"from": 4, "to": 2, "label": "Rua Arlindo Cisneiros", "tipo": "rua"}, {"from": 4, "to": 55, "label": "Rua Arlindo Cisneiros", "tipo": "rua"}, {"from": 47, "to": 45, "label": "Avenida Beira Rio", "tipo": "rua"}, {"from": 93, "to": 13, "label": "Rua Turiuba", "tipo": "rua"}, {"from": 30, "to": 88, "label": "Rua Daniel Lisboa", "tipo": "rua"}, {"from": 16, "to": 32, "label": "Rua Assaituba", "tipo": "rua"}, {"from": 79, "to": 80, "label": "Rua Princesa Isabel", "tipo": "rua"}, {"from": 80, "to": 82, "label": "Rua Do Porao", "tipo": "rua"}, {"from": 17, "to": 35, "label": "Rua Izaltino Lobo", "tipo": "rua"}, {"from": 38, "to": 41, "label": "Rua Conselheiro Portela", "tipo": "rua"}, {"from": 39, "to": 53, "label": "Rua Cassiano", "tipo": "rua"}, {"from": 28, "to": 9, "label": "Rua Jos\u00e9 Caetano", "tipo": "rua"}, {"from": 28, "to": 44, "label": "Rua Jos\u00e9 Caetano", "tipo": "rua"}, {"from": 17, "to": 63, "label": "Rua Urandi", "tipo": "rua"}, {"from": 31, "to": 89, "label": "Rua Garcia", "tipo": "rua"}, {"from": 6, "to": 56, "label": "Rua Do Banho", "tipo": "rua"}, {"from": 21, "to": 43, "label": "Rua Padre Villemain", "tipo": "rua"}, {"from": 16, "to": 66, "label": "Avenida Presidente Cafe Filho", "tipo": "rua"}, {"from": 4, "to": 3, "label": "Rua Arlindo Cisneiros", "tipo": "rua"}, {"from": 44, "to": 54, "label": "Rua Boquira", "tipo": "rua"}, {"from": 26, "to": 91, "label": "Rua Barao De Mamore", "tipo": "rua"}, {"from": 75, "to": 84, "label": "Rua Capitao Sampaio Xavier", "tipo": "rua"}, {"from": 2, "to": 3, "label": "Rua Corrego Jose Grande", "tipo": "rua"}, {"from": 16, "to": 63, "label": "Rua Teolandia", "tipo": "rua"}, {"from": 57, "to": 92, "label": "Rua Joao Da Mata", "tipo": "rua"}, {"from": 36, "to": 41, "label": "Rua Conselheiro Portela", "tipo": "rua"}, {"from": 63, "to": 90, "label": "Rua Bemposta", "tipo": "rua"}, {"from": 29, "to": 89, "label": "Rua Escada", "tipo": "rua"}, {"from": 36, "to": 87, "label": "Rua Natividade Saldanha", "tipo": "rua"}, {"from": 52, "to": 85, "label": "Rua Iraguacu", "tipo": "rua"}, {"from": 41, "to": 51, "label": "Rua Antonio Celso Uchoa Cavalcanti", "tipo": "rua"}, {"from": 16, "to": 17, "label": "Avenida Presidente Cafe Filho", "tipo": "rua"}, {"from": 2, "to": 90, "label": "Rua Aratuba", "tipo": "rua"}, {"from": 9, "to": 85, "label": "Rua Capy", "tipo": "rua"}, {"from": 10, "to": 55, "label": "Avenida Hildebrando De Vasconcelos", "tipo": "rua"}, {"from": 2, "to": 17, "label": "Rua Uriel De Holanda", "tipo": "rua"}, {"from": 12, "to": 81, "label": "Rua Bispo Cardoso Ayres", "tipo": "rua"}, {"from": 35, "to": 55, "label": "Rua Izaltino Lobo", "tipo": "rua"}, {"from": 93, "to": 40, "label": "Rua Contendas", "tipo": "rua"}, {"from": 37, "to": 88, "label": "Rua Dr Miguel Vieira Ferreira", "tipo": "rua"}, {"from": 17, "to": 55, "label": "Rua Izaltino Lobo", "tipo": "rua"}, {"from": 41, "to": 75, "label": "Rua Teles Junior", "tipo": "rua"}, {"from": 6, "to": 60, "label": "Rua Mandacaru", "tipo": "rua"}, {"from": 33, "to": 47, "label": "Avenida Beira Rio", "tipo": "rua"}, {"from": 33, "to": 57, "label": "Avenida Beira Rio", "tipo": "rua"}, {"from": 23, "to": 65, "label": "Rua Da Harmonia", "tipo": "rua"}, {"from": 8, "to": 13, "label": "Rua Professor Manuel Torres", "tipo": "rua"}, {"from": 1, "to": 14, "label": "Rua Professor Celestin Malzac", "tipo": "rua"}, {"from": 57, "to": 86, "label": "Avenida Beira Rio", "tipo": "rua"}, {"from": 7, "to": 9, "label": "Rua Armando Sales De Oliveira", "tipo": "rua"}, {"from": 74, "to": 80, "label": "Ponte Maur\u00edcio de Nassau", "tipo": "rua"}, {"from": 11, "to": 69, "label": "Rua Delegado Tercio Soares De Aquino", "tipo": "rua"}, {"from": 22, "to": 61, "label": "Rua Joaquim Teixeira", "tipo": "rua"}, {"from": 11, "to": 48, "label": "Rua Capitao Vicente Da Mota", "tipo": "rua"}, {"from": 22, "to": 23, "label": "Rua Joao Barbalho", "tipo": "rua"}, {"from": 74, "to": 82, "label": "Ponte 12 de Setembro", "tipo": "rua"}, {"from": 65, "to": 84, "label": "Rua Albino Meira", "tipo": "rua"}, {"from": 20, "to": 68, "label": "Rua Jornalista Paulo Matos", "tipo": "rua"}, {"from": 43, "to": 70, "label": "Rua Costa Pinto", "tipo": "rua"}, {"from": 5, "to": 56, "label": "Rua Aroeira", "tipo": "rua"}, {"from": 39, "to": 52, "label": "Rua Alfredo Vieira De Melo", "tipo": "rua"}, {"from": 8, "to": 58, "label": "Rua Jacob", "tipo": "rua"}, {"from": 14, "to": 62, "label": "Rua Itapolis", "tipo": "rua"}, {"from": 62, "to": 76, "label": "Rua Itaquari", "tipo": "rua"}, {"from": 0, "to": 41, "label": "Rua Teles Junior", "tipo": "rua"}, {"from": 12, "to": 33, "label": "Rua Paissandu", "tipo": "rua"}, {"from": 12, "to": 27, "label": "Rua Jornalista Edmundo Bittencourt", "tipo": "rua"}, {"from": 32, "to": 56, "label": "Rua Trajano De Morais", "tipo": "rua"}, {"from": 51, "to": 84, "label": "Rua Simao Mendes", "tipo": "rua"}, {"from": 29, "to": 85, "label": "Rua Tutoia", "tipo": "rua"}, {"from": 22, "to": 84, "label": "Rua Desembargador Gois Cavalcante", "tipo": "rua"}, {"from": 8, "to": 21, "label": "Rua Petronila Botelho", "tipo": "rua"}, {"from": 0, "to": 36, "label": "Rua Samuel Campelo", "tipo": "rua"}, {"from": 36, "to": 75, "label": "Rua Teles Junior", "tipo": "rua"}, {"from": 18, "to": 82, "label": "Rua Bom Sucesso", "tipo": "rua"}, {"from": 7, "to": 39, "label": "Rua Dr Adelino Filho", "tipo": "rua"}, {"from": 41, "to": 84, "label": "Rua Capitao Sampaio Xavier", "tipo": "rua"}, {"from": 72, "to": 60, "label": "Estrada do Encanamento", "tipo": "rua"}, {"from": 46, "to": 64, "label": "Rua Dr Joao Asfora", "tipo": "rua"}, {"from": 14, "to": 73, "label": "Rua Professor Mario Ramos", "tipo": "rua"}, {"from": 19, "to": 20, "label": "Rua Nadia", "tipo": "rua"}, {"from": 0, "to": 38, "label": "Avenida Conselheiro Rosa E Silva", "tipo": "rua"}, {"from": 36, "to": 70, "label": "Rua Costa Pinto", "tipo": "rua"}, {"from": 13, "to": 58, "label": "Rua Jacob", "tipo": "rua"}, {"from": 1, "to": 59, "label": "Rua Vereador Francisco De Paula Santana", "tipo": "rua"}, {"from": 59, "to": 76, "label": "Rua Tanguara", "tipo": "rua"}, {"from": 93, "to": 20, "label": "Rua Coronel Urbano Ribeiro De Sena", "tipo": "rua"}, {"from": 10, "to": 71, "label": "Rua Dona Virtuosa De Lucena", "tipo": "rua"}, {"from": 86, "to": 92, "label": "Rua Souza Bandeira", "tipo": "rua"}, {"from": 61, "to": 90, "label": "Rua Corrego Do Ouro", "tipo": "rua"}, {"from": 22, "to": 65, "label": "Rua Da Estrela", "tipo": "rua"}, {"from": 40, "to": 71, "label": "Avenida Anibal Benevolo", "tipo": "rua"}, {"from": 36, "to": 43, "label": "Rua Costa Pinto", "tipo": "rua"}, {"from": 8, "to": 70, "label": "Rua Petronila Botelho", "tipo": "rua"}, {"from": 17, "to": 90, "label": "Rua Grijalva Costa", "tipo": "rua"}, {"from": 27, "to": 80, "label": "Rua Doutor Jose Mariano", "tipo": "rua"}, {"from": 74, "to": 79, "label": "Ponte do Limoeiro", "tipo": "rua"}, {"from": 21, "to": 87, "label": "Rua Da Fronteira", "tipo": "rua"}, {"from": 51, "to": 65, "label": "Rua Muniz Tavares", "tipo": "rua"}, {"from": 19, "to": 71, "label": "Rua Para", "tipo": "rua"}, {"from": 47, "to": 57, "label": "Rua Joao Ivo Da Silva", "tipo": "rua"}, {"from": 6, "to": 34, "label": "Entrada Br 101-Avenida Norte", "tipo": "rua"}, {"from": 30, "to": 92, "label": "Rua Padre Leonardo Greco", "tipo": "rua"}, {"from": 12, "to": 80, "label": "Rua Princesa Isabel", "tipo": "rua"}, {"from": 48, "to": 49, "label": "Rua Jose Fernandes Portugal", "tipo": "rua"}, {"from": 33, "to": 64, "label": "Rua Viscondessa Do Livramento", "tipo": "rua"}, {"from": 29, "to": 77, "label": "Rua Paulino De Farias", "tipo": "rua"}, {"from": 21, "to": 36, "label": "Rua Cristovao Jaques", "tipo": "rua"}, {"from": 5, "to": 6, "label": "Rua Massaranduba", "tipo": "rua"}, {"from": 12, "to": 79, "label": "Rua Do Principe", "tipo": "rua"}, {"from": 72, "to": 22, "label": "Rua Engenheiro Oscar Ferreira", "tipo": "rua"}, {"from": 12, "to": 64, "label": "Rua General Joaquim Inacio", "tipo": "rua"}, {"from": 27, "to": 46, "label": "Rua Jose De Alencar", "tipo": "rua"}, {"from": 70, "to": 75, "label": "Rua Almirante Noronha De Carvalho", "tipo": "rua"}, {"from": 53, "to": 76, "label": "Rua Cordelia Gois Silva", "tipo": "rua"}, {"from": 79, "to": 81, "label": "Rua Bispo Cardoso Ayres", "tipo": "rua"}, {"from": 30, "to": 37, "label": "Rua Bom Pastor", "tipo": "rua"}, {"from": 93, "to": 8, "label": "Rua Sao Bento", "tipo": "rua"}, {"from": 78, "to": 86, "label": "Avenida Beira Rio", "tipo": "rua"}, {"from": 2, "to": 55, "label": "Rua Gustavo Barrozo", "tipo": "rua"}, {"from": 2, "to": 61, "label": "Rua Corrego Do Ouro", "tipo": "rua"}, {"from": 77, "to": 85, "label": "Rua Matoso Da Camara", "tipo": "rua"}, {"from": 93, "to": 71, "label": "Rua Conselheiro Barros Barreto", "tipo": "rua"}, {"from": 77, "to": 89, "label": "Rua Do Nascente", "tipo": "rua"}, {"from": 1, "to": 53, "label": "Rua Bom Jardim", "tipo": "rua"}, {"from": 30, "to": 50, "label": "Avenida Camarao", "tipo": "rua"}, {"from": 33, "to": 41, "label": "Rua Guilherme Pinto", "tipo": "rua"}, {"from": 72, "to": 23, "label": "Estrada do Encanamento", "tipo": "rua"}, {"from": 32, "to": 63, "label": "Rua Alto Santa Luzia", "tipo": "rua"}, {"from": 12, "to": 46, "label": "Rua Visconde De Goiana", "tipo": "rua"}, {"from": 73, "to": 92, "label": "Rua Caratinga", "tipo": "rua"}, {"from": 31, "to": 76, "label": "Rua Dr Flavio Ferreira Da Silva Marojo", "tipo": "rua"}, {"from": 26, "to": 50, "label": "Rua Mauriceia", "tipo": "rua"}, {"from": 14, "to": 76, "label": "Rua Acajutiba", "tipo": "rua"}, {"from": 48, "to": 69, "label": "Rua Sao Jose", "tipo": "rua"}, {"from": 1, "to": 73, "label": "Rua Santa Edwirges", "tipo": "rua"}, {"from": 19, "to": 40, "label": "Avenida Nova Do Fundao", "tipo": "rua"}, {"from": 76, "to": 88, "label": "Avenida Recife", "tipo": "rua"}, {"from": 83, "to": 34, "label": "Rua Dois Irm\u00e3os", "tipo": "rua"}, {"from": 16, "to": 42, "label": "Avenida Embaixador Assis Chateaubriand", "tipo": "rua"}, {"from": 26, "to": 37, "label": "Rua General Vargas", "tipo": "rua"}, {"from": 31, "to": 88, "label": "Rua Vinte E Um De Abril", "tipo": "rua"}, {"from": 5, "to": 22, "label": "Avenida Doutor Eurico Chaves", "tipo": "rua"}, {"from": 53, "to": 59, "label": "Rua Bom Jardim", "tipo": "rua"}, {"from": 5, "to": 63, "label": "Avenida Norte Miguel Arraes De Alencar", "tipo": "rua"}, {"from": 51, "to": 78, "label": "Rua Leonardo Bezerra Cavalcanti", "tipo": "rua"}, {"from": 69, "to": 82, "label": "Avenida Ant\u00f4nio de Goes", "tipo": "rua"}, {"from": 31, "to": 37, "label": "Avenida Visconde De Sao Leopoldo", "tipo": "rua"}, {"from": 65, "to": 78, "label": "Rua Leonardo Bezerra Cavalcanti", "tipo": "rua"}, {"from": 4, "to": 93, "label": "Rua Tamboara", "tipo": "rua"}, {"from": 44, "to": 48, "label": "Rua Goncalves De Magalhaes", "tipo": "rua"}, {"from": 23, "to": 78, "label": "Avenida Dezessete De Agosto", "tipo": "rua"}, {"from": 7, "to": 25, "label": "Rua Aurora Cacote", "tipo": "rua"}, {"from": 8, "to": 20, "label": "Rua Expedicionario Jamil Dagli", "tipo": "rua"}, {"from": 8, "to": 68, "label": "Rua Expedicionario Jamil Dagli", "tipo": "rua"}, {"from": 59, "to": 62, "label": "Rua Vinte E Um De Abril", "tipo": "rua"}, {"from": 21, "to": 79, "label": "Rua Projetada", "tipo": "rua"}, {"from": 18, "to": 69, "label": "Ponte Governador Paulo Guerra", "tipo": "rua"}, {"from": 20, "to": 40, "label": "Rua Coronel Urbano Ribeiro De Sena", "tipo": "rua"}, {"from": 7, "to": 53, "label": "Avenida Central", "tipo": "rua"}, {"from": 10, "to": 35, "label": "Avenida Rio Morno", "tipo": "rua"}, {"from": 37, "to": 50, "label": "Rua General Vargas", "tipo": "rua"}, {"from": 6, "to": 32, "label": "Avenida Norte Miguel Arraes De Alencar", "tipo": "rua"}, {"from": 24, "to": 50, "label": "Rua Ministro Joao Alberto", "tipo": "rua"}, {"from": 30, "to": 86, "label": "Rua Souza Bandeira", "tipo": "rua"}, {"from": 3, "to": 61, "label": "Avenida Norte Miguel Arraes De Alencar", "tipo": "rua"}, {"from": 45, "to": 82, "label": "Rua Cabo Eutropio", "tipo": "rua"}, {"from": 50, "to": 91, "label": "Rua Emiliano Braga", "tipo": "rua"}, {"from": 52, "to": 76, "label": "Avenida Recife", "tipo": "rua"}, {"from": 8, "to": 84, "label": "Estrada Velha De Agua Fria", "tipo": "rua"}, {"from": 41, "to": 57, "label": "Avenida Beira Rio", "tipo": "rua"}, {"from": 1, "to": 47, "label": "Rua Padre Teofilo Tworz", "tipo": "rua"}, {"from": 47, "to": 73, "label": "Rua Padre Teofilo Tworz", "tipo": "rua"}, {"from": 38, "to": 87, "label": "Avenida Norte Miguel Arraes De Alencar", "tipo": "rua"}, {"from": 31, "to": 91, "label": "Rua Historiador Luiz Do Nascimento", "tipo": "rua"}, {"from": 12, "to": 38, "label": "Avenida Joao De Barros", "tipo": "rua"}, {"from": 26, "to": 31, "label": "Avenida Professor Luiz Freire", "tipo": "rua"}, {"from": 30, "to": 73, "label": "Avenida General San Martin", "tipo": "rua"}, {"from": 41, "to": 86, "label": "Avenida Beira Rio", "tipo": "rua"}, {"from": 31, "to": 77, "label": "Avenida Liberdade", "tipo": "rua"}, {"from": 22, "to": 58, "label": "Avenida Professor Jose Dos Anjos", "tipo": "rua"}, {"from": 11, "to": 54, "label": "Rua Canal Do Jordao", "tipo": "rua"}, {"from": 93, "to": 10, "label": "Avenida Anibal Benevolo", "tipo": "rua"}, {"from": 72, "to": 78, "label": "Avenida Dezessete de Agosto", "tipo": "rua"}, {"from": 34, "to": 42, "label": "Rua Limite De Municipio", "tipo": "rua"}, {"from": 25, "to": 49, "label": "Avenida Recife", "tipo": "rua"}, {"from": 93, "to": 55, "label": "Avenida Anibal Benevolo", "tipo": "rua"}, {"from": 21, "to": 68, "label": "Avenida Correia De Brito", "tipo": "rua"}, {"from": 38, "to": 79, "label": "Avenida Joao De Barros", "tipo": "rua"}, {"from": 31, "to": 85, "label": "Avenida Liberdade", "tipo": "rua"}, {"from": 1, "to": 18, "label": "Avenida Sul Gov. Cid Sampaio", "tipo": "rua"}, {"from": 73, "to": 76, "label": "Avenida General San Martin", "tipo": "rua"}, {"from": 58, "to": 84, "label": "Avenida Professor Jose Dos Anjos", "tipo": "rua"}, {"from": 42, "to": 66, "label": "Rua Limite De Municipio", "tipo": "rua"}, {"from": 6, "to": 24, "label": "Avenida Da Recuperacao", "tipo": "rua"}, {"from": 7, "to": 52, "label": "Avenida Central", "tipo": "rua"}, {"from": 39, "to": 76, "label": "Avenida Recife", "tipo": "rua"}, {"from": 30, "to": 76, "label": "Avenida Engenheiro Abdias De Carvalho", "tipo": "rua"}, {"from": 52, "to": 53, "label": "Avenida Central", "tipo": "rua"}, {"from": 8, "to": 75, "label": "Avenida Professor Jose Dos Anjos", "tipo": "rua"}, {"from": 22, "to": 63, "label": "Avenida Norte Miguel Arraes De Alencar", "tipo": "rua"}, {"from": 9, "to": 52, "label": "Avenida Central", "tipo": "rua"}, {"from": 7, "to": 49, "label": "Avenida Recife", "tipo": "rua"}, {"from": 79, "to": 87, "label": "Avenida Norte Miguel Arraes De Alencar", "tipo": "rua"}, {"from": 3, "to": 22, "label": "Avenida Norte Miguel Arraes De Alencar", "tipo": "rua"}, {"from": 24, "to": 91, "label": "Avenida Caxanga", "tipo": "rua"}, {"from": 22, "to": 90, "label": "Avenida Norte Miguel Arraes De Alencar", "tipo": "rua"}, {"from": 12, "to": 41, "label": "Avenida Governador Agamenon Magalhaes", "tipo": "rua"}, {"from": 24, "to": 34, "label": "Avenida Da Recuperacao", "tipo": "rua"}, {"from": 44, "to": 49, "label": "Avenida Recife", "tipo": "rua"}, {"from": 25, "to": 44, "label": "Avenida Recife", "tipo": "rua"}, {"from": 1, "to": 82, "label": "Avenida Sul Gov. Cid Sampaio", "tipo": "rua"}, {"from": 67, "to": 42, "label": "Estrada do Orfanato", "tipo": "rua"}, {"from": 1, "to": 45, "label": "Avenida Central", "tipo": "rua"}, {"from": 32, "to": 34, "label": "Avenida Da Recuperacao", "tipo": "rua"}, {"from": 11, "to": 44, "label": "Avenida Marechal Mascarenhas De Moraes", "tipo": "rua"}, {"from": 7, "to": 44, "label": "Avenida Recife", "tipo": "rua"}, {"from": 1, "to": 48, "label": "Avenida Sul Gov. Cid Sampaio", "tipo": "rua"}, {"from": 32, "to": 42, "label": "Avenida Da Recuperacao", "tipo": "rua"}];
+        const edgesOnibus = [{"from": 62, "to": 1, "tipo": "onibus"}, {"from": 4, "to": 93, "tipo": "onibus"}, {"from": 77, "to": 85, "tipo": "onibus"}, {"from": 6, "to": 34, "tipo": "onibus"}, {"from": 38, "to": 79, "tipo": "onibus"}, {"from": 56, "to": 63, "tipo": "onibus"}, {"from": 3, "to": 58, "tipo": "onibus"}, {"from": 50, "to": 24, "tipo": "onibus"}, {"from": 32, "to": 34, "tipo": "onibus"}, {"from": 3, "to": 61, "tipo": "onibus"}, {"from": 17, "to": 55, "tipo": "onibus"}, {"from": 29, "to": 89, "tipo": "onibus"}, {"from": 70, "to": 8, "tipo": "onibus"}, {"from": 20, "to": 93, "tipo": "onibus"}, {"from": 65, "to": 78, "tipo": "onibus"}, {"from": 82, "to": 79, "tipo": "onibus"}, {"from": 57, "to": 41, "tipo": "onibus"}, {"from": 68, "to": 21, "tipo": "onibus"}, {"from": 71, "to": 40, "tipo": "onibus"}, {"from": 0, "to": 36, "tipo": "onibus"}, {"from": 82, "to": 80, "tipo": "onibus"}, {"from": 77, "to": 29, "tipo": "onibus"}, {"from": 74, "to": 80, "tipo": "onibus"}, {"from": 55, "to": 93, "tipo": "onibus"}, {"from": 45, "to": 21, "tipo": "onibus"}, {"from": 90, "to": 17, "tipo": "onibus"}, {"from": 57, "to": 86, "tipo": "onibus"}, {"from": 66, "to": 82, "tipo": "onibus"}, {"from": 21, "to": 79, "tipo": "onibus"}, {"from": 49, "to": 7, "tipo": "onibus"}, {"from": 34, "to": 83, "tipo": "onibus"}, {"from": 11, "to": 44, "tipo": "onibus"}, {"from": 41, "to": 79, "tipo": "onibus"}, {"from": 79, "to": 36, "tipo": "onibus"}, {"from": 64, "to": 33, "tipo": "onibus"}, {"from": 70, "to": 79, "tipo": "onibus"}, {"from": 44, "to": 25, "tipo": "onibus"}, {"from": 64, "to": 45, "tipo": "onibus"}, {"from": 32, "to": 16, "tipo": "onibus"}, {"from": 69, "to": 11, "tipo": "onibus"}, {"from": 6, "to": 32, "tipo": "onibus"}, {"from": 72, "to": 65, "tipo": "onibus"}, {"from": 76, "to": 88, "tipo": "onibus"}, {"from": 82, "to": 1, "tipo": "onibus"}, {"from": 76, "to": 39, "tipo": "onibus"}, {"from": 69, "to": 45, "tipo": "onibus"}, {"from": 3, "to": 13, "tipo": "onibus"}, {"from": 31, "to": 85, "tipo": "onibus"}, {"from": 7, "to": 53, "tipo": "onibus"}, {"from": 10, "to": 35, "tipo": "onibus"}, {"from": 45, "to": 12, "tipo": "onibus"}, {"from": 76, "to": 62, "tipo": "onibus"}, {"from": 88, "to": 30, "tipo": "onibus"}, {"from": 30, "to": 73, "tipo": "onibus"}, {"from": 13, "to": 93, "tipo": "onibus"}, {"from": 22, "to": 23, "tipo": "onibus"}, {"from": 53, "to": 76, "tipo": "onibus"}, {"from": 76, "to": 59, "tipo": "onibus"}, {"from": 31, "to": 29, "tipo": "onibus"}, {"from": 1, "to": 59, "tipo": "onibus"}, {"from": 17, "to": 16, "tipo": "onibus"}, {"from": 14, "to": 1, "tipo": "onibus"}, {"from": 45, "to": 46, "tipo": "onibus"}, {"from": 10, "to": 55, "tipo": "onibus"}, {"from": 30, "to": 86, "tipo": "onibus"}, {"from": 14, "to": 73, "tipo": "onibus"}, {"from": 31, "to": 77, "tipo": "onibus"}, {"from": 74, "to": 82, "tipo": "onibus"}, {"from": 7, "to": 9, "tipo": "onibus"}, {"from": 75, "to": 84, "tipo": "onibus"}, {"from": 27, "to": 45, "tipo": "onibus"}, {"from": 58, "to": 84, "tipo": "onibus"}, {"from": 60, "to": 22, "tipo": "onibus"}, {"from": 64, "to": 47, "tipo": "onibus"}, {"from": 41, "to": 84, "tipo": "onibus"}, {"from": 90, "to": 61, "tipo": "onibus"}, {"from": 79, "to": 80, "tipo": "onibus"}, {"from": 87, "to": 21, "tipo": "onibus"}, {"from": 4, "to": 55, "tipo": "onibus"}, {"from": 55, "to": 35, "tipo": "onibus"}, {"from": 45, "to": 52, "tipo": "onibus"}, {"from": 8, "to": 93, "tipo": "onibus"}, {"from": 13, "to": 58, "tipo": "onibus"}, {"from": 65, "to": 84, "tipo": "onibus"}, {"from": 91, "to": 26, "tipo": "onibus"}, {"from": 52, "to": 7, "tipo": "onibus"}, {"from": 48, "to": 44, "tipo": "onibus"}, {"from": 22, "to": 61, "tipo": "onibus"}, {"from": 62, "to": 59, "tipo": "onibus"}, {"from": 0, "to": 38, "tipo": "onibus"}, {"from": 10, "to": 71, "tipo": "onibus"}, {"from": 52, "to": 31, "tipo": "onibus"}, {"from": 36, "to": 84, "tipo": "onibus"}, {"from": 72, "to": 60, "tipo": "onibus"}, {"from": 28, "to": 54, "tipo": "onibus"}, {"from": 50, "to": 30, "tipo": "onibus"}, {"from": 26, "to": 31, "tipo": "onibus"}, {"from": 89, "to": 31, "tipo": "onibus"}, {"from": 74, "to": 4, "tipo": "onibus"}, {"from": 31, "to": 37, "tipo": "onibus"}, {"from": 60, "to": 6, "tipo": "onibus"}, {"from": 12, "to": 33, "tipo": "onibus"}, {"from": 46, "to": 64, "tipo": "onibus"}, {"from": 73, "to": 57, "tipo": "onibus"}, {"from": 87, "to": 79, "tipo": "onibus"}, {"from": 64, "to": 12, "tipo": "onibus"}, {"from": 50, "to": 26, "tipo": "onibus"}, {"from": 1, "to": 47, "tipo": "onibus"}, {"from": 29, "to": 85, "tipo": "onibus"}, {"from": 31, "to": 88, "tipo": "onibus"}, {"from": 20, "to": 8, "tipo": "onibus"}, {"from": 76, "to": 73, "tipo": "onibus"}, {"from": 7, "to": 39, "tipo": "onibus"}, {"from": 51, "to": 84, "tipo": "onibus"}, {"from": 40, "to": 20, "tipo": "onibus"}, {"from": 18, "to": 1, "tipo": "onibus"}, {"from": 91, "to": 85, "tipo": "onibus"}, {"from": 18, "to": 64, "tipo": "onibus"}, {"from": 19, "to": 71, "tipo": "onibus"}, {"from": 21, "to": 43, "tipo": "onibus"}, {"from": 12, "to": 41, "tipo": "onibus"}, {"from": 86, "to": 65, "tipo": "onibus"}, {"from": 23, "to": 65, "tipo": "onibus"}, {"from": 12, "to": 81, "tipo": "onibus"}, {"from": 22, "to": 65, "tipo": "onibus"}, {"from": 11, "to": 54, "tipo": "onibus"}, {"from": 27, "to": 12, "tipo": "onibus"}, {"from": 91, "to": 50, "tipo": "onibus"}, {"from": 90, "to": 63, "tipo": "onibus"}, {"from": 36, "to": 43, "tipo": "onibus"}, {"from": 60, "to": 5, "tipo": "onibus"}, {"from": 34, "to": 24, "tipo": "onibus"}, {"from": 30, "to": 92, "tipo": "onibus"}, {"from": 74, "to": 79, "tipo": "onibus"}, {"from": 2, "to": 4, "tipo": "onibus"}, {"from": 2, "to": 3, "tipo": "onibus"}, {"from": 73, "to": 92, "tipo": "onibus"}, {"from": 18, "to": 82, "tipo": "onibus"}, {"from": 84, "to": 22, "tipo": "onibus"}, {"from": 27, "to": 46, "tipo": "onibus"}, {"from": 52, "to": 9, "tipo": "onibus"}, {"from": 11, "to": 48, "tipo": "onibus"}, {"from": 13, "to": 8, "tipo": "onibus"}, {"from": 85, "to": 9, "tipo": "onibus"}, {"from": 17, "to": 63, "tipo": "onibus"}, {"from": 57, "to": 47, "tipo": "onibus"}, {"from": 19, "to": 40, "tipo": "onibus"}, {"from": 4, "to": 61, "tipo": "onibus"}, {"from": 16, "to": 42, "tipo": "onibus"}, {"from": 57, "to": 64, "tipo": "onibus"}, {"from": 66, "to": 68, "tipo": "onibus"}, {"from": 41, "to": 33, "tipo": "onibus"}, {"from": 60, "to": 50, "tipo": "onibus"}, {"from": 38, "to": 41, "tipo": "onibus"}, {"from": 48, "to": 1, "tipo": "onibus"}, {"from": 83, "to": 24, "tipo": "onibus"}, {"from": 37, "to": 50, "tipo": "onibus"}, {"from": 42, "to": 34, "tipo": "onibus"}, {"from": 52, "to": 44, "tipo": "onibus"}, {"from": 45, "to": 82, "tipo": "onibus"}, {"from": 25, "to": 7, "tipo": "onibus"}, {"from": 12, "to": 46, "tipo": "onibus"}, {"from": 76, "to": 30, "tipo": "onibus"}, {"from": 2, "to": 17, "tipo": "onibus"}, {"from": 26, "to": 37, "tipo": "onibus"}, {"from": 85, "to": 52, "tipo": "onibus"}, {"from": 93, "to": 71, "tipo": "onibus"}, {"from": 4, "to": 13, "tipo": "onibus"}, {"from": 36, "to": 75, "tipo": "onibus"}, {"from": 53, "to": 1, "tipo": "onibus"}, {"from": 41, "to": 86, "tipo": "onibus"}, {"from": 52, "to": 39, "tipo": "onibus"}, {"from": 36, "to": 38, "tipo": "onibus"}, {"from": 42, "to": 66, "tipo": "onibus"}, {"from": 22, "to": 5, "tipo": "onibus"}, {"from": 56, "to": 32, "tipo": "onibus"}, {"from": 36, "to": 41, "tipo": "onibus"}, {"from": 18, "to": 69, "tipo": "onibus"}, {"from": 6, "to": 50, "tipo": "onibus"}, {"from": 8, "to": 40, "tipo": "onibus"}, {"from": 42, "to": 32, "tipo": "onibus"}, {"from": 69, "to": 64, "tipo": "onibus"}, {"from": 27, "to": 80, "tipo": "onibus"}, {"from": 15, "to": 69, "tipo": "onibus"}, {"from": 9, "to": 29, "tipo": "onibus"}, {"from": 0, "to": 41, "tipo": "onibus"}, {"from": 37, "to": 88, "tipo": "onibus"}, {"from": 38, "to": 87, "tipo": "onibus"}, {"from": 66, "to": 17, "tipo": "onibus"}, {"from": 76, "to": 14, "tipo": "onibus"}, {"from": 93, "to": 40, "tipo": "onibus"}, {"from": 51, "to": 41, "tipo": "onibus"}, {"from": 33, "to": 57, "tipo": "onibus"}, {"from": 16, "to": 66, "tipo": "onibus"}, {"from": 1, "to": 73, "tipo": "onibus"}, {"from": 49, "to": 48, "tipo": "onibus"}, {"from": 44, "to": 49, "tipo": "onibus"}, {"from": 12, "to": 80, "tipo": "onibus"}, {"from": 30, "to": 37, "tipo": "onibus"}, {"from": 62, "to": 14, "tipo": "onibus"}, {"from": 53, "to": 39, "tipo": "onibus"}, {"from": 24, "to": 91, "tipo": "onibus"}, {"from": 54, "to": 44, "tipo": "onibus"}, {"from": 92, "to": 57, "tipo": "onibus"}, {"from": 53, "to": 59, "tipo": "onibus"}, {"from": 22, "to": 63, "tipo": "onibus"}, {"from": 29, "to": 28, "tipo": "onibus"}, {"from": 35, "to": 17, "tipo": "onibus"}, {"from": 2, "to": 55, "tipo": "onibus"}, {"from": 89, "to": 77, "tipo": "onibus"}, {"from": 86, "to": 92, "tipo": "onibus"}, {"from": 12, "to": 82, "tipo": "onibus"}, {"from": 45, "to": 18, "tipo": "onibus"}, {"from": 56, "to": 6, "tipo": "onibus"}, {"from": 84, "to": 8, "tipo": "onibus"}, {"from": 35, "to": 66, "tipo": "onibus"}, {"from": 51, "to": 65, "tipo": "onibus"}, {"from": 61, "to": 2, "tipo": "onibus"}, {"from": 36, "to": 70, "tipo": "onibus"}, {"from": 31, "to": 76, "tipo": "onibus"}, {"from": 3, "to": 4, "tipo": "onibus"}, {"from": 72, "to": 22, "tipo": "onibus"}, {"from": 81, "to": 33, "tipo": "onibus"}, {"from": 73, "to": 47, "tipo": "onibus"}, {"from": 23, "to": 72, "tipo": "onibus"}, {"from": 3, "to": 22, "tipo": "onibus"}, {"from": 44, "to": 28, "tipo": "onibus"}, {"from": 56, "to": 5, "tipo": "onibus"}, {"from": 38, "to": 12, "tipo": "onibus"}, {"from": 36, "to": 21, "tipo": "onibus"}, {"from": 74, "to": 12, "tipo": "onibus"}, {"from": 91, "to": 31, "tipo": "onibus"}, {"from": 11, "to": 45, "tipo": "onibus"}, {"from": 28, "to": 9, "tipo": "onibus"}, {"from": 12, "to": 79, "tipo": "onibus"}, {"from": 19, "to": 20, "tipo": "onibus"}, {"from": 22, "to": 90, "tipo": "onibus"}];
+        const edgesMetro = [{"from": 19, "to": 29, "tipo": "metro"}, {"from": 1, "to": 85, "tipo": "metro"}, {"from": 74, "to": 45, "tipo": "metro"}, {"from": 1, "to": 11, "tipo": "metro"}, {"from": 59, "to": 19, "tipo": "metro"}, {"from": 48, "to": 69, "tipo": "metro"}, {"from": 45, "to": 1, "tipo": "metro"}];
+        const edgesVlt = [{"from": 37, "to": 1, "tipo": "vlt"}];
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const tooltip = document.getElementById('tooltip');
+        const selectMicro = document.getElementById('selectMicro');
+        const btnResetFiltro = document.getElementById('btnResetFiltro');
+        const inputBusca = document.getElementById('inputBusca');
+
+        let offsetX = 0;
+        let offsetY = 0;
+        let scale = 1.0;
+        let isDragging = false;
+        let startX, startY;
+        let bairroSelecionado = null;
+        let microSelecionada = 'todas';
+        let bairroBuscado = null;
+
+        // Popul ar dropdown de microrregiões
+        const microregioesUnicas = [...new Set(nodes.map(n => n.microrregiao))].sort();
+        microregioesUnicas.forEach(micro => {
+            const option = document.createElement('option');
+            option.value = micro;
+            option.textContent = micro;
+            selectMicro.appendChild(option);
+        });
+
+        selectMicro.addEventListener('change', (e) => {
+            microSelecionada = e.target.value;
+            bairroSelecionado = null;
+            draw();
+        });
+
+        btnResetFiltro.addEventListener('click', () => {
+            microSelecionada = 'todas';
+            bairroSelecionado = null;
+            bairroBuscado = null;
+            selectMicro.value = 'todas';
+            inputBusca.value = '';
+            draw();
+        });
+
+        inputBusca.addEventListener('input', (e) => {
+            const termo = e.target.value.toLowerCase();
+            if (termo.length >= 2) {
+                const encontrado = nodes.find(n => n.label.toLowerCase().includes(termo));
+                if (encontrado) {
+                    bairroBuscado = encontrado.label;
+                    bairroSelecionado = encontrado.label;
+                }
+            } else {
+                bairroBuscado = null;
+            }
+            draw();
+        });
+
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            draw();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX - offsetX;
+            startY = e.clientY - offsetY;
+            canvas.classList.add('dragging');
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                offsetX = e.clientX - startX;
+                offsetY = e.clientY - startY;
+                draw();
+            }
+            handleMouseMove(e);
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            canvas.classList.remove('dragging');
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDragging = false;
+            canvas.classList.remove('dragging');
+            tooltip.style.display = 'none';
+        });
+
+        canvas.addEventListener('click', (e) => {
+            if (!isDragging) {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = (e.clientX - rect.left - offsetX) / scale;
+                const mouseY = (e.clientY - rect.top - offsetY) / scale;
+
+                for (const node of nodes) {
+                    const dx = mouseX - node.x;
+                    const dy = mouseY - node.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 18) {
+                        if (bairroSelecionado === node.label) {
+                            bairroSelecionado = null;
+                        } else {
+                            bairroSelecionado = node.label;
+                        }
+                        draw();
+                        break;
+                    }
+                }
+            }
+        });
+
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            const worldX = (mouseX - offsetX) / scale;
+            const worldY = (mouseY - offsetY) / scale;
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            const newScale = Math.max(0.1, Math.min(5, scale * delta));
+            scale = newScale;
+            offsetX = mouseX - worldX * scale;
+            offsetY = mouseY - worldY * scale;
+            draw();
+        });
+
+        function handleMouseMove(e) {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = (e.clientX - rect.left - offsetX) / scale;
+            const mouseY = (e.clientY - rect.top - offsetY) / scale;
+
+            let found = false;
+            for (const node of nodes) {
+                const dx = mouseX - node.x;
+                const dy = mouseY - node.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 18) {
+                    tooltip.innerHTML = `
+                        <div class="tooltip-title">${node.label}</div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Microrregião:</span>
+                            <strong>${node.microrregiao}</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Transporte Público:</span>
+                            <strong>${node.tem_transporte ? 'Sim' : 'Não'}</strong>
+                        </div>
+                    `;
+                    tooltip.style.left = (e.clientX + 15) + 'px';
+                    tooltip.style.top = (e.clientY + 15) + 'px';
+                    tooltip.style.display = 'block';
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                tooltip.style.display = 'none';
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(scale, scale);
+
+            // Filtrar nós por microrregião
+            const nodesFiltrados = microSelecionada === 'todas'
+                ? nodes
+                : nodes.filter(n => n.microrregiao.includes(microSelecionada));
+
+            const labelsFiltrados = new Set(nodesFiltrados.map(n => n.label));
+
+            // Se há bairro selecionado, pegar vizinhos
+            let vizinhosSet = null;
+            let arestasVizinhos = new Set();
+
+            if (bairroSelecionado) {
+                vizinhosSet = new Set([bairroSelecionado]);
+
+                // Adicionar vizinhos por ruas
+                edgesRuas.forEach(edge => {
+                    const fromNode = nodes[edge.from];
+                    const toNode = nodes[edge.to];
+
+                    if (fromNode.label === bairroSelecionado) {
+                        vizinhosSet.add(toNode.label);
+                        arestasVizinhos.add(`${edge.from}-${edge.to}`);
+                    }
+                    if (toNode.label === bairroSelecionado) {
+                        vizinhosSet.add(fromNode.label);
+                        arestasVizinhos.add(`${edge.from}-${edge.to}`);
+                    }
+                });
+
+                // Adicionar vizinhos por ônibus
+                edgesOnibus.forEach(edge => {
+                    const fromNode = nodes[edge.from];
+                    const toNode = nodes[edge.to];
+
+                    if (fromNode.label === bairroSelecionado) {
+                        vizinhosSet.add(toNode.label);
+                        arestasVizinhos.add(`${edge.from}-${edge.to}`);
+                    }
+                    if (toNode.label === bairroSelecionado) {
+                        vizinhosSet.add(fromNode.label);
+                        arestasVizinhos.add(`${edge.from}-${edge.to}`);
+                    }
+                });
+
+                // Adicionar vizinhos por metrô
+                edgesMetro.forEach(edge => {
+                    const fromNode = nodes[edge.from];
+                    const toNode = nodes[edge.to];
+
+                    if (fromNode.label === bairroSelecionado) {
+                        vizinhosSet.add(toNode.label);
+                        arestasVizinhos.add(`${edge.from}-${edge.to}`);
+                    }
+                    if (toNode.label === bairroSelecionado) {
+                        vizinhosSet.add(fromNode.label);
+                        arestasVizinhos.add(`${edge.from}-${edge.to}`);
+                    }
+                });
+
+                // Adicionar vizinhos por VLT
+                edgesVlt.forEach(edge => {
+                    const fromNode = nodes[edge.from];
+                    const toNode = nodes[edge.to];
+
+                    if (fromNode.label === bairroSelecionado) {
+                        vizinhosSet.add(toNode.label);
+                        arestasVizinhos.add(`${edge.from}-${edge.to}`);
+                    }
+                    if (toNode.label === bairroSelecionado) {
+                        vizinhosSet.add(fromNode.label);
+                        arestasVizinhos.add(`${edge.from}-${edge.to}`);
+                    }
+                });
+            }
+
+            // 1. Desenhar arestas de ruas
+            edgesRuas.forEach(edge => {
+                const fromNode = nodes[edge.from];
+                const toNode = nodes[edge.to];
+
+                if (!labelsFiltrados.has(fromNode.label) || !labelsFiltrados.has(toNode.label)) return;
+
+                const chave = `${edge.from}-${edge.to}`;
+
+                if (vizinhosSet && arestasVizinhos.has(chave)) {
+                    ctx.strokeStyle = '#f39c12';
+                    ctx.lineWidth = 2;
+                } else if (vizinhosSet) {
+                    ctx.strokeStyle = '#ddd';
+                    ctx.lineWidth = 0.5;
+                } else {
+                    ctx.strokeStyle = '#f39c12';
+                    ctx.lineWidth = 1;
+                    ctx.globalAlpha = 0.3;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(fromNode.x, fromNode.y);
+                ctx.lineTo(toNode.x, toNode.y);
+                ctx.stroke();
+                ctx.globalAlpha = 1.0;
+            });
+
+            // 2. Desenhar arestas de ônibus
+            edgesOnibus.forEach(edge => {
+                const fromNode = nodes[edge.from];
+                const toNode = nodes[edge.to];
+
+                if (!labelsFiltrados.has(fromNode.label) || !labelsFiltrados.has(toNode.label)) return;
+
+                const chave = `${edge.from}-${edge.to}`;
+
+                if (vizinhosSet && arestasVizinhos.has(chave)) {
+                    ctx.strokeStyle = '#2ecc71';
+                    ctx.lineWidth = 3;
+                } else if (vizinhosSet) {
+                    ctx.strokeStyle = '#ddd';
+                    ctx.lineWidth = 0.5;
+                } else {
+                    ctx.strokeStyle = '#2ecc71';
+                    ctx.lineWidth = 2;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(fromNode.x, fromNode.y);
+                ctx.lineTo(toNode.x, toNode.y);
+                ctx.stroke();
+            });
+
+            // 3. Desenhar arestas de metrô
+            edgesMetro.forEach(edge => {
+                const fromNode = nodes[edge.from];
+                const toNode = nodes[edge.to];
+
+                if (!labelsFiltrados.has(fromNode.label) || !labelsFiltrados.has(toNode.label)) return;
+
+                const chave = `${edge.from}-${edge.to}`;
+
+                if (vizinhosSet && arestasVizinhos.has(chave)) {
+                    ctx.strokeStyle = '#e91e63';
+                    ctx.lineWidth = 4;
+                } else if (vizinhosSet) {
+                    ctx.strokeStyle = '#ddd';
+                    ctx.lineWidth = 0.5;
+                } else {
+                    ctx.strokeStyle = '#e91e63';
+                    ctx.lineWidth = 3;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(fromNode.x, fromNode.y);
+                ctx.lineTo(toNode.x, toNode.y);
+                ctx.stroke();
+            });
+
+            // 4. Desenhar arestas de VLT
+            edgesVlt.forEach(edge => {
+                const fromNode = nodes[edge.from];
+                const toNode = nodes[edge.to];
+
+                if (!labelsFiltrados.has(fromNode.label) || !labelsFiltrados.has(toNode.label)) return;
+
+                const chave = `${edge.from}-${edge.to}`;
+
+                if (vizinhosSet && arestasVizinhos.has(chave)) {
+                    ctx.strokeStyle = '#ff9800';
+                    ctx.lineWidth = 4;
+                } else if (vizinhosSet) {
+                    ctx.strokeStyle = '#ddd';
+                    ctx.lineWidth = 0.5;
+                } else {
+                    ctx.strokeStyle = '#ff9800';
+                    ctx.lineWidth = 3;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(fromNode.x, fromNode.y);
+                ctx.lineTo(toNode.x, toNode.y);
+                ctx.stroke();
+            });
+
+            // 5. Desenhar nós
+            nodesFiltrados.forEach(node => {
+                let shouldDim = false;
+
+                if (vizinhosSet && !vizinhosSet.has(node.label)) {
+                    shouldDim = true;
+                }
+
+                // Desenhar nó
+                const cor = node.tem_transporte ? '#4ecdc4' : '#95a5a6';
+                ctx.fillStyle = shouldDim ? '#d0d0d0' : cor;
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, 18, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Borda do nó
+                ctx.strokeStyle = (vizinhosSet && node.label === bairroSelecionado) ? '#e74c3c' : '#333';
+                ctx.lineWidth = (vizinhosSet && node.label === bairroSelecionado) ? 4 : 2;
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, 18, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Labels
+                if (!vizinhosSet || vizinhosSet.has(node.label)) {
+                    ctx.fillStyle = '#333';
+                    ctx.font = 'bold 14px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(node.label, node.x, node.y - 25);
+                }
+            });
+
+            ctx.restore();
+        }
+
+        draw();
+    </script>
+</body>
+</html>

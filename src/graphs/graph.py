@@ -44,6 +44,51 @@ class Grafo:
     def total_arestas(self):
         return len(self.arestas)
 
+
+class GrafoDirecionado:
+    """Grafo direcionado para a Parte 2"""
+    def __init__(self):
+        self.adj_list = {}
+        self.vertices = set()
+        self.arestas = []
+        
+    def adicionar_vertice(self, vertice):
+        if vertice not in self.adj_list:
+            self.adj_list[vertice] = []
+            self.vertices.add(vertice)
+    
+    def adicionar_aresta(self, origem, destino, peso, info=None):
+        self.adicionar_vertice(origem)
+        self.adicionar_vertice(destino)
+        self.adj_list[origem].append((destino, peso))
+        self.arestas.append({
+            'origem': origem,
+            'destino': destino,
+            'peso': peso,
+            'info': info
+        })
+    
+    def obter_vizinhos(self, vertice):
+        return self.adj_list.get(vertice, [])
+    
+    def total_vertices(self):
+        return len(self.vertices)
+    
+    def total_arestas(self):
+        return len(self.arestas)
+    
+    def obter_estatisticas(self):
+        pesos = [aresta['peso'] for aresta in self.arestas]
+        return {
+            'num_vertices': len(self.vertices),
+            'num_arestas': len(self.arestas),
+            'peso_min': min(pesos) if pesos else 0,
+            'peso_max': max(pesos) if pesos else 0,
+            'peso_medio': sum(pesos) / len(pesos) if pesos else 0,
+            'arestas_positivas': sum(1 for p in pesos if p > 0),
+            'arestas_negativas': sum(1 for p in pesos if p < 0)
+        }
+
 def construir_grafo_bairros():
     df = pd.read_csv('data/adjacencias_bairros.csv')
 

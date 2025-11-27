@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Educação por Bairro - Recife (Quadrantes)</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #fafafa;
+            overflow: hidden;
+        }
+        #container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        h1 {
+            margin: 0 0 15px 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .subtitle {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        #controles {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        select, input[type="text"] {
+            padding: 10px 15px;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 6px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        }
+        select option {
+            color: #333;
+            background: white;
+        }
+        input[type="text"]::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.6);
+            background: rgba(255,255,255,0.3);
+        }
+        input[type="text"] {
+            min-width: 250px;
+        }
+        button {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+        button:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+        }
+        #legenda {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+        .legenda-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.15);
+            padding: 8px 12px;
+            border-radius: 6px;
+            backdrop-filter: blur(10px);
+        }
+        .legenda-cor {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+        .legenda-texto {
+            flex: 1;
+        }
+        .legenda-tipo {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .legenda-desc {
+            font-size: 11px;
+            opacity: 0.85;
+        }
+        #canvasContainer {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #fafafa;
+        }
+        canvas {
+            display: block;
+            cursor: grab;
+        }
+        canvas.dragging {
+            cursor: grabbing;
+        }
+        #tooltip {
+            position: absolute;
+            background: rgba(30, 30, 30, 0.95);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            pointer-events: none;
+            display: none;
+            z-index: 100;
+            max-width: 350px;
+            line-height: 1.6;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        .tooltip-title {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            padding-bottom: 8px;
+        }
+        .tooltip-row {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tooltip-label {
+            color: #aaa;
+            font-size: 12px;
+        }
+        .tooltip-resumo {
+            margin-top: 12px;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            font-size: 12px;
+            font-style: italic;
+            border-left: 3px solid #4ecdc4;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="header">
+            <h1>🎓 Educação e Analfabetismo por Bairro - Recife</h1>
+            <p class="subtitle">Visualização por Quadrantes: Presença de Escolas × Taxa de Analfabetismo</p>
+            <div id="controles">
+                <label for="selectMicro"><strong>📍 Microrregião:</strong></label>
+                <select id="selectMicro">
+                    <option value="todas">Todas</option>
+                </select>
+                <label for="inputBusca"><strong>🔍 Buscar:</strong></label>
+                <input type="text" id="inputBusca" placeholder="Digite o nome do bairro...">
+                <button id="btnReset">↻ Resetar</button>
+            </div>
+            <div id="legenda">
+                <div class="legenda-item">
+                    <div class="legenda-cor" style="background: #d32f2f;"></div>
+                    <div class="legenda-texto">
+                        <div class="legenda-tipo">🔴 Sem escola + Alto analfabetismo</div>
+                        <div class="legenda-desc">Território crítico</div>
+                    </div>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-cor" style="background: #1976d2;"></div>
+                    <div class="legenda-texto">
+                        <div class="legenda-tipo">🔵 Sem escola + Baixo analfabetismo</div>
+                        <div class="legenda-desc">Provável rede privada</div>
+                    </div>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-cor" style="background: #ff6f00;"></div>
+                    <div class="legenda-texto">
+                        <div class="legenda-tipo">🟠 Com escola + Alto analfabetismo</div>
+                        <div class="legenda-desc">Rede não resolve</div>
+                    </div>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-cor" style="background: #388e3c;"></div>
+                    <div class="legenda-texto">
+                        <div class="legenda-tipo">🟢 Com escola + Baixo analfabetismo</div>
+                        <div class="legenda-desc">Situação saudável</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="canvasContainer">
+            <canvas id="canvas"></canvas>
+            <div id="tooltip"></div>
+        </div>
+    </div>
+    <script>
+        const nodes = [{"id": 0, "label": "Aflitos", "x": 5417.986132533542, "y": 3215.392977672386, "microrregiao": "3.1", "taxa_analfabetismo": 0.8, "taxa_alfabetizacao": 99.2, "populacao": 5773, "n_criancas_5_14": 546, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "tipo_educacao": "SEM_ESCOLA_BAIXO_ANALF", "tamanho": 11.028789045388848, "cor": "#1976d2", "resumo": "Bairro bem alfabetizado sem presen\u00e7a de escola municipal \u2014 provavelmente atendido pela rede privada."}, {"id": 1, "label": "Afogados", "x": 1714.9105794670388, "y": 5866.608703406792, "microrregiao": "5.1", "taxa_analfabetismo": 7.2, "taxa_alfabetizacao": 92.8, "populacao": 36265, "n_criancas_5_14": 5381, "unidades": 4, "matriculas": 773, "unidades_por_10k": 1.1, "matriculas_por_10k": 213.15, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 20.360123579005464, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 2, "label": "Alto Jos\u00e9 Bonif\u00e1cio", "x": 1192.4857686356925, "y": 3943.8520292684843, "microrregiao": "3.2", "taxa_analfabetismo": 9.0, "taxa_alfabetizacao": 91.0, "populacao": 12472, "n_criancas_5_14": 2085, "unidades": 3, "matriculas": 326, "unidades_por_10k": 2.41, "matriculas_por_10k": 261.39, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 13.998993460192855, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 3, "label": "Alto Jos\u00e9 do Pinho", "x": 501.3318925673676, "y": 3727.9526134715165, "microrregiao": "3.2", "taxa_analfabetismo": 8.3, "taxa_alfabetizacao": 91.7, "populacao": 12334, "n_criancas_5_14": 2026, "unidades": 2, "matriculas": 709, "unidades_por_10k": 1.62, "matriculas_por_10k": 574.83, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 13.885444731972111, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 4, "label": "Alto Santa Teresinha", "x": 2265.0495237235555, "y": 2789.030881756804, "microrregiao": "2.2", "taxa_analfabetismo": 9.5, "taxa_alfabetizacao": 90.5, "populacao": 7703, "n_criancas_5_14": 1254, "unidades": 3, "matriculas": 394, "unidades_por_10k": 3.89, "matriculas_por_10k": 511.49, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 12.396364994181905, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 5, "label": "Alto do Mandu", "x": 5056.47929442916, "y": 3159.0543033992512, "microrregiao": "3.1", "taxa_analfabetismo": 5.1, "taxa_alfabetizacao": 94.9, "populacao": 4649, "n_criancas_5_14": 609, "unidades": 1, "matriculas": 203, "unidades_por_10k": 2.15, "matriculas_por_10k": 436.65, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 11.151949302504192, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 6, "label": "Apipucos", "x": 5131.725743745972, "y": 1664.1047024298848, "microrregiao": "3.1", "taxa_analfabetismo": 4.8, "taxa_alfabetizacao": 95.2, "populacao": 10899, "n_criancas_5_14": 1445, "unidades": 1, "matriculas": 44, "unidades_por_10k": 0.92, "matriculas_por_10k": 40.37, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 12.76376109345421, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 7, "label": "Areias", "x": 3241.501296009018, "y": 5604.725483614355, "microrregiao": "5.2", "taxa_analfabetismo": 4.7, "taxa_alfabetizacao": 95.3, "populacao": 29894, "n_criancas_5_14": 4059, "unidades": 9, "matriculas": 1086, "unidades_por_10k": 3.01, "matriculas_por_10k": 363.28, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 17.808806065482976, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 8, "label": "Arruda", "x": 101.9217160540257, "y": 1875.8364905543708, "microrregiao": "2.1", "taxa_analfabetismo": 10.8, "taxa_alfabetizacao": 89.2, "populacao": 23900, "n_criancas_5_14": 3948, "unidades": 1, "matriculas": 97, "unidades_por_10k": 0.42, "matriculas_por_10k": 40.59, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 17.593980058316014, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 9, "label": "Barro", "x": 4999.122763233686, "y": 5356.83423522694, "microrregiao": "5.3", "taxa_analfabetismo": 10.8, "taxa_alfabetizacao": 89.2, "populacao": 31847, "n_criancas_5_14": 4515, "unidades": 10, "matriculas": 1273, "unidades_por_10k": 3.14, "matriculas_por_10k": 399.72, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 18.68933426731582, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 10, "label": "Beberibe", "x": 2850.8765456996816, "y": 2713.7649201472736, "microrregiao": "2.2 / 2.3", "taxa_analfabetismo": 8.2, "taxa_alfabetizacao": 91.8, "populacao": 8302, "n_criancas_5_14": 1514, "unidades": 4, "matriculas": 876, "unidades_por_10k": 4.82, "matriculas_por_10k": 1055.17, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 12.897060849731094, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 11, "label": "Boa Viagem", "x": 1099.324025421097, "y": 7398.311614210939, "microrregiao": "6.1", "taxa_analfabetismo": 2.4, "taxa_alfabetizacao": 97.6, "populacao": 122922, "n_criancas_5_14": 12968, "unidades": 10, "matriculas": 1426, "unidades_por_10k": 0.81, "matriculas_por_10k": 116.01, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 35.0, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 12, "label": "Boa Vista", "x": 3056.932954136279, "y": 444.265676009193, "microrregiao": "1.2", "taxa_analfabetismo": 1.5, "taxa_alfabetizacao": 98.5, "populacao": 14778, "n_criancas_5_14": 935, "unidades": 6, "matriculas": 167, "unidades_por_10k": 4.06, "matriculas_por_10k": 113.01, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 11.780069122423106, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 13, "label": "Bomba do Hemet\u00e9rio", "x": 1599.5345656288116, "y": 2403.4937214118963, "microrregiao": "2.2", "taxa_analfabetismo": 8.6, "taxa_alfabetizacao": 91.4, "populacao": 8472, "n_criancas_5_14": 1299, "unidades": 2, "matriculas": 30, "unidades_por_10k": 2.36, "matriculas_por_10k": 35.41, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 12.48278944291032, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 14, "label": "Bongi", "x": 2172.4744530321295, "y": 5228.920969960109, "microrregiao": "5.1", "taxa_analfabetismo": 9.2, "taxa_alfabetizacao": 90.8, "populacao": 8101, "n_criancas_5_14": 1284, "unidades": 1, "matriculas": 108, "unidades_por_10k": 1.23, "matriculas_por_10k": 133.32, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 12.454256277848211, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 15, "label": "Bras\u00edlia Teimosa", "x": 1773.519170321084, "y": 7215.732354872412, "microrregiao": "6.1", "taxa_analfabetismo": 8.2, "taxa_alfabetizacao": 91.8, "populacao": 18334, "n_criancas_5_14": 2854, "unidades": 3, "matriculas": 411, "unidades_por_10k": 1.64, "matriculas_por_10k": 224.17, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 15.483495718925303, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 16, "label": "Brejo da Guabiraba", "x": 3361.9001315168384, "y": 3955.4069757399716, "microrregiao": "3.3", "taxa_analfabetismo": 12.9, "taxa_alfabetizacao": 87.1, "populacao": 11742, "n_criancas_5_14": 2099, "unidades": 6, "matriculas": 683, "unidades_por_10k": 5.11, "matriculas_por_10k": 581.67, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 14.026301255666127, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 17, "label": "Brejo de Beberibe", "x": 2274.715530653535, "y": 4027.591728290797, "microrregiao": "3.3", "taxa_analfabetismo": 9.8, "taxa_alfabetizacao": 90.2, "populacao": 8292, "n_criancas_5_14": 1514, "unidades": 5, "matriculas": 284, "unidades_por_10k": 6.03, "matriculas_por_10k": 342.5, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 12.896741288780053, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 18, "label": "Cabanga", "x": 3235.0686275353532, "y": 778.8987268405608, "microrregiao": "1.2", "taxa_analfabetismo": 5.5, "taxa_alfabetizacao": 94.5, "populacao": 1551, "n_criancas_5_14": 196, "unidades": 1, "matriculas": 381, "unidades_por_10k": 6.45, "matriculas_por_10k": 2456.48, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 10.355031058777216, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 19, "label": "Cajueiro", "x": 2171.3777226331385, "y": 2028.1149325823817, "microrregiao": "2.2", "taxa_analfabetismo": 13.2, "taxa_alfabetizacao": 86.8, "populacao": 6585, "n_criancas_5_14": 1118, "unidades": 2, "matriculas": 259, "unidades_por_10k": 3.04, "matriculas_por_10k": 393.32, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 12.1338711451513, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 20, "label": "Campina do Barreto", "x": 465.4590134600013, "y": 2931.1429360841503, "microrregiao": "2.1", "taxa_analfabetismo": 10.3, "taxa_alfabetizacao": 89.7, "populacao": 9484, "n_criancas_5_14": 1584, "unidades": 7, "matriculas": 576, "unidades_por_10k": 7.38, "matriculas_por_10k": 607.34, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 13.033089610216688, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 21, "label": "Campo Grande", "x": -178.8061592148707, "y": 2566.598213352214, "microrregiao": "2.1", "taxa_analfabetismo": 10.7, "taxa_alfabetizacao": 89.3, "populacao": 32349, "n_criancas_5_14": 5373, "unidades": 6, "matriculas": 1293, "unidades_por_10k": 1.85, "matriculas_por_10k": 399.7, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 20.34361080718086, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 22, "label": "Casa Amarela", "x": 5938.993049737536, "y": 2973.399127333507, "microrregiao": "3.1", "taxa_analfabetismo": 3.5, "taxa_alfabetizacao": 96.5, "populacao": 29180, "n_criancas_5_14": 3428, "unidades": 5, "matriculas": 1052, "unidades_por_10k": 1.71, "matriculas_por_10k": 360.52, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 16.59124179147104, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 23, "label": "Casa Forte", "x": 4778.373008444514, "y": 1778.8494724589123, "microrregiao": "3.1", "taxa_analfabetismo": 2.2, "taxa_alfabetizacao": 97.8, "populacao": 15986, "n_criancas_5_14": 1932, "unidades": 1, "matriculas": 218, "unidades_por_10k": 0.63, "matriculas_por_10k": 136.37, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 13.704497588819997, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 24, "label": "Caxang\u00e1", "x": 190.11376791158906, "y": 5258.987067790712, "microrregiao": "4.3", "taxa_analfabetismo": 6.7, "taxa_alfabetizacao": 93.3, "populacao": 9634, "n_criancas_5_14": 1493, "unidades": 5, "matriculas": 399, "unidades_por_10k": 5.19, "matriculas_por_10k": 414.16, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 12.856508256289427, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 25, "label": "Ca\u00e7ote", "x": 3613.0764253725806, "y": 5948.340712225956, "microrregiao": "5.2", "taxa_analfabetismo": 8.6, "taxa_alfabetizacao": 91.4, "populacao": 10470, "n_criancas_5_14": 1875, "unidades": 2, "matriculas": 339, "unidades_por_10k": 1.91, "matriculas_por_10k": 323.78, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 13.593480261901039, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 26, "label": "Cidade Universit\u00e1ria", "x": 203.07026745769468, "y": 5918.036064558344, "microrregiao": "4.3", "taxa_analfabetismo": 7.2, "taxa_alfabetizacao": 92.8, "populacao": 818, "n_criancas_5_14": 121, "unidades": 1, "matriculas": 118, "unidades_por_10k": 12.22, "matriculas_por_10k": 1442.54, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 10.21027689493276, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 27, "label": "Coelhos", "x": 5172.261708869681, "y": 808.5251711990342, "microrregiao": "1.3", "taxa_analfabetismo": 12.3, "taxa_alfabetizacao": 87.7, "populacao": 7655, "n_criancas_5_14": 1378, "unidades": 3, "matriculas": 776, "unidades_por_10k": 3.92, "matriculas_por_10k": 1013.72, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 12.635354131811173, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 28, "label": "Cohab", "x": 5400, "y": 7200, "microrregiao": "6.3", "taxa_analfabetismo": 7.4, "taxa_alfabetizacao": 92.6, "populacao": 67283, "n_criancas_5_14": 11269, "unidades": 25, "matriculas": 5338, "unidades_por_10k": 3.72, "matriculas_por_10k": 793.37, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 31.722631321990463, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 29, "label": "Coqueiral", "x": 5243.238398523129, "y": 6074.761146610295, "microrregiao": "5.3", "taxa_analfabetismo": 8.7, "taxa_alfabetizacao": 91.3, "populacao": 10794, "n_criancas_5_14": 1608, "unidades": 5, "matriculas": 874, "unidades_por_10k": 4.63, "matriculas_por_10k": 809.71, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 13.07849505317332, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 30, "label": "Cordeiro", "x": 5344.745710768865, "y": 3995.062222310488, "microrregiao": "4.1", "taxa_analfabetismo": 9.7, "taxa_alfabetizacao": 90.3, "populacao": 20215, "n_criancas_5_14": 2955, "unidades": 8, "matriculas": 384, "unidades_por_10k": 3.96, "matriculas_por_10k": 189.96, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 15.678067428132554, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 31, "label": "Curado", "x": 5289.92247125766, "y": 5078.848909133612, "microrregiao": "5.3", "taxa_analfabetismo": 9.7, "taxa_alfabetizacao": 90.3, "populacao": 16418, "n_criancas_5_14": 2756, "unidades": 2, "matriculas": 350, "unidades_por_10k": 1.22, "matriculas_por_10k": 213.18, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 15.294341880045, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 32, "label": "C\u00f3rrego do Jenipapo", "x": 3167.3386040986106, "y": 3627.3425068954007, "microrregiao": "3.3", "taxa_analfabetismo": 10.1, "taxa_alfabetizacao": 89.9, "populacao": 7608, "n_criancas_5_14": 1297, "unidades": 2, "matriculas": 207, "unidades_por_10k": 2.63, "matriculas_por_10k": 272.08, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 12.479547520218597, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 33, "label": "Derby", "x": 5958.1806180261065, "y": 1833.4883829916837, "microrregiao": "3.1", "taxa_analfabetismo": 3.7, "taxa_alfabetizacao": 96.3, "populacao": 5811, "n_criancas_5_14": 686, "unidades": 1, "matriculas": 198, "unidades_por_10k": 1.72, "matriculas_por_10k": 340.73, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 11.300366453047118, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 34, "label": "Dois Irm\u00e3os", "x": 4688.355888885794, "y": 2733.7503076143103, "microrregiao": "3.1", "taxa_analfabetismo": 13.8, "taxa_alfabetizacao": 86.2, "populacao": 2613, "n_criancas_5_14": 426, "unidades": 3, "matriculas": 544, "unidades_por_10k": 11.48, "matriculas_por_10k": 2081.9, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 10.798841012637709, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 35, "label": "Dois Unidos", "x": 2795.5035182042943, "y": 3274.2243069213346, "microrregiao": "2.2 / 2.3", "taxa_analfabetismo": 11.7, "taxa_alfabetizacao": 88.3, "populacao": 32805, "n_criancas_5_14": 5245, "unidades": 6, "matriculas": 1070, "unidades_por_10k": 1.83, "matriculas_por_10k": 326.17, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 20.09728373191615, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 36, "label": "Encruzilhada", "x": 67.07503723083542, "y": 2857.2392595015313, "microrregiao": "2.1", "taxa_analfabetismo": 10.5, "taxa_alfabetizacao": 89.5, "populacao": 11940, "n_criancas_5_14": 1906, "unidades": 2, "matriculas": 241, "unidades_por_10k": 1.68, "matriculas_por_10k": 201.84, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 13.654538402311028, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 37, "label": "Engenho do Meio", "x": 5668.314553852272, "y": 3980.7163126473956, "microrregiao": "4.2", "taxa_analfabetismo": 3.9, "taxa_alfabetizacao": 96.1, "populacao": 10458, "n_criancas_5_14": 1203, "unidades": 7, "matriculas": 1085, "unidades_por_10k": 6.69, "matriculas_por_10k": 1037.48, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 12.297750916132618, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 38, "label": "Espinheiro", "x": 6257.061548124581, "y": 2350.43265991553, "microrregiao": "3.1", "taxa_analfabetismo": 1.9, "taxa_alfabetizacao": 98.1, "populacao": 10438, "n_criancas_5_14": 892, "unidades": 2, "matriculas": 274, "unidades_por_10k": 1.92, "matriculas_por_10k": 262.5, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 11.697094426787544, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 39, "label": "Est\u00e2ncia", "x": 3965.813374973836, "y": 5616.673939383921, "microrregiao": "5.2", "taxa_analfabetismo": 11.4, "taxa_alfabetizacao": 88.6, "populacao": 10514, "n_criancas_5_14": 1755, "unidades": 6, "matriculas": 1255, "unidades_por_10k": 5.71, "matriculas_por_10k": 1193.65, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 13.363189897551383, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 40, "label": "Fund\u00e3o", "x": 1826.529405313634, "y": 2044.921878527298, "microrregiao": "2.2", "taxa_analfabetismo": 12.4, "taxa_alfabetizacao": 87.6, "populacao": 6178, "n_criancas_5_14": 1028, "unidades": 1, "matriculas": 93, "unidades_por_10k": 1.62, "matriculas_por_10k": 150.53, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 11.958706395657368, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 41, "label": "Gra\u00e7as", "x": 6187.870981044502, "y": 2104.248790067986, "microrregiao": "3.1", "taxa_analfabetismo": 1.5, "taxa_alfabetizacao": 98.5, "populacao": 10539, "n_criancas_5_14": 1246, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "tipo_educacao": "SEM_ESCOLA_BAIXO_ANALF", "tamanho": 12.380821132704632, "cor": "#1976d2", "resumo": "Bairro bem alfabetizado sem presen\u00e7a de escola municipal \u2014 provavelmente atendido pela rede privada."}, {"id": 42, "label": "Guabiraba", "x": 2416.0099587952363, "y": 4340.1823786819195, "microrregiao": "3.3", "taxa_analfabetismo": 14.4, "taxa_alfabetizacao": 85.6, "populacao": 6330, "n_criancas_5_14": 1148, "unidades": 2, "matriculas": 549, "unidades_por_10k": 3.16, "matriculas_por_10k": 867.3, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 12.190740837226535, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 43, "label": "Hip\u00f3dromo", "x": 470.14855902770904, "y": 1895.9821700736018, "microrregiao": "2.1", "taxa_analfabetismo": 2.3, "taxa_alfabetizacao": 97.7, "populacao": 2711, "n_criancas_5_14": 283, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "tipo_educacao": "SEM_ESCOLA_BAIXO_ANALF", "tamanho": 10.521085812535821, "cor": "#1976d2", "resumo": "Bairro bem alfabetizado sem presen\u00e7a de escola municipal \u2014 provavelmente atendido pela rede privada."}, {"id": 44, "label": "Ibura", "x": 3307.489101935182, "y": 7220.803745675196, "microrregiao": "6.2", "taxa_analfabetismo": 8.4, "taxa_alfabetizacao": 91.6, "populacao": 50617, "n_criancas_5_14": 8959, "unidades": 14, "matriculas": 2961, "unidades_por_10k": 2.77, "matriculas_por_10k": 584.98, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 27.263649362904296, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 45, "label": "Ilha Joana Bezerra", "x": 4476.720523157415, "y": 834.1543309148904, "microrregiao": "1.3", "taxa_analfabetismo": 16.8, "taxa_alfabetizacao": 83.2, "populacao": 12629, "n_criancas_5_14": 2746, "unidades": 6, "matriculas": 949, "unidades_por_10k": 4.75, "matriculas_por_10k": 751.45, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 15.275479486155252, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 46, "label": "Ilha do Leite", "x": 2330.9221054366217, "y": 961.7234708424938, "microrregiao": "1.2", "taxa_analfabetismo": 3.2, "taxa_alfabetizacao": 96.8, "populacao": 1007, "n_criancas_5_14": 121, "unidades": 4, "matriculas": 291, "unidades_por_10k": 39.72, "matriculas_por_10k": 2889.77, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 10.208496924997732, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 47, "label": "Ilha do Retiro", "x": 5059.5365813809285, "y": 3558.6473812292934, "microrregiao": "4.1", "taxa_analfabetismo": 10.8, "taxa_alfabetizacao": 89.2, "populacao": 3740, "n_criancas_5_14": 647, "unidades": 2, "matriculas": 280, "unidades_por_10k": 5.35, "matriculas_por_10k": 748.66, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 11.223486186128817, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 48, "label": "Imbiribeira", "x": 1498.8052366666911, "y": 7652.849420986176, "microrregiao": "6.1", "taxa_analfabetismo": 8.4, "taxa_alfabetizacao": 91.6, "populacao": 48512, "n_criancas_5_14": 7446, "unidades": 19, "matriculas": 1341, "unidades_por_10k": 3.92, "matriculas_por_10k": 276.43, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 24.344728305651557, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 49, "label": "Ipsep", "x": 1024.7283335149268, "y": 6970.468601171253, "microrregiao": "6.1", "taxa_analfabetismo": 2.7, "taxa_alfabetizacao": 97.3, "populacao": 25029, "n_criancas_5_14": 2893, "unidades": 5, "matriculas": 1067, "unidades_por_10k": 2.0, "matriculas_por_10k": 426.31, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 15.55826950798034, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 50, "label": "Iputinga", "x": 4341.94847100515, "y": 3751.5460402356825, "microrregiao": "4.1", "taxa_analfabetismo": 6.7, "taxa_alfabetizacao": 93.3, "populacao": 52200, "n_criancas_5_14": 7772, "unidades": 13, "matriculas": 2039, "unidades_por_10k": 2.49, "matriculas_por_10k": 390.61, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 24.973792528526022, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 51, "label": "Jaqueira", "x": 4570.830061982159, "y": 2358.6575399774138, "microrregiao": "3.1", "taxa_analfabetismo": 2.9, "taxa_alfabetizacao": 97.1, "populacao": 12129, "n_criancas_5_14": 1523, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "tipo_educacao": "SEM_ESCOLA_BAIXO_ANALF", "tamanho": 12.914655227310883, "cor": "#1976d2", "resumo": "Bairro bem alfabetizado sem presen\u00e7a de escola municipal \u2014 provavelmente atendido pela rede privada."}, {"id": 52, "label": "Jardim S\u00e3o Paulo", "x": 5758.142792641452, "y": 5257.455644558737, "microrregiao": "5.3", "taxa_analfabetismo": 5.1, "taxa_alfabetizacao": 94.9, "populacao": 31608, "n_criancas_5_14": 4361, "unidades": 7, "matriculas": 1630, "unidades_por_10k": 2.21, "matriculas_por_10k": 515.69, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 18.392156862745097, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 53, "label": "Jiqui\u00e1", "x": 3633.435177435667, "y": 5213.642440663421, "microrregiao": "5.2", "taxa_analfabetismo": 12.5, "taxa_alfabetizacao": 87.5, "populacao": 9245, "n_criancas_5_14": 1245, "unidades": 1, "matriculas": 63, "unidades_por_10k": 1.08, "matriculas_por_10k": 68.14, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 12.377999502133301, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 54, "label": "Jord\u00e3o", "x": 3910.8294347623905, "y": 7196.042960164401, "microrregiao": "6.2", "taxa_analfabetismo": 7.6, "taxa_alfabetizacao": 92.4, "populacao": 20777, "n_criancas_5_14": 3397, "unidades": 12, "matriculas": 1545, "unidades_por_10k": 5.78, "matriculas_por_10k": 743.61, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 16.530242507395634, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 55, "label": "Linha do Tiro", "x": 3371.731215814946, "y": 2943.00129062672, "microrregiao": "2.2 / 2.3", "taxa_analfabetismo": 11.1, "taxa_alfabetizacao": 88.9, "populacao": 11006, "n_criancas_5_14": 1747, "unidades": 7, "matriculas": 1595, "unidades_por_10k": 6.36, "matriculas_por_10k": 1449.21, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 13.347587758654292, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 56, "label": "Macaxeira", "x": 2859.4179227993072, "y": 3487.9853669167346, "microrregiao": "3.3", "taxa_analfabetismo": 8.8, "taxa_alfabetizacao": 91.2, "populacao": 7336, "n_criancas_5_14": 982, "unidades": 8, "matriculas": 1307, "unidades_por_10k": 10.91, "matriculas_por_10k": 1781.62, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 11.870462803761402, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 57, "label": "Madalena", "x": 4697.216313791202, "y": 4454.118309552755, "microrregiao": "4.1", "taxa_analfabetismo": 8.6, "taxa_alfabetizacao": 91.4, "populacao": 23082, "n_criancas_5_14": 3577, "unidades": 6, "matriculas": 304, "unidades_por_10k": 2.6, "matriculas_por_10k": 131.7, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 16.87888524172586, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 58, "label": "Mangabeira", "x": 949.9848624447382, "y": 3583.2768087018394, "microrregiao": "3.2", "taxa_analfabetismo": 8.8, "taxa_alfabetizacao": 91.2, "populacao": 8759, "n_criancas_5_14": 1121, "unidades": 2, "matriculas": 564, "unidades_por_10k": 2.28, "matriculas_por_10k": 643.91, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 12.138426239504756, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 59, "label": "Mangueira", "x": 2090.9405218607844, "y": 5989.733672436358, "microrregiao": "5.1", "taxa_analfabetismo": 8.8, "taxa_alfabetizacao": 91.2, "populacao": 11086, "n_criancas_5_14": 1986, "unidades": 1, "matriculas": 96, "unidades_por_10k": 0.9, "matriculas_por_10k": 86.6, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 13.80851660809979, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 60, "label": "Monteiro", "x": 6138.973039696375, "y": 2653.549246548291, "microrregiao": "3.1", "taxa_analfabetismo": 5.9, "taxa_alfabetizacao": 94.1, "populacao": 5317, "n_criancas_5_14": 683, "unidades": 2, "matriculas": 114, "unidades_por_10k": 3.76, "matriculas_por_10k": 214.41, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 11.294395912089863, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 61, "label": "Morro da Concei\u00e7\u00e3o", "x": 421.4857186210065, "y": 4302.957897944508, "microrregiao": "3.2", "taxa_analfabetismo": 12.6, "taxa_alfabetizacao": 87.4, "populacao": 10182, "n_criancas_5_14": 1620, "unidades": 5, "matriculas": 215, "unidades_por_10k": 4.91, "matriculas_por_10k": 211.16, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 13.102941465927971, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 62, "label": "Mustardinha", "x": 2385.5366377837718, "y": 5627.495215754042, "microrregiao": "5.1", "taxa_analfabetismo": 8.5, "taxa_alfabetizacao": 91.5, "populacao": 12429, "n_criancas_5_14": 2038, "unidades": 3, "matriculas": 564, "unidades_por_10k": 2.41, "matriculas_por_10k": 453.78, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 13.908369370777539, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 63, "label": "Nova Descoberta", "x": 3171.800479400718, "y": 4380.743025248263, "microrregiao": "3.3", "taxa_analfabetismo": 9.2, "taxa_alfabetizacao": 90.8, "populacao": 9400, "n_criancas_5_14": 1403, "unidades": 17, "matriculas": 2456, "unidades_por_10k": 18.09, "matriculas_por_10k": 2612.77, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 12.683123283758931, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 64, "label": "Paissandu", "x": 2735.2987630304065, "y": 1322.3891800533443, "microrregiao": "1.2", "taxa_analfabetismo": 5.7, "taxa_alfabetizacao": 94.3, "populacao": 507, "n_criancas_5_14": 44, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "tipo_educacao": "SEM_ESCOLA_BAIXO_ANALF", "tamanho": 10.059843577230124, "cor": "#1976d2", "resumo": "Bairro bem alfabetizado sem presen\u00e7a de escola municipal \u2014 provavelmente atendido pela rede privada."}, {"id": 65, "label": "Parnamirim", "x": 4864.375162040235, "y": 2913.536343922471, "microrregiao": "3.1", "taxa_analfabetismo": 6.4, "taxa_alfabetizacao": 93.6, "populacao": 7636, "n_criancas_5_14": 1159, "unidades": 1, "matriculas": 186, "unidades_por_10k": 1.31, "matriculas_por_10k": 243.58, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 12.211741549291698, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 66, "label": "Passarinho", "x": 2389.3715335778934, "y": 3602.6393609272372, "microrregiao": "3.3", "taxa_analfabetismo": 15.7, "taxa_alfabetizacao": 84.3, "populacao": 5856, "n_criancas_5_14": 894, "unidades": 6, "matriculas": 822, "unidades_por_10k": 10.25, "matriculas_por_10k": 1403.69, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 11.700494972125254, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 67, "label": "Pau-ferro", "x": 2771.806795472807, "y": 4574.691964930231, "microrregiao": "3.3", "taxa_analfabetismo": 7.5, "taxa_alfabetizacao": 92.5, "populacao": 6884, "n_criancas_5_14": 1053, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "tipo_educacao": "SEM_ESCOLA_BAIXO_ANALF", "tamanho": 12.008726947131574, "cor": "#1976d2", "resumo": "Bairro bem alfabetizado sem presen\u00e7a de escola municipal \u2014 provavelmente atendido pela rede privada."}, {"id": 68, "label": "Peixinhos", "x": 1008.4048280372933, "y": 2409.2822574308116, "microrregiao": "2.1", "taxa_analfabetismo": 18.6, "taxa_alfabetizacao": 81.4, "populacao": 16717, "n_criancas_5_14": 2846, "unidades": 3, "matriculas": 250, "unidades_por_10k": 1.79, "matriculas_por_10k": 149.55, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 15.468639415218895, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 69, "label": "Pina", "x": 1497.0406394938052, "y": 6751.678402421562, "microrregiao": "6.1", "taxa_analfabetismo": 7.8, "taxa_alfabetizacao": 92.2, "populacao": 29176, "n_criancas_5_14": 4309, "unidades": 8, "matriculas": 1859, "unidades_por_10k": 2.74, "matriculas_por_10k": 637.17, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 18.290636825540176, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 70, "label": "Ponto de Parada", "x": 857.3637307080135, "y": 2708.6739255115745, "microrregiao": "2.1", "taxa_analfabetismo": 4.6, "taxa_alfabetizacao": 95.4, "populacao": 1684, "n_criancas_5_14": 234, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "tipo_educacao": "SEM_ESCOLA_BAIXO_ANALF", "tamanho": 10.426621588503524, "cor": "#1976d2", "resumo": "Bairro bem alfabetizado sem presen\u00e7a de escola municipal \u2014 provavelmente atendido pela rede privada."}, {"id": 71, "label": "Porto da Madeira", "x": 1717.623324738235, "y": 2784.166000121626, "microrregiao": "2.2", "taxa_analfabetismo": 15.3, "taxa_alfabetizacao": 84.7, "populacao": 5087, "n_criancas_5_14": 846, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "tipo_educacao": "SEM_ESCOLA_ALTO_ANALF", "tamanho": 11.609362788516647, "cor": "#d32f2f", "resumo": "Territ\u00f3rio cr\u00edtico \u2014 n\u00e3o h\u00e1 escola municipal e o analfabetismo \u00e9 acima da m\u00e9dia nacional."}, {"id": 72, "label": "Po\u00e7o", "x": 5653.157896577786, "y": 3112.20293941654, "microrregiao": "3.1", "taxa_analfabetismo": 7.2, "taxa_alfabetizacao": 92.8, "populacao": 4571, "n_criancas_5_14": 527, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "tipo_educacao": "SEM_ESCOLA_BAIXO_ANALF", "tamanho": 10.993715880210956, "cor": "#1976d2", "resumo": "Bairro bem alfabetizado sem presen\u00e7a de escola municipal \u2014 provavelmente atendido pela rede privada."}, {"id": 73, "label": "Prado", "x": 4749.556650471038, "y": 3518.5538387111733, "microrregiao": "4.1", "taxa_analfabetismo": 6.2, "taxa_alfabetizacao": 93.8, "populacao": 10814, "n_criancas_5_14": 1573, "unidades": 3, "matriculas": 392, "unidades_por_10k": 2.77, "matriculas_por_10k": 362.49, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 13.011207789877096, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 74, "label": "Recife", "x": 1156.8996397319972, "y": 762.8491897234253, "microrregiao": "1.1", "taxa_analfabetismo": 18.3, "taxa_alfabetizacao": 81.7, "populacao": 602, "n_criancas_5_14": 137, "unidades": 5, "matriculas": 465, "unidades_por_10k": 83.06, "matriculas_por_10k": 7724.25, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 10.239321820648346, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 75, "label": "Rosarinho", "x": 850.5793565918136, "y": 2049.9207212071437, "microrregiao": "2.1", "taxa_analfabetismo": 4.7, "taxa_alfabetizacao": 95.3, "populacao": 4077, "n_criancas_5_14": 494, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "tipo_educacao": "SEM_ESCOLA_BAIXO_ANALF", "tamanho": 10.928456555341358, "cor": "#1976d2", "resumo": "Bairro bem alfabetizado sem presen\u00e7a de escola municipal \u2014 provavelmente atendido pela rede privada."}, {"id": 76, "label": "San Martin", "x": 1663.001746643605, "y": 5372.344977894484, "microrregiao": "5.1", "taxa_analfabetismo": 10.2, "taxa_alfabetizacao": 89.8, "populacao": 13181, "n_criancas_5_14": 2134, "unidades": 8, "matriculas": 1799, "unidades_por_10k": 6.07, "matriculas_por_10k": 1364.84, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 14.092942643054663, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 77, "label": "Sancho", "x": 5916.805244283189, "y": 5604.4364396490555, "microrregiao": "5.3", "taxa_analfabetismo": 13.1, "taxa_alfabetizacao": 86.9, "populacao": 9111, "n_criancas_5_14": 1486, "unidades": 3, "matriculas": 673, "unidades_por_10k": 3.29, "matriculas_por_10k": 738.67, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 12.84424529776481, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 78, "label": "Santana", "x": 5436.855392792926, "y": 1617.5678144032581, "microrregiao": "3.1", "taxa_analfabetismo": 11.1, "taxa_alfabetizacao": 88.9, "populacao": 3133, "n_criancas_5_14": 330, "unidades": 1, "matriculas": 0, "unidades_por_10k": 3.19, "matriculas_por_10k": 0.0, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 10.613357879319429, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 79, "label": "Santo Amaro", "x": 431.6316977074588, "y": 791.7261418887653, "microrregiao": "1.1", "taxa_analfabetismo": 9.5, "taxa_alfabetizacao": 90.5, "populacao": 27939, "n_criancas_5_14": 4403, "unidades": 14, "matriculas": 1241, "unidades_por_10k": 5.01, "matriculas_por_10k": 444.18, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 18.47182016591697, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 80, "label": "Santo Ant\u00f4nio", "x": 2399.3815622927873, "y": 638.8614825725681, "microrregiao": "1.2", "taxa_analfabetismo": 0.7, "taxa_alfabetizacao": 99.3, "populacao": 285, "n_criancas_5_14": 12, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "tipo_educacao": "SEM_ESCOLA_BAIXO_ANALF", "tamanho": 10.0, "cor": "#1976d2", "resumo": "Bairro bem alfabetizado sem presen\u00e7a de escola municipal \u2014 provavelmente atendido pela rede privada."}, {"id": 81, "label": "Soledade", "x": 2640.1305519397697, "y": 315.72953906799097, "microrregiao": "1.2", "taxa_analfabetismo": 1.8, "taxa_alfabetizacao": 98.2, "populacao": 2495, "n_criancas_5_14": 147, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "tipo_educacao": "SEM_ESCOLA_BAIXO_ANALF", "tamanho": 10.26042963194529, "cor": "#1976d2", "resumo": "Bairro bem alfabetizado sem presen\u00e7a de escola municipal \u2014 provavelmente atendido pela rede privada."}, {"id": 82, "label": "S\u00e3o Jos\u00e9", "x": 3050.9646610063733, "y": 1238.4984177734286, "microrregiao": "1.2", "taxa_analfabetismo": 6.5, "taxa_alfabetizacao": 93.5, "populacao": 8688, "n_criancas_5_14": 1040, "unidades": 1, "matriculas": 81, "unidades_por_10k": 1.15, "matriculas_por_10k": 93.23, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 11.98341293411371, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 83, "label": "S\u00edtio dos Pintos", "x": 5714.320951190287, "y": 1708.4314703433822, "microrregiao": "3.1", "taxa_analfabetismo": 8.5, "taxa_alfabetizacao": 91.5, "populacao": 7276, "n_criancas_5_14": 1252, "unidades": 1, "matriculas": 281, "unidades_por_10k": 1.37, "matriculas_por_10k": 386.2, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 12.392714936579887, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 84, "label": "Tamarineira", "x": 4706.523147330671, "y": 2070.417765197793, "microrregiao": "3.1", "taxa_analfabetismo": 1.1, "taxa_alfabetizacao": 98.9, "populacao": 23085, "n_criancas_5_14": 2687, "unidades": 4, "matriculas": 165, "unidades_por_10k": 1.73, "matriculas_por_10k": 71.47, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 15.160249396481355, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 85, "label": "Tejipi\u00f3", "x": 4948.467255147807, "y": 5869.23036216572, "microrregiao": "5.3", "taxa_analfabetismo": 12.7, "taxa_alfabetizacao": 87.3, "populacao": 17770, "n_criancas_5_14": 2844, "unidades": 2, "matriculas": 447, "unidades_por_10k": 1.13, "matriculas_por_10k": 251.55, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 15.46491873001538, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 86, "label": "Torre", "x": 4364.170729215128, "y": 4262.511196895488, "microrregiao": "4.1", "taxa_analfabetismo": 5.1, "taxa_alfabetizacao": 94.9, "populacao": 13904, "n_criancas_5_14": 2114, "unidades": 4, "matriculas": 579, "unidades_por_10k": 2.88, "matriculas_por_10k": 416.43, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 14.055881484569028, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 87, "label": "Torre\u00e3o", "x": -114.64419743231028, "y": 2190.5384804974074, "microrregiao": "2.1", "taxa_analfabetismo": 1.9, "taxa_alfabetizacao": 98.1, "populacao": 1083, "n_criancas_5_14": 116, "unidades": 1, "matriculas": 132, "unidades_por_10k": 9.23, "matriculas_por_10k": 1218.84, "tipo_educacao": "COM_ESCOLA_BAIXO_ANALF", "tamanho": 10.200628701436287, "cor": "#388e3c", "resumo": "Situa\u00e7\u00e3o saud\u00e1vel \u2014 escola municipal e analfabetismo baixo."}, {"id": 88, "label": "Torr\u00f5es", "x": 6378.099825363916, "y": 3951.810144538235, "microrregiao": "4.2", "taxa_analfabetismo": 11.2, "taxa_alfabetizacao": 88.8, "populacao": 32015, "n_criancas_5_14": 5276, "unidades": 10, "matriculas": 1467, "unidades_por_10k": 3.12, "matriculas_por_10k": 458.22, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 20.156241376582123, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 89, "label": "Tot\u00f3", "x": 5680.646474714378, "y": 6003.921999651252, "microrregiao": "5.3", "taxa_analfabetismo": 14.8, "taxa_alfabetizacao": 85.2, "populacao": 12445, "n_criancas_5_14": 1922, "unidades": 2, "matriculas": 51, "unidades_por_10k": 1.61, "matriculas_por_10k": 40.98, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 13.685287460127245, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 90, "label": "Vasco da Gama", "x": 909.1865883764425, "y": 4376.327924542525, "microrregiao": "3.2", "taxa_analfabetismo": 8.2, "taxa_alfabetizacao": 91.8, "populacao": 31025, "n_criancas_5_14": 4858, "unidades": 11, "matriculas": 1628, "unidades_por_10k": 3.55, "matriculas_por_10k": 524.74, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 19.35047499956581, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 91, "label": "V\u00e1rzea", "x": 709.5205035041919, "y": 5566.963680443787, "microrregiao": "4.3", "taxa_analfabetismo": 12.8, "taxa_alfabetizacao": 87.2, "populacao": 34001, "n_criancas_5_14": 4987, "unidades": 16, "matriculas": 2443, "unidades_por_10k": 4.71, "matriculas_por_10k": 718.51, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 19.60024140745758, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}, {"id": 92, "label": "Zumbi", "x": 5080.413071899839, "y": 4356.601884744953, "microrregiao": "4.1", "taxa_analfabetismo": 14.1, "taxa_alfabetizacao": 85.9, "populacao": 30146, "n_criancas_5_14": 4521, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "tipo_educacao": "SEM_ESCOLA_ALTO_ANALF", "tamanho": 18.700903685950315, "cor": "#d32f2f", "resumo": "Territ\u00f3rio cr\u00edtico \u2014 n\u00e3o h\u00e1 escola municipal e o analfabetismo \u00e9 acima da m\u00e9dia nacional."}, {"id": 93, "label": "\u00c1gua Fria", "x": 2413.157895642079, "y": 2415.2935250043706, "microrregiao": "2.2", "taxa_analfabetismo": 9.6, "taxa_alfabetizacao": 90.4, "populacao": 43529, "n_criancas_5_14": 7295, "unidades": 15, "matriculas": 2074, "unidades_por_10k": 3.45, "matriculas_por_10k": 476.46, "tipo_educacao": "COM_ESCOLA_ALTO_ANALF", "tamanho": 24.053087255963305, "cor": "#ff6f00", "resumo": "Presen\u00e7a de escolas n\u00e3o tem sido suficiente para reverter o analfabetismo."}];
+        const edges = [{"from": 3, "to": 58}, {"from": 57, "to": 73}, {"from": 36, "to": 38}, {"from": 1, "to": 62}, {"from": 4, "to": 13}, {"from": 21, "to": 70}, {"from": 15, "to": 69}, {"from": 22, "to": 60}, {"from": 17, "to": 66}, {"from": 35, "to": 66}, {"from": 56, "to": 63}, {"from": 5, "to": 60}, {"from": 31, "to": 52}, {"from": 3, "to": 13}, {"from": 4, "to": 2}, {"from": 4, "to": 55}, {"from": 47, "to": 45}, {"from": 93, "to": 13}, {"from": 30, "to": 88}, {"from": 16, "to": 32}, {"from": 79, "to": 80}, {"from": 80, "to": 82}, {"from": 17, "to": 35}, {"from": 38, "to": 41}, {"from": 39, "to": 53}, {"from": 28, "to": 9}, {"from": 28, "to": 44}, {"from": 17, "to": 63}, {"from": 31, "to": 89}, {"from": 6, "to": 56}, {"from": 21, "to": 43}, {"from": 16, "to": 66}, {"from": 4, "to": 3}, {"from": 44, "to": 54}, {"from": 26, "to": 91}, {"from": 75, "to": 84}, {"from": 2, "to": 3}, {"from": 16, "to": 63}, {"from": 57, "to": 92}, {"from": 36, "to": 41}, {"from": 63, "to": 90}, {"from": 29, "to": 89}, {"from": 36, "to": 87}, {"from": 52, "to": 85}, {"from": 41, "to": 51}, {"from": 16, "to": 17}, {"from": 2, "to": 90}, {"from": 9, "to": 85}, {"from": 10, "to": 55}, {"from": 2, "to": 17}, {"from": 12, "to": 81}, {"from": 35, "to": 55}, {"from": 93, "to": 40}, {"from": 37, "to": 88}, {"from": 17, "to": 55}, {"from": 41, "to": 75}, {"from": 6, "to": 60}, {"from": 33, "to": 47}, {"from": 33, "to": 57}, {"from": 23, "to": 65}, {"from": 8, "to": 13}, {"from": 1, "to": 14}, {"from": 57, "to": 86}, {"from": 7, "to": 9}, {"from": 74, "to": 80}, {"from": 11, "to": 69}, {"from": 22, "to": 61}, {"from": 11, "to": 48}, {"from": 22, "to": 23}, {"from": 74, "to": 82}, {"from": 65, "to": 84}, {"from": 20, "to": 68}, {"from": 43, "to": 70}, {"from": 5, "to": 56}, {"from": 39, "to": 52}, {"from": 8, "to": 58}, {"from": 14, "to": 62}, {"from": 62, "to": 76}, {"from": 0, "to": 41}, {"from": 12, "to": 33}, {"from": 12, "to": 27}, {"from": 32, "to": 56}, {"from": 51, "to": 84}, {"from": 29, "to": 85}, {"from": 22, "to": 84}, {"from": 8, "to": 21}, {"from": 0, "to": 36}, {"from": 36, "to": 75}, {"from": 18, "to": 82}, {"from": 7, "to": 39}, {"from": 41, "to": 84}, {"from": 72, "to": 60}, {"from": 46, "to": 64}, {"from": 14, "to": 73}, {"from": 19, "to": 20}, {"from": 0, "to": 38}, {"from": 36, "to": 70}, {"from": 13, "to": 58}, {"from": 1, "to": 59}, {"from": 59, "to": 76}, {"from": 93, "to": 20}, {"from": 10, "to": 71}, {"from": 86, "to": 92}, {"from": 61, "to": 90}, {"from": 22, "to": 65}, {"from": 40, "to": 71}, {"from": 36, "to": 43}, {"from": 8, "to": 70}, {"from": 17, "to": 90}, {"from": 27, "to": 80}, {"from": 74, "to": 79}, {"from": 21, "to": 87}, {"from": 51, "to": 65}, {"from": 19, "to": 71}, {"from": 47, "to": 57}, {"from": 6, "to": 34}, {"from": 30, "to": 92}, {"from": 12, "to": 80}, {"from": 48, "to": 49}, {"from": 33, "to": 64}, {"from": 29, "to": 77}, {"from": 21, "to": 36}, {"from": 5, "to": 6}, {"from": 12, "to": 79}, {"from": 72, "to": 22}, {"from": 12, "to": 64}, {"from": 27, "to": 46}, {"from": 70, "to": 75}, {"from": 53, "to": 76}, {"from": 79, "to": 81}, {"from": 30, "to": 37}, {"from": 93, "to": 8}, {"from": 78, "to": 86}, {"from": 2, "to": 55}, {"from": 2, "to": 61}, {"from": 77, "to": 85}, {"from": 93, "to": 71}, {"from": 77, "to": 89}, {"from": 1, "to": 53}, {"from": 30, "to": 50}, {"from": 33, "to": 41}, {"from": 72, "to": 23}, {"from": 32, "to": 63}, {"from": 12, "to": 46}, {"from": 73, "to": 92}, {"from": 31, "to": 76}, {"from": 26, "to": 50}, {"from": 14, "to": 76}, {"from": 48, "to": 69}, {"from": 1, "to": 73}, {"from": 19, "to": 40}, {"from": 76, "to": 88}, {"from": 83, "to": 34}, {"from": 16, "to": 42}, {"from": 26, "to": 37}, {"from": 31, "to": 88}, {"from": 5, "to": 22}, {"from": 53, "to": 59}, {"from": 5, "to": 63}, {"from": 51, "to": 78}, {"from": 69, "to": 82}, {"from": 31, "to": 37}, {"from": 65, "to": 78}, {"from": 4, "to": 93}, {"from": 44, "to": 48}, {"from": 23, "to": 78}, {"from": 7, "to": 25}, {"from": 8, "to": 20}, {"from": 8, "to": 68}, {"from": 59, "to": 62}, {"from": 21, "to": 79}, {"from": 18, "to": 69}, {"from": 20, "to": 40}, {"from": 7, "to": 53}, {"from": 10, "to": 35}, {"from": 37, "to": 50}, {"from": 6, "to": 32}, {"from": 24, "to": 50}, {"from": 30, "to": 86}, {"from": 3, "to": 61}, {"from": 45, "to": 82}, {"from": 50, "to": 91}, {"from": 52, "to": 76}, {"from": 8, "to": 84}, {"from": 41, "to": 57}, {"from": 1, "to": 47}, {"from": 47, "to": 73}, {"from": 38, "to": 87}, {"from": 31, "to": 91}, {"from": 12, "to": 38}, {"from": 26, "to": 31}, {"from": 30, "to": 73}, {"from": 41, "to": 86}, {"from": 31, "to": 77}, {"from": 22, "to": 58}, {"from": 11, "to": 54}, {"from": 93, "to": 10}, {"from": 72, "to": 78}, {"from": 34, "to": 42}, {"from": 25, "to": 49}, {"from": 93, "to": 55}, {"from": 21, "to": 68}, {"from": 38, "to": 79}, {"from": 31, "to": 85}, {"from": 1, "to": 18}, {"from": 73, "to": 76}, {"from": 58, "to": 84}, {"from": 42, "to": 66}, {"from": 6, "to": 24}, {"from": 7, "to": 52}, {"from": 39, "to": 76}, {"from": 30, "to": 76}, {"from": 52, "to": 53}, {"from": 8, "to": 75}, {"from": 22, "to": 63}, {"from": 9, "to": 52}, {"from": 7, "to": 49}, {"from": 79, "to": 87}, {"from": 3, "to": 22}, {"from": 24, "to": 91}, {"from": 22, "to": 90}, {"from": 12, "to": 41}, {"from": 24, "to": 34}, {"from": 44, "to": 49}, {"from": 25, "to": 44}, {"from": 1, "to": 82}, {"from": 67, "to": 42}, {"from": 1, "to": 45}, {"from": 32, "to": 34}, {"from": 11, "to": 44}, {"from": 7, "to": 44}, {"from": 1, "to": 48}, {"from": 32, "to": 42}];
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const tooltip = document.getElementById('tooltip');
+        const selectMicro = document.getElementById('selectMicro');
+        const btnReset = document.getElementById('btnReset');
+        const inputBusca = document.getElementById('inputBusca');
+
+        let offsetX = 0;
+        let offsetY = 0;
+        let scale = 1.0;
+        let isDragging = false;
+        let startX, startY;
+        let bairroSelecionado = null;
+        let microSelecionada = 'todas';
+
+        // Popular dropdown
+        const micros = [...new Set(nodes.map(n => n.microrregiao))].sort();
+        micros.forEach(micro => {
+            const option = document.createElement('option');
+            option.value = micro;
+            option.textContent = micro;
+            selectMicro.appendChild(option);
+        });
+
+        selectMicro.addEventListener('change', (e) => {
+            microSelecionada = e.target.value;
+            bairroSelecionado = null;
+
+            if (microSelecionada !== 'todas') {
+                const nosMicro = nodes.filter(n => n.microrregiao === microSelecionada);
+                if (nosMicro.length > 0) {
+                    const centerX = nosMicro.reduce((sum, n) => sum + n.x, 0) / nosMicro.length;
+                    const centerY = nosMicro.reduce((sum, n) => sum + n.y, 0) / nosMicro.length;
+                    offsetX = canvas.width / 2 - centerX * scale;
+                    offsetY = canvas.height / 2 - centerY * scale;
+                }
+            }
+
+            draw();
+        });
+
+        inputBusca.addEventListener('input', (e) => {
+            const busca = e.target.value.trim().toLowerCase();
+            if (busca.length === 0) {
+                draw();
+                return;
+            }
+
+            const encontrado = nodes.find(n => n.label.toLowerCase().includes(busca));
+            if (encontrado) {
+                bairroSelecionado = encontrado.label;
+                offsetX = canvas.width / 2 - encontrado.x * scale;
+                offsetY = canvas.height / 2 - encontrado.y * scale;
+                draw();
+            }
+        });
+
+        btnReset.addEventListener('click', () => {
+            microSelecionada = 'todas';
+            selectMicro.value = 'todas';
+            bairroSelecionado = null;
+            inputBusca.value = '';
+            scale = 1.0;
+            offsetX = canvas.width / 2 - 3000;
+            offsetY = canvas.height / 2 - 4000;
+            draw();
+        });
+
+        function resizeCanvas() {
+            const container = document.getElementById('canvasContainer');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            offsetX = canvas.width / 2 - 3000;
+            offsetY = canvas.height / 2 - 4000;
+            draw();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let hasMoved = false;
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            hasMoved = false;
+            startX = e.clientX - offsetX;
+            startY = e.clientY - offsetY;
+            canvas.classList.add('dragging');
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                hasMoved = true;
+                offsetX = e.clientX - startX;
+                offsetY = e.clientY - startY;
+                draw();
+            }
+            handleMouseMove(e);
+        });
+
+        canvas.addEventListener('mouseup', (e) => {
+            if (!hasMoved) {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = (e.clientX - rect.left - offsetX) / scale;
+                const mouseY = (e.clientY - rect.top - offsetY) / scale;
+
+                let clicked = false;
+                for (const node of nodes) {
+                    const dx = mouseX - node.x;
+                    const dy = mouseY - node.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < node.tamanho) {
+                        bairroSelecionado = bairroSelecionado === node.label ? null : node.label;
+                        clicked = true;
+                        draw();
+                        break;
+                    }
+                }
+
+                if (!clicked && bairroSelecionado) {
+                    bairroSelecionado = null;
+                    draw();
+                }
+            }
+
+            isDragging = false;
+            hasMoved = false;
+            canvas.classList.remove('dragging');
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDragging = false;
+            canvas.classList.remove('dragging');
+            tooltip.style.display = 'none';
+        });
+
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            const worldX = (mouseX - offsetX) / scale;
+            const worldY = (mouseY - offsetY) / scale;
+
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            scale = Math.max(0.1, Math.min(5, scale * delta));
+            offsetX = mouseX - worldX * scale;
+            offsetY = mouseY - worldY * scale;
+            draw();
+        });
+
+        function handleMouseMove(e) {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = (e.clientX - rect.left - offsetX) / scale;
+            const mouseY = (e.clientY - rect.top - offsetY) / scale;
+
+            let found = false;
+            for (const node of nodes) {
+                const dx = mouseX - node.x;
+                const dy = mouseY - node.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < node.tamanho) {
+                    tooltip.innerHTML = `
+                        <div class="tooltip-title">${node.label}</div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Taxa de Analfabetismo:</span>
+                            <strong>${node.taxa_analfabetismo}%</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Taxa de Alfabetização:</span>
+                            <strong>${node.taxa_alfabetizacao}%</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">População Total:</span>
+                            <strong>${node.populacao.toLocaleString()}</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Crianças 5-14 anos (est.):</span>
+                            <strong>${node.n_criancas_5_14.toLocaleString()}</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Unidades Educacionais:</span>
+                            <strong>${node.unidades}</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Matrículas:</span>
+                            <strong>${node.matriculas.toLocaleString()}</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Unidades/10k hab:</span>
+                            <strong>${node.unidades_por_10k}</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Matrículas/10k hab:</span>
+                            <strong>${node.matriculas_por_10k}</strong>
+                        </div>
+                        <div class="tooltip-resumo">
+                            <strong>Resumo:</strong> ${node.resumo}
+                        </div>
+                    `;
+                    tooltip.style.left = (e.clientX + 15) + 'px';
+                    tooltip.style.top = (e.clientY + 15) + 'px';
+                    tooltip.style.display = 'block';
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                tooltip.style.display = 'none';
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(scale, scale);
+
+            // Determinar vizinhos
+            let vizinhosSet = null;
+            let arestasVizinhos = new Set();
+            if (bairroSelecionado) {
+                vizinhosSet = new Set([bairroSelecionado]);
+                edges.forEach(edge => {
+                    const fromNode = nodes[edge.from];
+                    const toNode = nodes[edge.to];
+                    if (fromNode.label === bairroSelecionado) {
+                        vizinhosSet.add(toNode.label);
+                        arestasVizinhos.add(`${edge.from}-${edge.to}`);
+                    } else if (toNode.label === bairroSelecionado) {
+                        vizinhosSet.add(fromNode.label);
+                        arestasVizinhos.add(`${edge.from}-${edge.to}`);
+                    }
+                });
+            }
+
+            // Filtrar nós
+            const nodesFiltrados = microSelecionada === 'todas'
+                ? nodes
+                : nodes.filter(n => n.microrregiao === microSelecionada);
+
+            const labelsFiltrados = new Set(nodesFiltrados.map(n => n.label));
+
+            // Desenhar arestas (cinza claro e fino)
+            edges.forEach(edge => {
+                const fromNode = nodes[edge.from];
+                const toNode = nodes[edge.to];
+
+                if (!labelsFiltrados.has(fromNode.label) || !labelsFiltrados.has(toNode.label)) return;
+
+                const chave = `${edge.from}-${edge.to}`;
+
+                if (vizinhosSet && arestasVizinhos.has(chave)) {
+                    ctx.strokeStyle = '#4ecdc4';
+                    ctx.lineWidth = 2;
+                } else if (vizinhosSet) {
+                    ctx.strokeStyle = '#e0e0e0';
+                    ctx.lineWidth = 0.3;
+                } else {
+                    ctx.strokeStyle = '#d0d0d0';
+                    ctx.lineWidth = 0.5;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(fromNode.x, fromNode.y);
+                ctx.lineTo(toNode.x, toNode.y);
+                ctx.stroke();
+            });
+
+            // Desenhar nós
+            nodes.forEach(node => {
+                if (!labelsFiltrados.has(node.label)) return;
+
+                let shouldDim = vizinhosSet && !vizinhosSet.has(node.label);
+
+                // Nó principal
+                ctx.fillStyle = shouldDim ? '#ccc' : node.cor;
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.tamanho, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Borda (mais grossa para casos críticos)
+                const isCritico = node.tipo_educacao === 'SEM_ESCOLA_ALTO_ANALF';
+                ctx.strokeStyle = isCritico ? '#000' : '#333';
+                ctx.lineWidth = isCritico ? 3 :
+                                (vizinhosSet && node.label === bairroSelecionado) ? 4 : 2;
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.tamanho, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Label
+                if (scale > 0.5) {
+                    ctx.fillStyle = '#222';
+                    ctx.font = 'bold 13px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(node.label, node.x, node.y + node.tamanho + 16);
+                }
+            });
+
+            ctx.restore();
+        }
+
+        draw();
+    </script>
+</body>
+</html>

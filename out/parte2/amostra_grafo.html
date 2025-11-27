@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Amostra do Grafo - Parte 2</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: 
+            overflow: hidden;
+        }
+        
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+            background: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        h1 {
+            margin: 0 0 5px 0;
+            color: 
+            font-size: 22px;
+        }
+        .info {
+            font-size: 13px;
+            color: 
+            line-height: 1.6;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 8px;
+        }
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .color-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+        }
+        .green { background: green; }
+        .red { background: red; }
+        
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: white;
+        }
+        
+            display: block;
+            cursor: grab;
+        }
+        
+            cursor: grabbing;
+        }
+        
+            position: absolute;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            display: none;
+            z-index: 100;
+        }
+        .controls {
+            margin-top: 10px;
+        }
+        button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            background: 
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+        button:hover {
+            background: 
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="header">
+            <h1>Amostra do Grafo - Parte 2</h1>
+            <div class="info">
+                <div>
+                    <strong>Grafo completo:</strong> 503 vértices, 4756 arestas
+                </div>
+                <div>
+                    <strong>Amostra selecionada:</strong> 50 vértices aleatórios
+                </div>
+                <div>
+                    <strong>Amostra exibida:</strong> 43 vértices conectados, 51 arestas
+                    (7 vértices isolados removidos)
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="color-box green"></div>
+                        <span>Arestas positivas: 51</span>
+                    </div>
+                    <div class="stat">
+                        <div class="color-box red"></div>
+                        <span>Arestas negativas: 0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="controls">
+                <button onclick="resetView()">Resetar Visualização</button>
+                <button onclick="zoomIn()">Zoom +</button>
+                <button onclick="zoomOut()">Zoom -</button>
+            </div>
+        </div>
+        <div id="canvasContainer">
+            <canvas id="canvas"></canvas>
+            <div id="tooltip"></div>
+        </div>
+    </div>
+
+    <script>
+        const nodes = [{"id": 0, "label": "estacao_113", "x": 700.0, "y": 400.0}, {"id": 1, "label": "estacao_119", "x": 696.8030104225331, "y": 443.6803503205015}, {"id": 2, "label": "estacao_123", "x": 687.2801799725219, "y": 486.42972980957126}, {"id": 3, "label": "estacao_132", "x": 671.634471247944, "y": 527.3370096627445}, {"id": 4, "label": "estacao_133", "x": 650.1993453669634, "y": 565.5303222311338}, {"id": 5, "label": "estacao_136", "x": 623.4316548231346, "y": 600.1956433666718}, {"id": 6, "label": "estacao_148", "x": 591.9019064676673, "y": 630.5941419335596}, {"id": 7, "label": "estacao_150", "x": 556.2821021463791, "y": 656.0779267112039}, {"id": 8, "label": "estacao_152", "x": 517.3314161470468, "y": 676.1038550707478}, {"id": 9, "label": "estacao_153", "x": 475.8800147175042, "y": 690.2451091172276}, {"id": 10, "label": "estacao_161", "x": 432.8113625133624, "y": 698.2002925719837}, {"id": 11, "label": "estacao_164", "x": 389.04339308270244, "y": 699.7998545110718}, {"id": 12, "label": "estacao_175", "x": 345.5089447061691, "y": 695.0097030488398}, {"id": 13, "label": "estacao_20", "x": 303.1358785685661, "y": 683.9319319472828}, {"id": 14, "label": "estacao_215", "x": 262.82730300860845, "y": 666.8026446647557}, {"id": 15, "label": "estacao_216", "x": 225.4423253326142, "y": 643.9869222206696}, {"id": 16, "label": "estacao_219", "x": 191.7777414338098, "y": 615.9710421273987}, {"id": 17, "label": "estacao_22", "x": 162.55105347122378, "y": 583.3521142293548}, {"id": 18, "label": "estacao_223", "x": 138.38517755685768, "y": 546.8253543433257}, {"id": 19, "label": "estacao_240", "x": 119.79516738023563, "y": 507.16926694033987}, {"id": 20, "label": "estacao_246", "x": 107.17723673322189, "y": 465.2290526744672}, {"id": 21, "label": "estacao_248", "x": 100.8003149009345, "y": 421.8985943982723}, {"id": 22, "label": "estacao_271", "x": 100.8003149009345, "y": 378.10140560172795}, {"id": 23, "label": "estacao_300", "x": 107.17723673322183, "y": 334.77094732553303}, {"id": 24, "label": "estacao_305", "x": 119.79516738023557, "y": 292.8307330596602}, {"id": 25, "label": "estacao_306", "x": 138.38517755685774, "y": 253.17464565667433}, {"id": 26, "label": "estacao_32", "x": 162.55105347122384, "y": 216.64788577064513}, {"id": 27, "label": "estacao_334", "x": 191.77774143380978, "y": 184.0289578726013}, {"id": 28, "label": "estacao_364", "x": 225.44232533261413, "y": 156.0130777793304}, {"id": 29, "label": "estacao_365", "x": 262.8273030086084, "y": 133.19735533524437}, {"id": 30, "label": "estacao_37", "x": 303.135878568566, "y": 116.06806805271725}, {"id": 31, "label": "estacao_371", "x": 345.5089447061689, "y": 104.99029695116019}, {"id": 32, "label": "estacao_381", "x": 389.0433930827024, "y": 100.20014548892817}, {"id": 33, "label": "estacao_384", "x": 432.81136251336227, "y": 101.79970742801623}, {"id": 34, "label": "estacao_385", "x": 475.88001471750414, "y": 109.75489088277243}, {"id": 35, "label": "estacao_410", "x": 517.3314161470466, "y": 123.8961449292521}, {"id": 36, "label": "estacao_427", "x": 556.2821021463792, "y": 143.92207328879613}, {"id": 37, "label": "estacao_428", "x": 591.9019064676673, "y": 169.40585806644037}, {"id": 38, "label": "estacao_436", "x": 623.4316548231345, "y": 199.80435663332813}, {"id": 39, "label": "estacao_441", "x": 650.1993453669634, "y": 234.46967776886615}, {"id": 40, "label": "estacao_443", "x": 671.6344712479439, "y": 272.66299033725534}, {"id": 41, "label": "estacao_7", "x": 687.2801799725216, "y": 313.5702701904285}, {"id": 42, "label": "estacao_78", "x": 696.803010422533, "y": 356.3196496794985}];
+        const edges = [{"from": 7, "to": 0, "peso": 52, "cor": "green"}, {"from": 22, "to": 7, "peso": 59, "cor": "green"}, {"from": 19, "to": 17, "peso": 82, "cor": "green"}, {"from": 38, "to": 30, "peso": 58, "cor": "green"}, {"from": 6, "to": 1, "peso": 94, "cor": "green"}, {"from": 3, "to": 0, "peso": 66, "cor": "green"}, {"from": 28, "to": 11, "peso": 32, "cor": "green"}, {"from": 16, "to": 10, "peso": 18, "cor": "green"}, {"from": 9, "to": 4, "peso": 23, "cor": "green"}, {"from": 31, "to": 29, "peso": 29, "cor": "green"}, {"from": 22, "to": 8, "peso": 53, "cor": "green"}, {"from": 10, "to": 39, "peso": 92, "cor": "green"}, {"from": 23, "to": 27, "peso": 10, "cor": "green"}, {"from": 22, "to": 16, "peso": 30, "cor": "green"}, {"from": 13, "to": 21, "peso": 91, "cor": "green"}, {"from": 11, "to": 37, "peso": 28, "cor": "green"}, {"from": 10, "to": 38, "peso": 49, "cor": "green"}, {"from": 14, "to": 5, "peso": 3, "cor": "green"}, {"from": 40, "to": 26, "peso": 53, "cor": "green"}, {"from": 2, "to": 18, "peso": 81, "cor": "green"}, {"from": 22, "to": 14, "peso": 30, "cor": "green"}, {"from": 3, "to": 2, "peso": 100, "cor": "green"}, {"from": 6, "to": 13, "peso": 67, "cor": "green"}, {"from": 34, "to": 24, "peso": 76, "cor": "green"}, {"from": 4, "to": 34, "peso": 91, "cor": "green"}, {"from": 14, "to": 20, "peso": 93, "cor": "green"}, {"from": 11, "to": 28, "peso": 48, "cor": "green"}, {"from": 27, "to": 10, "peso": 2, "cor": "green"}, {"from": 26, "to": 12, "peso": 4, "cor": "green"}, {"from": 5, "to": 33, "peso": 1, "cor": "green"}, {"from": 36, "to": 38, "peso": 71, "cor": "green"}, {"from": 9, "to": 19, "peso": 53, "cor": "green"}, {"from": 4, "to": 37, "peso": 71, "cor": "green"}, {"from": 7, "to": 41, "peso": 59, "cor": "green"}, {"from": 2, "to": 38, "peso": 67, "cor": "green"}, {"from": 2, "to": 28, "peso": 38, "cor": "green"}, {"from": 6, "to": 35, "peso": 21, "cor": "green"}, {"from": 21, "to": 27, "peso": 86, "cor": "green"}, {"from": 24, "to": 35, "peso": 27, "cor": "green"}, {"from": 32, "to": 13, "peso": 45, "cor": "green"}, {"from": 23, "to": 10, "peso": 1, "cor": "green"}, {"from": 26, "to": 22, "peso": 53, "cor": "green"}, {"from": 12, "to": 33, "peso": 9, "cor": "green"}, {"from": 37, "to": 40, "peso": 29, "cor": "green"}, {"from": 25, "to": 22, "peso": 26, "cor": "green"}, {"from": 35, "to": 39, "peso": 33, "cor": "green"}, {"from": 10, "to": 36, "peso": 76, "cor": "green"}, {"from": 30, "to": 42, "peso": 54, "cor": "green"}, {"from": 3, "to": 4, "peso": 43, "cor": "green"}, {"from": 33, "to": 15, "peso": 31, "cor": "green"}, {"from": 26, "to": 19, "peso": 97, "cor": "green"}];
+        
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const tooltip = document.getElementById('tooltip');
+        const container = document.getElementById('canvasContainer');
+        
+        let scale = 1;
+        let offsetX = 0;
+        let offsetY = 0;
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let hoveredNode = null;
+        
+        function resizeCanvas() {
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            offsetX = canvas.width / 2 - 400;
+            offsetY = canvas.height / 2 - 400;
+            draw();
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.save();
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(scale, scale);
+            
+            edges.forEach(edge => {
+                const fromNode = nodes[edge.from];
+                const toNode = nodes[edge.to];
+                
+                ctx.beginPath();
+                ctx.moveTo(fromNode.x, fromNode.y);
+                ctx.lineTo(toNode.x, toNode.y);
+                ctx.strokeStyle = edge.cor;
+                ctx.lineWidth = edge.peso < 0 ? 2 : 1.5;
+                ctx.globalAlpha = edge.peso < 0 ? 0.8 : 0.6;
+                
+                if (edge.peso < 0) {
+                    ctx.setLineDash([5, 5]);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.globalAlpha = 1;
+                
+                const dx = toNode.x - fromNode.x;
+                const dy = toNode.y - fromNode.y;
+                const angle = Math.atan2(dy, dx);
+                const arrowSize = 10;
+                
+                const endX = toNode.x - 20 * Math.cos(angle);
+                const endY = toNode.y - 20 * Math.sin(angle);
+                
+                ctx.beginPath();
+                ctx.moveTo(endX, endY);
+                ctx.lineTo(
+                    endX - arrowSize * Math.cos(angle - Math.PI / 6),
+                    endY - arrowSize * Math.sin(angle - Math.PI / 6)
+                );
+                ctx.lineTo(
+                    endX - arrowSize * Math.cos(angle + Math.PI / 6),
+                    endY - arrowSize * Math.sin(angle + Math.PI / 6)
+                );
+                ctx.closePath();
+                ctx.fillStyle = edge.cor;
+                ctx.fill();
+            });
+            
+            nodes.forEach(node => {
+                const isHovered = hoveredNode === node.id;
+                
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, 15, 0, 2 * Math.PI);
+                ctx.fillStyle = isHovered ? '
+                ctx.fill();
+                ctx.strokeStyle = isHovered ? '
+                ctx.lineWidth = isHovered ? 3 : 2;
+                ctx.stroke();
+                
+                ctx.fillStyle = '
+                ctx.font = 'bold 11px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                const label = node.label.replace('estacao_', '');
+                ctx.fillText(label, node.x, node.y);
+            });
+            
+            ctx.restore();
+        }
+        
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            dragStartX = e.clientX - offsetX;
+            dragStartY = e.clientY - offsetY;
+            canvas.classList.add('dragging');
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = (e.clientX - rect.left - offsetX) / scale;
+            const mouseY = (e.clientY - rect.top - offsetY) / scale;
+            
+            if (isDragging) {
+                offsetX = e.clientX - dragStartX;
+                offsetY = e.clientY - dragStartY;
+                draw();
+            } else {
+                let found = null;
+                for (let node of nodes) {
+                    const dx = mouseX - node.x;
+                    const dy = mouseY - node.y;
+                    if (Math.sqrt(dx*dx + dy*dy) < 15) {
+                        found = node.id;
+                        break;
+                    }
+                }
+                
+                if (found !== hoveredNode) {
+                    hoveredNode = found;
+                    draw();
+                }
+                
+                if (hoveredNode !== null) {
+                    const node = nodes[hoveredNode];
+                    const nodeEdges = edges.filter(e => e.from === node.id || e.to === node.id);
+                    
+                    tooltip.innerHTML = `
+                        <strong>${node.label}</strong><br>
+                        Grau: ${nodeEdges.length} arestas
+                    `;
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = e.clientX + 15 + 'px';
+                    tooltip.style.top = e.clientY + 15 + 'px';
+                } else {
+                    tooltip.style.display = 'none';
+                }
+            }
+        });
+        
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            canvas.classList.remove('dragging');
+        });
+        
+        canvas.addEventListener('mouseleave', () => {
+            isDragging = false;
+            canvas.classList.remove('dragging');
+            tooltip.style.display = 'none';
+            hoveredNode = null;
+            draw();
+        });
+        
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            const worldX = (mouseX - offsetX) / scale;
+            const worldY = (mouseY - offsetY) / scale;
+            
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            const newScale = Math.max(0.1, Math.min(5, scale * delta));
+            
+            scale = newScale;
+            offsetX = mouseX - worldX * scale;
+            offsetY = mouseY - worldY * scale;
+            
+            draw();
+        });
+        
+        function resetView() {
+            scale = 1;
+            offsetX = canvas.width / 2 - 400;
+            offsetY = canvas.height / 2 - 400;
+            draw();
+        }
+        
+        function zoomIn() {
+            scale = Math.min(5, scale * 1.2);
+            draw();
+        }
+        
+        function zoomOut() {
+            scale = Math.max(0.1, scale / 1.2);
+            draw();
+        }
+    </script>
+</body>
+</html>

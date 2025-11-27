@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+from .graph import GrafoDirecionado
 
 def normalizar_nome(nome):
     if pd.isna(nome):
@@ -37,14 +38,44 @@ def normalizar_nome(nome):
 
     return ' '.join(resultado)
 
-df = pd.read_excel('data/bairros_recife.xlsx')
 
-df_melted = df.melt(var_name='microrregiao', value_name='bairro')
-df_melted['bairro'] = df_melted['bairro'].apply(normalizar_nome)
-df_limpo = df_melted.dropna(subset=['bairro'])
+def carregar_dataset_parte2(caminho='data/dataset_parte2/dataset_parte2_grafos.csv'):
+    """Carrega o dataset da Parte 2 em um grafo direcionado"""
+    import os
+    
+    if os.path.isdir(caminho):
+        caminho = os.path.join(caminho, 'dataset_parte2_grafos.csv')
+    
+    df = pd.read_csv(caminho)
+    
+    grafo = GrafoDirecionado()
+    
+    for _, row in df.iterrows():
+        origem = row['origem']
+        destino = row['destino']
+        peso = row['peso']
+        
+        info = {
+            'tempo': row.get('tempo'),
+            'linha': row.get('linha'),
+            'tipo_via': row.get('tipo_via'),
+            'distancia_m': row.get('distancia_m')
+        }
+        
+        grafo.adicionar_aresta(origem, destino, peso, info)
+    
+    return grafo
 
-agrupado = df_limpo.groupby('bairro')['microrregiao'].apply(lambda x: ' / '.join(sorted(set(x.astype(str))))).reset_index()
-agrupado.columns = ['bairro', 'microrregião']
-agrupado = agrupado.sort_values('bairro').reset_index(drop=True)
 
-agrupado.to_csv('data/bairros_unique.csv', index=False, sep=';', encoding='utf-8-sig')
+if __name__ == '__main__':
+    df = pd.read_excel('data/bairros_recife.xlsx')
+
+    df_melted = df.melt(var_name='microrregiao', value_name='bairro')
+    df_melted['bairro'] = df_melted['bairro'].apply(normalizar_nome)
+    df_limpo = df_melted.dropna(subset=['bairro'])
+
+    agrupado = df_limpo.groupby('bairro')['microrregiao'].apply(lambda x: ' / '.join(sorted(set(x.astype(str))))).reset_index()
+    agrupado.columns = ['bairro', 'microrregião']
+    agrupado = agrupado.sort_values('bairro').reset_index(drop=True)
+
+    agrupado.to_csv('data/bairros_unique.csv', index=False, sep=';', encoding='utf-8-sig')

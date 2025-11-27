@@ -1,6 +1,15 @@
 import json
-from graph import construir_grafo_bairros
-from algorithms import dijkstra
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
+
+from src.graphs.graph import construir_grafo_bairros
+from src.graphs.algorithms import dijkstra
+
+project_root = os.path.join(os.path.dirname(__file__), '../..')
+out_dir = os.path.join(project_root, 'out/parte1')
+os.makedirs(out_dir, exist_ok=True)
 
 grafo = construir_grafo_bairros()
 
@@ -194,9 +203,9 @@ html_content = f'''<!DOCTYPE html>
 </body>
 </html>'''
 
-with open('out/arvore_percurso.html', 'w', encoding='utf-8') as f:
+with open(os.path.join(out_dir, 'arvore_percurso.html'), 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-print(f'Visualizacao gerada: out/arvore_percurso.html')
+print(f'Visualizacao gerada: out/parte1/arvore_percurso.html')
 print(f'Caminho: {" -> ".join(caminho)}')
 print(f'Distancia: {custo:.2f}m')

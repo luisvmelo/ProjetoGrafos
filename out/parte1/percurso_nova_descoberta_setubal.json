@@ -1,0 +1,89 @@
+{
+  "origem": "Nova Descoberta",
+  "destino": "Boa Viagem (Setúbal)",
+  "custo": 2682.05,
+  "caminho": [
+    "Nova Descoberta",
+    "Brejo de Beberibe",
+    "Alto José Bonifácio",
+    "Alto Santa Teresinha",
+    "Bomba do Hemetério",
+    "Arruda",
+    "Campo Grande",
+    "Santo Amaro",
+    "Santo Antônio",
+    "São José",
+    "Pina",
+    "Boa Viagem"
+  ],
+  "vias": [
+    "Rua Urandi",
+    "Rua Uriel De Holanda",
+    "Rua Arlindo Cisneiros",
+    "Rua Alto do Tiro",
+    "Rua Professor Manuel Torres",
+    "Rua Petronila Botelho",
+    "Rua Projetada",
+    "Rua Princesa Isabel",
+    "Rua Do Porao",
+    "Avenida Antônio de Goes",
+    "Rua Delegado Tercio Soares De Aquino"
+  ],
+  "percurso_detalhado": [
+    {
+      "de": "Nova Descoberta",
+      "para": "Brejo de Beberibe",
+      "via": "Rua Urandi"
+    },
+    {
+      "de": "Brejo de Beberibe",
+      "para": "Alto José Bonifácio",
+      "via": "Rua Uriel De Holanda"
+    },
+    {
+      "de": "Alto José Bonifácio",
+      "para": "Alto Santa Teresinha",
+      "via": "Rua Arlindo Cisneiros"
+    },
+    {
+      "de": "Alto Santa Teresinha",
+      "para": "Bomba do Hemetério",
+      "via": "Rua Alto do Tiro"
+    },
+    {
+      "de": "Bomba do Hemetério",
+      "para": "Arruda",
+      "via": "Rua Professor Manuel Torres"
+    },
+    {
+      "de": "Arruda",
+      "para": "Campo Grande",
+      "via": "Rua Petronila Botelho"
+    },
+    {
+      "de": "Campo Grande",
+      "para": "Santo Amaro",
+      "via": "Rua Projetada"
+    },
+    {
+      "de": "Santo Amaro",
+      "para": "Santo Antônio",
+      "via": "Rua Princesa Isabel"
+    },
+    {
+      "de": "Santo Antônio",
+      "para": "São José",
+      "via": "Rua Do Porao"
+    },
+    {
+      "de": "São José",
+      "para": "Pina",
+      "via": "Avenida Antônio de Goes"
+    },
+    {
+      "de": "Pina",
+      "para": "Boa Viagem",
+      "via": "Rua Delegado Tercio Soares De Aquino"
+    }
+  ]
+}

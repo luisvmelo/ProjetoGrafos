@@ -1,6 +1,15 @@
 import json
-from graph import construir_grafo_bairros
-from algorithms import dijkstra
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
+
+from src.graphs.graph import construir_grafo_bairros
+from src.graphs.algorithms import dijkstra
+
+project_root = os.path.join(os.path.dirname(__file__), '../..')
+out_dir = os.path.join(project_root, 'out/parte1')
+os.makedirs(out_dir, exist_ok=True)
 
 grafo = construir_grafo_bairros()
 
@@ -67,10 +76,10 @@ for endereco in enderecos:
             'vias': vias,
             'percurso_detalhado': percurso_detalhes
         }
-        with open('out/percurso_nova_descoberta_setubal.json', 'w', encoding='utf-8') as f:
+        with open(os.path.join(out_dir, 'percurso_nova_descoberta_setubal.json'), 'w', encoding='utf-8') as f:
             json.dump(percurso_json, f, indent=2, ensure_ascii=False)
 
-with open('out/distancias_enderecos.csv', 'w', encoding='utf-8') as f:
+with open(os.path.join(out_dir, 'distancias_enderecos.csv'), 'w', encoding='utf-8') as f:
     f.write('X,Y,bairro_X,bairro_Y,custo,caminho,caminho_detalhado\n')
     for r in resultados:
         custo_str = str(r['custo']) if r['custo'] is not None else ''

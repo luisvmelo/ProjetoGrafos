@@ -1,6 +1,15 @@
 import pandas as pd
 import json
-from graph import construir_grafo_bairros
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
+
+from src.graphs.graph import construir_grafo_bairros
+
+project_root = os.path.join(os.path.dirname(__file__), '../..')
+data_dir = os.path.join(project_root, 'data')
+out_dir = os.path.join(project_root, 'out/parte1')
 
 def calcular_metricas_globais(grafo):
     ordem = grafo.total_vertices()
@@ -23,7 +32,8 @@ def calcular_metricas_globais(grafo):
     }
 
 def calcular_metricas_microrregioes(grafo):
-    df_bairros = pd.read_csv('data/bairros_unique.csv', sep=';', encoding='utf-8-sig')
+    bairros_path = os.path.join(data_dir, 'bairros_unique.csv')
+    df_bairros = pd.read_csv(bairros_path, sep=';', encoding='utf-8-sig')
 
     microrregioes = {}
     for _, row in df_bairros.iterrows():
@@ -111,7 +121,8 @@ if __name__ == '__main__':
 
     print("\n1. Calculando métricas globais (Recife)...")
     metricas_globais = calcular_metricas_globais(grafo)
-    with open('out/recife_global.json', 'w', encoding='utf-8') as f:
+    os.makedirs(out_dir, exist_ok=True)
+    with open(os.path.join(out_dir, 'recife_global.json'), 'w', encoding='utf-8') as f:
         json.dump(metricas_globais, f, indent=2, ensure_ascii=False)
     print(f"   Ordem: {metricas_globais['ordem']}")
     print(f"   Tamanho: {metricas_globais['tamanho']}")
@@ -119,7 +130,7 @@ if __name__ == '__main__':
 
     print("\n2. Calculando métricas por microrregião...")
     metricas_micro = calcular_metricas_microrregioes(grafo)
-    with open('out/microrregioes.json', 'w', encoding='utf-8') as f:
+    with open(os.path.join(out_dir, 'microrregioes.json'), 'w', encoding='utf-8') as f:
         json.dump(metricas_micro, f, indent=2, ensure_ascii=False)
     print(f"   Total de microrregiões: {len(metricas_micro)}")
     for m in metricas_micro[:5]:
@@ -128,13 +139,13 @@ if __name__ == '__main__':
     print("\n3. Calculando ego-redes por bairro...")
     ego_bairros = calcular_ego_bairros(grafo)
     df_ego = pd.DataFrame(ego_bairros)
-    df_ego.to_csv('out/ego_bairro.csv', index=False, encoding='utf-8')
+    df_ego.to_csv(os.path.join(out_dir, 'ego_bairro.csv'), index=False, encoding='utf-8')
     print(f"   Total de bairros: {len(ego_bairros)}")
     print(f"   Primeiros 5 bairros:")
     for e in ego_bairros[:5]:
         print(f"   {e['bairro']}: grau={e['grau']}, densidade_ego={e['densidade_ego']}")
 
     print("\n✓ Todas as métricas foram calculadas com sucesso!")
-    print("  - out/recife_global.json")
-    print("  - out/microrregioes.json")
-    print("  - out/ego_bairro.csv")
+    print("  - out/parte1/recife_global.json")
+    print("  - out/parte1/microrregioes.json")
+    print("  - out/parte1/ego_bairro.csv")

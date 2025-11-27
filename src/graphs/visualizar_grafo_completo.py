@@ -1,12 +1,21 @@
 import json
 import math
 import random
-from graph import construir_grafo_bairros
-from algorithms import dijkstra
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
+
+from src.graphs.graph import construir_grafo_bairros
+from src.graphs.algorithms import dijkstra
+
+project_root = os.path.join(os.path.dirname(__file__), '../..')
+data_dir = os.path.join(project_root, 'data')
+out_dir = os.path.join(project_root, 'out/parte1')
 
 grafo = construir_grafo_bairros()
 
-with open('out/ego_bairro.csv', 'r', encoding='utf-8') as f:
+with open(os.path.join(out_dir, 'ego_bairro.csv'), 'r', encoding='utf-8') as f:
     linhas = f.readlines()[1:]
     graus_dict = {}
     densidade_ego_dict = {}
@@ -18,7 +27,7 @@ with open('out/ego_bairro.csv', 'r', encoding='utf-8') as f:
         graus_dict[bairro] = grau
         densidade_ego_dict[bairro] = densidade_ego
 
-with open('data/bairros_unique.csv', 'r', encoding='utf-8-sig') as f:
+with open(os.path.join(data_dir, 'bairros_unique.csv'), 'r', encoding='utf-8-sig') as f:
     linhas = f.readlines()[1:]
     microrregiao_dict = {}
     for linha in linhas:
@@ -27,7 +36,7 @@ with open('data/bairros_unique.csv', 'r', encoding='utf-8-sig') as f:
         micro = partes[1]
         microrregiao_dict[bairro] = micro
 
-with open('out/percurso_nova_descoberta_setubal.json', 'r', encoding='utf-8') as f:
+with open(os.path.join(out_dir, 'percurso_nova_descoberta_setubal.json'), 'r', encoding='utf-8') as f:
     percurso = json.load(f)
     caminho_destaque = set(percurso['caminho'])
     arestas_destaque = set()
@@ -749,9 +758,9 @@ html_content = f'''<!DOCTYPE html>
 </body>
 </html>'''
 
-with open('out/grafo_interativo.html', 'w', encoding='utf-8') as f:
+with open(os.path.join(out_dir, 'grafo_interativo.html'), 'w', encoding='utf-8') as f:
     f.write(html_content)
 
-print('Visualizacao interativa gerada: out/grafo_interativo.html')
+print('Visualizacao interativa gerada: out/parte1/grafo_interativo.html')
 print(f'Vertices: {len(nodes)}')
 print(f'Arestas: {len(edges)}')

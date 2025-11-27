@@ -1,0 +1,129 @@
+{
+  "algoritmos": [
+    {
+      "nome": "BFS",
+      "tempo_total_ms": 1.199,
+      "total_testes": 3,
+      "suporta_pesos": false,
+      "suporta_pesos_negativos": false,
+      "detecta_ciclos_negativos": false,
+      "notas": "Rapido, mas ignora peso das arestas. Util para exploracao por niveis.",
+      "testes": [
+        {
+          "origem": "estacao_326",
+          "total_visitados": 500,
+          "tempo_ms": 0.6442
+        },
+        {
+          "origem": "estacao_454",
+          "total_visitados": 500,
+          "tempo_ms": 0.5519
+        },
+        {
+          "origem": "estacao_999",
+          "total_visitados": 3,
+          "tempo_ms": 0.0029
+        }
+      ]
+    },
+    {
+      "nome": "DFS",
+      "tempo_total_ms": 13.9,
+      "total_testes": 3,
+      "suporta_pesos": false,
+      "suporta_pesos_negativos": false,
+      "detecta_ciclos_negativos": true,
+      "notas": "Bom para detectar ciclos simples, nao calcula caminhos minimos.",
+      "testes": [
+        {
+          "origem": "estacao_326",
+          "total_visitados": 500,
+          "ciclos_detectados": true,
+          "tempo_ms": 6.5845
+        },
+        {
+          "origem": "estacao_454",
+          "total_visitados": 500,
+          "ciclos_detectados": true,
+          "tempo_ms": 7.313
+        },
+        {
+          "origem": "estacao_999",
+          "total_visitados": 3,
+          "ciclos_detectados": true,
+          "tempo_ms": 0.0029
+        }
+      ]
+    },
+    {
+      "nome": "Dijkstra",
+      "tempo_total_ms": 7.37,
+      "total_testes": 5,
+      "suporta_pesos": true,
+      "suporta_pesos_negativos": false,
+      "detecta_ciclos_negativos": false,
+      "notas": "Rapido e eficiente para pesos positivos. Falha com pesos negativos.",
+      "testes": [
+        {
+          "origem": "estacao_327",
+          "destino": "estacao_57",
+          "distancia": 4,
+          "tamanho_caminho": 2,
+          "tempo_ms": 0.1274
+        },
+        {
+          "origem": "estacao_114",
+          "destino": "estacao_71",
+          "distancia": 85,
+          "tamanho_caminho": 8,
+          "tempo_ms": 6.1344
+        },
+        {
+          "origem": "estacao_456",
+          "destino": "estacao_279",
+          "distancia": 12,
+          "tamanho_caminho": 2,
+          "tempo_ms": 0.154
+        },
+        {
+          "origem": "estacao_15",
+          "destino": "estacao_47",
+          "distancia": 28,
+          "tamanho_caminho": 2,
+          "tempo_ms": 0.226
+        },
+        {
+          "origem": "estacao_13",
+          "destino": "estacao_287",
+          "distancia": 26,
+          "tamanho_caminho": 2,
+          "tempo_ms": 0.7279
+        }
+      ]
+    },
+    {
+      "nome": "Bellman-Ford",
+      "tempo_total_ms": 283.236,
+      "total_testes": 2,
+      "suporta_pesos": true,
+      "suporta_pesos_negativos": true,
+      "detecta_ciclos_negativos": true,
+      "notas": "Lento (O(VE)), mas detecta ciclos negativos. Critico para validacao.",
+      "testes": [
+        {
+          "origem": "estacao_287",
+          "destino": "estacao_339",
+          "ciclo_negativo_detectado": false,
+          "tempo_ms": 8.4792,
+          "distancia": -11
+        },
+        {
+          "origem": "estacao_999",
+          "destino": "estacao_997",
+          "ciclo_negativo_detectado": true,
+          "tempo_ms": 274.7564
+        }
+      ]
+    }
+  ]
+}

@@ -1,16 +1,11 @@
 import math
 import pytest
 
-from src.graphs.graph import Grafo
-from src.graphs.algorithms import dijkstra
+from src.graphs.graph import Grafo, GrafoDirecionado
+from src.graphs.algorithms import dijkstra, dijkstra_parte2
 
 
 def build_simple_graph():
-    """
-    Aflitos --100--> Espinheiro --50--> Boa Vista
-         \                         ^
-          \--300-------------------/
-    """
     g = Grafo()
     g.adicionar_aresta("Aflitos", "Espinheiro", "Rua 1", 100.0)
     g.adicionar_aresta("Espinheiro", "Boa Vista", "Rua 2", 50.0)
@@ -23,13 +18,11 @@ def test_dijkstra_encontra_caminho_minimo():
 
     caminho, distancia, vias = dijkstra(grafo, "Aflitos", "Boa Vista")
 
-    # Caminho ótimo: Aflitos -> Espinheiro -> Boa Vista (100 + 50 = 150)
     assert caminho == ["Aflitos", "Espinheiro", "Boa Vista"]
     assert math.isclose(distancia, 150.0)
 
-    # vias deve ser uma lista detalhando as ruas usadas
     assert isinstance(vias, list)
-    assert len(vias) == 2  # duas arestas no caminho mínimo
+    assert len(vias) == 2  
     assert vias == ["Rua 1", "Rua 2"]
 
 
@@ -40,4 +33,12 @@ def test_dijkstra_origem_igual_destino():
 
     assert caminho == ["Aflitos"]
     assert math.isclose(distancia, 0.0)
-    assert vias == []  # nenhum deslocamento → nenhuma via
+    assert vias == [] 
+
+
+def test_dijkstra_recusa_peso_negativo():
+    grafo = GrafoDirecionado()
+    grafo.adicionar_aresta('A', 'B', -5)
+    
+    with pytest.raises(ValueError, match="nao suporta pesos negativos"):
+        dijkstra_parte2(grafo, 'A', 'B')

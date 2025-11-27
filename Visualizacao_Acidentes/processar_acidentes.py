@@ -1,9 +1,22 @@
+import os
+from pathlib import Path
 import pandas as pd
 import unicodedata
 from collections import Counter
 
 
-df_acidentes = pd.read_csv('/mnt/c/Users/luise/Downloads/acidentes2024 (1) - acidentes2024 (1).csv', encoding='utf-8')
+BASE_DIR = Path(__file__).resolve().parent.parent
+DEFAULT_CSV = BASE_DIR / 'Visualizacao_Acidentes' / 'acidentes2024 (1) - acidentes2024 (1).csv'
+
+csv_path_env = os.getenv('ACIDENTES_CSV_PATH')
+if csv_path_env:
+    acidentes_csv_path = Path(csv_path_env)
+    if not acidentes_csv_path.is_absolute():
+        acidentes_csv_path = BASE_DIR / acidentes_csv_path
+else:
+    acidentes_csv_path = DEFAULT_CSV
+
+df_acidentes = pd.read_csv(acidentes_csv_path, encoding='utf-8')
 
 print(f"Total de acidentes: {len(df_acidentes)}")
 print(f"\nColunas: {df_acidentes.columns.tolist()}")

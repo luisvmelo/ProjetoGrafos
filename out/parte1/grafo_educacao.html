@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Grafo de Educação - Analfabetismo por Bairro - Recife</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            overflow: hidden;
+        }
+        #container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        #header {
+            background: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        h1 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 24px;
+        }
+        #filtroMicro {
+            margin: 10px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        select, input[type="text"] {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #4ecdc4;
+        }
+        input[type="text"] {
+            min-width: 250px;
+        }
+        button {
+            padding: 8px 16px;
+            background: #4ecdc4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #3db5ac;
+        }
+        #legenda {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        .legenda-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legenda-cor {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 2px solid #333;
+        }
+        #canvasContainer {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+            cursor: grab;
+        }
+        canvas.dragging {
+            cursor: grabbing;
+        }
+        #tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            pointer-events: none;
+            display: none;
+            z-index: 100;
+            max-width: 300px;
+            line-height: 1.5;
+        }
+        .tooltip-title {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 5px;
+        }
+        .tooltip-row {
+            margin: 3px 0;
+        }
+        .tooltip-label {
+            color: #aaa;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="header">
+            <h1>Analfabetismo e Educação por Bairro - Recife</h1>
+            <div id="filtroMicro">
+                <label for="selectMicro"><strong>Filtrar por Microrregião:</strong></label>
+                <select id="selectMicro">
+                    <option value="todas">Todas as Microrregiões</option>
+                </select>
+                <label for="inputBusca"><strong>Buscar Bairro:</strong></label>
+                <input type="text" id="inputBusca" placeholder="Digite o nome do bairro...">
+                <button id="btnResetFiltro">Resetar Visualização</button>
+            </div>
+            <div id="legenda">
+                <div class="legenda-item">
+                    <div class="legenda-cor" style="background: #27ae60;"></div>
+                    <span><strong>Quase perfeito</strong> (&lt;2%)</span>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-cor" style="background: #3498db;"></div>
+                    <span><strong>Bom</strong> (2-6%)</span>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-cor" style="background: #f39c12;"></div>
+                    <span><strong>Regular</strong> (6-8%)</span>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-cor" style="background: #e74c3c;"></div>
+                    <span><strong>Crítico</strong> (≥8%)</span>
+                </div>
+            </div>
+        </div>
+        <div id="canvasContainer">
+            <canvas id="canvas"></canvas>
+            <div id="tooltip"></div>
+        </div>
+    </div>
+    <script>
+        const nodes = [{"id": 0, "label": "Aflitos", "x": 5484.762220084798, "y": 2042.160495702145, "microrregiao": "3.1", "taxa_analfabetismo": 0.8, "taxa_alfabetizacao": 99.2, "faixa_analfabetismo": "Quase perfeito (<2%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 5773, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "categoria": "excelente", "categoria_micro": "bom"}, {"id": 1, "label": "Afogados", "x": 2126.326984933889, "y": 5170.827252337575, "microrregiao": "5.1", "taxa_analfabetismo": 7.2, "taxa_alfabetizacao": 92.8, "faixa_analfabetismo": "Na m\u00e9dia nacional (6% a 8%)", "taxa_analfabetismo_micro": 8.3, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 36265, "unidades": 4, "matriculas": 773, "unidades_por_10k": 1.1, "matriculas_por_10k": 213.15, "categoria": "regular", "categoria_micro": null}, {"id": 2, "label": "Alto Jos\u00e9 Bonif\u00e1cio", "x": 673.9433605696717, "y": 4218.835134029375, "microrregiao": "3.2", "taxa_analfabetismo": 9.0, "taxa_alfabetizacao": 91.0, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 9.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 12472, "unidades": 3, "matriculas": 326, "unidades_por_10k": 2.41, "matriculas_por_10k": 261.39, "categoria": null, "categoria_micro": null}, {"id": 3, "label": "Alto Jos\u00e9 do Pinho", "x": 1081.1674212908895, "y": 4304.89151914846, "microrregiao": "3.2", "taxa_analfabetismo": 8.3, "taxa_alfabetizacao": 91.7, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 9.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 12334, "unidades": 2, "matriculas": 709, "unidades_por_10k": 1.62, "matriculas_por_10k": 574.83, "categoria": null, "categoria_micro": null}, {"id": 4, "label": "Alto Santa Teresinha", "x": 2203.5684444264402, "y": 2815.572871335095, "microrregiao": "2.2", "taxa_analfabetismo": 9.5, "taxa_alfabetizacao": 90.5, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 10.4, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 7703, "unidades": 3, "matriculas": 394, "unidades_por_10k": 3.89, "matriculas_por_10k": 511.49, "categoria": null, "categoria_micro": null}, {"id": 5, "label": "Alto do Mandu", "x": 4499.918801333413, "y": 2936.6251278562713, "microrregiao": "3.1", "taxa_analfabetismo": 5.1, "taxa_alfabetizacao": 94.9, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 4649, "unidades": 1, "matriculas": 203, "unidades_por_10k": 2.15, "matriculas_por_10k": 436.65, "categoria": "bom", "categoria_micro": "bom"}, {"id": 6, "label": "Apipucos", "x": 4328.6831697391635, "y": 2265.8354825174624, "microrregiao": "3.1", "taxa_analfabetismo": 4.8, "taxa_alfabetizacao": 95.2, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 10899, "unidades": 1, "matriculas": 44, "unidades_por_10k": 0.92, "matriculas_por_10k": 40.37, "categoria": "bom", "categoria_micro": "bom"}, {"id": 7, "label": "Areias", "x": 3520.4571836214923, "y": 5774.582438365566, "microrregiao": "5.2", "taxa_analfabetismo": 4.7, "taxa_alfabetizacao": 95.3, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 7.8, "faixa_analfabetismo_micro": "Na m\u00e9dia nacional (6% a 8%)", "populacao": 29894, "unidades": 9, "matriculas": 1086, "unidades_por_10k": 3.01, "matriculas_por_10k": 363.28, "categoria": "bom", "categoria_micro": "regular"}, {"id": 8, "label": "Arruda", "x": 304.21795677048465, "y": 2865.725823041628, "microrregiao": "2.1", "taxa_analfabetismo": 10.8, "taxa_alfabetizacao": 89.2, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 11.3, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 23900, "unidades": 1, "matriculas": 97, "unidades_por_10k": 0.42, "matriculas_por_10k": 40.59, "categoria": null, "categoria_micro": null}, {"id": 9, "label": "Barro", "x": 5216.786036121668, "y": 5814.027432878803, "microrregiao": "5.3", "taxa_analfabetismo": 10.8, "taxa_alfabetizacao": 89.2, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 9.9, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 31847, "unidades": 10, "matriculas": 1273, "unidades_por_10k": 3.14, "matriculas_por_10k": 399.72, "categoria": null, "categoria_micro": null}, {"id": 10, "label": "Beberibe", "x": 3249.693081422882, "y": 2993.1051182406377, "microrregiao": "2.2 / 2.3", "taxa_analfabetismo": 8.2, "taxa_alfabetizacao": 91.8, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 11.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 8302, "unidades": 4, "matriculas": 876, "unidades_por_10k": 4.82, "matriculas_por_10k": 1055.17, "categoria": null, "categoria_micro": null}, {"id": 11, "label": "Boa Viagem", "x": 1638.9056478078958, "y": 6636.171210732884, "microrregiao": "6.1", "taxa_analfabetismo": 2.4, "taxa_alfabetizacao": 97.6, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 4.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 122922, "unidades": 10, "matriculas": 1426, "unidades_por_10k": 0.81, "matriculas_por_10k": 116.01, "categoria": "bom", "categoria_micro": "bom"}, {"id": 12, "label": "Boa Vista", "x": 2103.5075713564183, "y": 775.317691352205, "microrregiao": "1.2", "taxa_analfabetismo": 1.5, "taxa_alfabetizacao": 98.5, "faixa_analfabetismo": "Quase perfeito (<2%)", "taxa_analfabetismo_micro": 3.3, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 14778, "unidades": 6, "matriculas": 167, "unidades_por_10k": 4.06, "matriculas_por_10k": 113.01, "categoria": "excelente", "categoria_micro": "bom"}, {"id": 13, "label": "Bomba do Hemet\u00e9rio", "x": 2157.11386481981, "y": 2193.823026356948, "microrregiao": "2.2", "taxa_analfabetismo": 8.6, "taxa_alfabetizacao": 91.4, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 10.4, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 8472, "unidades": 2, "matriculas": 30, "unidades_por_10k": 2.36, "matriculas_por_10k": 35.41, "categoria": null, "categoria_micro": null}, {"id": 14, "label": "Bongi", "x": 2306.352770615196, "y": 5488.161928650654, "microrregiao": "5.1", "taxa_analfabetismo": 9.2, "taxa_alfabetizacao": 90.8, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 8.3, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 8101, "unidades": 1, "matriculas": 108, "unidades_por_10k": 1.23, "matriculas_por_10k": 133.32, "categoria": null, "categoria_micro": null}, {"id": 15, "label": "Bras\u00edlia Teimosa", "x": 1260.3954760268355, "y": 7212.829147634894, "microrregiao": "6.1", "taxa_analfabetismo": 8.2, "taxa_alfabetizacao": 91.8, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 4.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 18334, "unidades": 3, "matriculas": 411, "unidades_por_10k": 1.64, "matriculas_por_10k": 224.17, "categoria": null, "categoria_micro": "bom"}, {"id": 16, "label": "Brejo da Guabiraba", "x": 2814.7497928675507, "y": 3736.184592675856, "microrregiao": "3.3", "taxa_analfabetismo": 12.9, "taxa_alfabetizacao": 87.1, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 11.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 11742, "unidades": 6, "matriculas": 683, "unidades_por_10k": 5.11, "matriculas_por_10k": 581.67, "categoria": null, "categoria_micro": null}, {"id": 17, "label": "Brejo de Beberibe", "x": 2970.943045667783, "y": 3950.649875967806, "microrregiao": "3.3", "taxa_analfabetismo": 9.8, "taxa_alfabetizacao": 90.2, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 11.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 8292, "unidades": 5, "matriculas": 284, "unidades_por_10k": 6.03, "matriculas_por_10k": 342.5, "categoria": null, "categoria_micro": null}, {"id": 18, "label": "Cabanga", "x": 2390.3117218838192, "y": 577.0536436030227, "microrregiao": "1.2", "taxa_analfabetismo": 5.5, "taxa_alfabetizacao": 94.5, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 3.3, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 1551, "unidades": 1, "matriculas": 381, "unidades_por_10k": 6.45, "matriculas_por_10k": 2456.48, "categoria": "bom", "categoria_micro": "bom"}, {"id": 19, "label": "Cajueiro", "x": 2340.100142940973, "y": 2477.797360311009, "microrregiao": "2.2", "taxa_analfabetismo": 13.2, "taxa_alfabetizacao": 86.8, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 10.4, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 6585, "unidades": 2, "matriculas": 259, "unidades_por_10k": 3.04, "matriculas_por_10k": 393.32, "categoria": null, "categoria_micro": null}, {"id": 20, "label": "Campina do Barreto", "x": 832.0849504699892, "y": 2206.8163918349173, "microrregiao": "2.1", "taxa_analfabetismo": 10.3, "taxa_alfabetizacao": 89.7, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 11.3, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 9484, "unidades": 7, "matriculas": 576, "unidades_por_10k": 7.38, "matriculas_por_10k": 607.34, "categoria": null, "categoria_micro": null}, {"id": 21, "label": "Campo Grande", "x": 983.9426798457883, "y": 2452.5010755222665, "microrregiao": "2.1", "taxa_analfabetismo": 10.7, "taxa_alfabetizacao": 89.3, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 11.3, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 32349, "unidades": 6, "matriculas": 1293, "unidades_por_10k": 1.85, "matriculas_por_10k": 399.7, "categoria": null, "categoria_micro": null}, {"id": 22, "label": "Casa Amarela", "x": 5598.353188446645, "y": 2220.946895121828, "microrregiao": "3.1", "taxa_analfabetismo": 3.5, "taxa_alfabetizacao": 96.5, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 29180, "unidades": 5, "matriculas": 1052, "unidades_por_10k": 1.71, "matriculas_por_10k": 360.52, "categoria": "bom", "categoria_micro": "bom"}, {"id": 23, "label": "Casa Forte", "x": 5690.897021143817, "y": 2465.2839268549633, "microrregiao": "3.1", "taxa_analfabetismo": 2.2, "taxa_alfabetizacao": 97.8, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 15986, "unidades": 1, "matriculas": 218, "unidades_por_10k": 0.63, "matriculas_por_10k": 136.37, "categoria": "bom", "categoria_micro": "bom"}, {"id": 24, "label": "Caxang\u00e1", "x": 317.10041958682643, "y": 5221.322366605668, "microrregiao": "4.3", "taxa_analfabetismo": 6.7, "taxa_alfabetizacao": 93.3, "faixa_analfabetismo": "Na m\u00e9dia nacional (6% a 8%)", "taxa_analfabetismo_micro": 11.4, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 9634, "unidades": 5, "matriculas": 399, "unidades_por_10k": 5.19, "matriculas_por_10k": 414.16, "categoria": "regular", "categoria_micro": null}, {"id": 25, "label": "Ca\u00e7ote", "x": 3152.7898275651546, "y": 5478.93879636021, "microrregiao": "5.2", "taxa_analfabetismo": 8.6, "taxa_alfabetizacao": 91.4, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 7.8, "faixa_analfabetismo_micro": "Na m\u00e9dia nacional (6% a 8%)", "populacao": 10470, "unidades": 2, "matriculas": 339, "unidades_por_10k": 1.91, "matriculas_por_10k": 323.78, "categoria": null, "categoria_micro": "regular"}, {"id": 26, "label": "Cidade Universit\u00e1ria", "x": 348.8100083914505, "y": 5752.904951201046, "microrregiao": "4.3", "taxa_analfabetismo": 7.2, "taxa_alfabetizacao": 92.8, "faixa_analfabetismo": "Na m\u00e9dia nacional (6% a 8%)", "taxa_analfabetismo_micro": 11.4, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 818, "unidades": 1, "matriculas": 118, "unidades_por_10k": 12.22, "matriculas_por_10k": 1442.54, "categoria": "regular", "categoria_micro": null}, {"id": 27, "label": "Coelhos", "x": 3769.207936436296, "y": 992.2159966799684, "microrregiao": "1.3", "taxa_analfabetismo": 12.3, "taxa_alfabetizacao": 87.7, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 15.1, "faixa_analfabetismo_micro": "Cr\u00edtico (>=15%)", "populacao": 7655, "unidades": 3, "matriculas": 776, "unidades_por_10k": 3.92, "matriculas_por_10k": 1013.72, "categoria": null, "categoria_micro": null}, {"id": 28, "label": "Cohab", "x": 5000, "y": 7000, "microrregiao": "6.3", "taxa_analfabetismo": 7.4, "taxa_alfabetizacao": 92.6, "faixa_analfabetismo": "Na m\u00e9dia nacional (6% a 8%)", "taxa_analfabetismo_micro": 7.4, "faixa_analfabetismo_micro": "Na m\u00e9dia nacional (6% a 8%)", "populacao": 67283, "unidades": 25, "matriculas": 5338, "unidades_por_10k": 3.72, "matriculas_por_10k": 793.37, "categoria": "regular", "categoria_micro": "regular"}, {"id": 29, "label": "Coqueiral", "x": 4904.138787710832, "y": 5945.102036746656, "microrregiao": "5.3", "taxa_analfabetismo": 8.7, "taxa_alfabetizacao": 91.3, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 9.9, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 10794, "unidades": 5, "matriculas": 874, "unidades_por_10k": 4.63, "matriculas_por_10k": 809.71, "categoria": null, "categoria_micro": null}, {"id": 30, "label": "Cordeiro", "x": 3639.061363182362, "y": 4217.674621398446, "microrregiao": "4.1", "taxa_analfabetismo": 9.7, "taxa_alfabetizacao": 90.3, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 8.7, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 20215, "unidades": 8, "matriculas": 384, "unidades_por_10k": 3.96, "matriculas_por_10k": 189.96, "categoria": null, "categoria_micro": null}, {"id": 31, "label": "Curado", "x": 5386.682518995254, "y": 5514.096179857981, "microrregiao": "5.3", "taxa_analfabetismo": 9.7, "taxa_alfabetizacao": 90.3, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 9.9, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 16418, "unidades": 2, "matriculas": 350, "unidades_por_10k": 1.22, "matriculas_por_10k": 213.18, "categoria": null, "categoria_micro": null}, {"id": 32, "label": "C\u00f3rrego do Jenipapo", "x": 2530.712827327438, "y": 3582.973178669382, "microrregiao": "3.3", "taxa_analfabetismo": 10.1, "taxa_alfabetizacao": 89.9, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 11.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 7608, "unidades": 2, "matriculas": 207, "unidades_por_10k": 2.63, "matriculas_por_10k": 272.08, "categoria": null, "categoria_micro": null}, {"id": 33, "label": "Derby", "x": 4737.303503801611, "y": 1876.7422772418195, "microrregiao": "3.1", "taxa_analfabetismo": 3.7, "taxa_alfabetizacao": 96.3, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 5811, "unidades": 1, "matriculas": 198, "unidades_por_10k": 1.72, "matriculas_por_10k": 340.73, "categoria": "bom", "categoria_micro": "bom"}, {"id": 34, "label": "Dois Irm\u00e3os", "x": 5654.48916211519, "y": 2764.162637020224, "microrregiao": "3.1", "taxa_analfabetismo": 13.8, "taxa_alfabetizacao": 86.2, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 2613, "unidades": 3, "matriculas": 544, "unidades_por_10k": 11.48, "matriculas_por_10k": 2081.9, "categoria": null, "categoria_micro": "bom"}, {"id": 35, "label": "Dois Unidos", "x": 2847.357862301992, "y": 3247.849833901155, "microrregiao": "2.2 / 2.3", "taxa_analfabetismo": 11.7, "taxa_alfabetizacao": 88.3, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 11.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 32805, "unidades": 6, "matriculas": 1070, "unidades_por_10k": 1.83, "matriculas_por_10k": 326.17, "categoria": null, "categoria_micro": null}, {"id": 36, "label": "Encruzilhada", "x": 605.2617649198585, "y": 2980.529592658029, "microrregiao": "2.1", "taxa_analfabetismo": 10.5, "taxa_alfabetizacao": 89.5, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 11.3, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 11940, "unidades": 2, "matriculas": 241, "unidades_por_10k": 1.68, "matriculas_por_10k": 201.84, "categoria": null, "categoria_micro": null}, {"id": 37, "label": "Engenho do Meio", "x": 5808.416521136596, "y": 3959.841787115196, "microrregiao": "4.2", "taxa_analfabetismo": 3.9, "taxa_alfabetizacao": 96.1, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 9.4, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 10458, "unidades": 7, "matriculas": 1085, "unidades_por_10k": 6.69, "matriculas_por_10k": 1037.48, "categoria": "bom", "categoria_micro": null}, {"id": 38, "label": "Espinheiro", "x": 5252.53852802835, "y": 1842.9417384365333, "microrregiao": "3.1", "taxa_analfabetismo": 1.9, "taxa_alfabetizacao": 98.1, "faixa_analfabetismo": "Quase perfeito (<2%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 10438, "unidades": 2, "matriculas": 274, "unidades_por_10k": 1.92, "matriculas_por_10k": 262.5, "categoria": "excelente", "categoria_micro": "bom"}, {"id": 39, "label": "Est\u00e2ncia", "x": 3856.170690031078, "y": 5507.735214525676, "microrregiao": "5.2", "taxa_analfabetismo": 11.4, "taxa_alfabetizacao": 88.6, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 7.8, "faixa_analfabetismo_micro": "Na m\u00e9dia nacional (6% a 8%)", "populacao": 10514, "unidades": 6, "matriculas": 1255, "unidades_por_10k": 5.71, "matriculas_por_10k": 1193.65, "categoria": null, "categoria_micro": "regular"}, {"id": 40, "label": "Fund\u00e3o", "x": 1596.6977822049114, "y": 2543.665458771249, "microrregiao": "2.2", "taxa_analfabetismo": 12.4, "taxa_alfabetizacao": 87.6, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 10.4, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 6178, "unidades": 1, "matriculas": 93, "unidades_por_10k": 1.62, "matriculas_por_10k": 150.53, "categoria": null, "categoria_micro": null}, {"id": 41, "label": "Gra\u00e7as", "x": 4545.750831723846, "y": 1982.0065352431238, "microrregiao": "3.1", "taxa_analfabetismo": 1.5, "taxa_alfabetizacao": 98.5, "faixa_analfabetismo": "Quase perfeito (<2%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 10539, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "categoria": "excelente", "categoria_micro": "bom"}, {"id": 42, "label": "Guabiraba", "x": 2019.2745843380148, "y": 3959.6716376833465, "microrregiao": "3.3", "taxa_analfabetismo": 14.4, "taxa_alfabetizacao": 85.6, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 11.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 6330, "unidades": 2, "matriculas": 549, "unidades_por_10k": 3.16, "matriculas_por_10k": 867.3, "categoria": null, "categoria_micro": null}, {"id": 43, "label": "Hip\u00f3dromo", "x": 50.536650199150124, "y": 2613.7291893068714, "microrregiao": "2.1", "taxa_analfabetismo": 2.3, "taxa_alfabetizacao": 97.7, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 11.3, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 2711, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "categoria": "bom", "categoria_micro": null}, {"id": 44, "label": "Ibura", "x": 3747.8534377208352, "y": 7005.204063127323, "microrregiao": "6.2", "taxa_analfabetismo": 8.4, "taxa_alfabetizacao": 91.6, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 8.2, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 50617, "unidades": 14, "matriculas": 2961, "unidades_por_10k": 2.77, "matriculas_por_10k": 584.98, "categoria": null, "categoria_micro": null}, {"id": 45, "label": "Ilha Joana Bezerra", "x": 4220.964913035066, "y": 1012.744604170309, "microrregiao": "1.3", "taxa_analfabetismo": 16.8, "taxa_alfabetizacao": 83.2, "faixa_analfabetismo": "Cr\u00edtico (>=15%)", "taxa_analfabetismo_micro": 15.1, "faixa_analfabetismo_micro": "Cr\u00edtico (>=15%)", "populacao": 12629, "unidades": 6, "matriculas": 949, "unidades_por_10k": 4.75, "matriculas_por_10k": 751.45, "categoria": null, "categoria_micro": null}, {"id": 46, "label": "Ilha do Leite", "x": 2876.340249376193, "y": 987.9455441757648, "microrregiao": "1.2", "taxa_analfabetismo": 3.2, "taxa_alfabetizacao": 96.8, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 3.3, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 1007, "unidades": 4, "matriculas": 291, "unidades_por_10k": 39.72, "matriculas_por_10k": 2889.77, "categoria": "bom", "categoria_micro": "bom"}, {"id": 47, "label": "Ilha do Retiro", "x": 4232.118835411886, "y": 4295.2136585812905, "microrregiao": "4.1", "taxa_analfabetismo": 10.8, "taxa_alfabetizacao": 89.2, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 8.7, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 3740, "unidades": 2, "matriculas": 280, "unidades_por_10k": 5.35, "matriculas_por_10k": 748.66, "categoria": null, "categoria_micro": null}, {"id": 48, "label": "Imbiribeira", "x": 1823.8004634368995, "y": 7016.8977778296285, "microrregiao": "6.1", "taxa_analfabetismo": 8.4, "taxa_alfabetizacao": 91.6, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 4.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 48512, "unidades": 19, "matriculas": 1341, "unidades_por_10k": 3.92, "matriculas_por_10k": 276.43, "categoria": null, "categoria_micro": "bom"}, {"id": 49, "label": "Ipsep", "x": 1214.1111545999477, "y": 6822.73710412671, "microrregiao": "6.1", "taxa_analfabetismo": 2.7, "taxa_alfabetizacao": 97.3, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 4.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 25029, "unidades": 5, "matriculas": 1067, "unidades_por_10k": 2.0, "matriculas_por_10k": 426.31, "categoria": "bom", "categoria_micro": "bom"}, {"id": 50, "label": "Iputinga", "x": 4214.72175997946, "y": 3634.1607297305814, "microrregiao": "4.1", "taxa_analfabetismo": 6.7, "taxa_alfabetizacao": 93.3, "faixa_analfabetismo": "Na m\u00e9dia nacional (6% a 8%)", "taxa_analfabetismo_micro": 8.7, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 52200, "unidades": 13, "matriculas": 2039, "unidades_por_10k": 2.49, "matriculas_por_10k": 390.61, "categoria": "regular", "categoria_micro": null}, {"id": 51, "label": "Jaqueira", "x": 4951.947674238583, "y": 3222.909861626462, "microrregiao": "3.1", "taxa_analfabetismo": 2.9, "taxa_alfabetizacao": 97.1, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 12129, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "categoria": "bom", "categoria_micro": "bom"}, {"id": 52, "label": "Jardim S\u00e3o Paulo", "x": 5235.475297906944, "y": 5193.344041674708, "microrregiao": "5.3", "taxa_analfabetismo": 5.1, "taxa_alfabetizacao": 94.9, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 9.9, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 31608, "unidades": 7, "matriculas": 1630, "unidades_por_10k": 2.21, "matriculas_por_10k": 515.69, "categoria": "bom", "categoria_micro": null}, {"id": 53, "label": "Jiqui\u00e1", "x": 3457.979197692363, "y": 5153.279088636103, "microrregiao": "5.2", "taxa_analfabetismo": 12.5, "taxa_alfabetizacao": 87.5, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 7.8, "faixa_analfabetismo_micro": "Na m\u00e9dia nacional (6% a 8%)", "populacao": 9245, "unidades": 1, "matriculas": 63, "unidades_por_10k": 1.08, "matriculas_por_10k": 68.14, "categoria": null, "categoria_micro": "regular"}, {"id": 54, "label": "Jord\u00e3o", "x": 3272.9404664252993, "y": 7011.851975236425, "microrregiao": "6.2", "taxa_analfabetismo": 7.6, "taxa_alfabetizacao": 92.4, "faixa_analfabetismo": "Na m\u00e9dia nacional (6% a 8%)", "taxa_analfabetismo_micro": 8.2, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 20777, "unidades": 12, "matriculas": 1545, "unidades_por_10k": 5.78, "matriculas_por_10k": 743.61, "categoria": "regular", "categoria_micro": null}, {"id": 55, "label": "Linha do Tiro", "x": 2877.907584945985, "y": 2766.189087631843, "microrregiao": "2.2 / 2.3", "taxa_analfabetismo": 11.1, "taxa_alfabetizacao": 88.9, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 11.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 11006, "unidades": 7, "matriculas": 1595, "unidades_por_10k": 6.36, "matriculas_por_10k": 1449.21, "categoria": null, "categoria_micro": null}, {"id": 56, "label": "Macaxeira", "x": 2234.5943234985975, "y": 4294.786438233344, "microrregiao": "3.3", "taxa_analfabetismo": 8.8, "taxa_alfabetizacao": 91.2, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 11.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 7336, "unidades": 8, "matriculas": 1307, "unidades_por_10k": 10.91, "matriculas_por_10k": 1781.62, "categoria": null, "categoria_micro": null}, {"id": 57, "label": "Madalena", "x": 3620.542814674048, "y": 3794.03974287753, "microrregiao": "4.1", "taxa_analfabetismo": 8.6, "taxa_alfabetizacao": 91.4, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 8.7, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 23082, "unidades": 6, "matriculas": 304, "unidades_por_10k": 2.6, "matriculas_por_10k": 131.7, "categoria": null, "categoria_micro": null}, {"id": 58, "label": "Mangabeira", "x": 1333.8085562147455, "y": 4008.8308718457233, "microrregiao": "3.2", "taxa_analfabetismo": 8.8, "taxa_alfabetizacao": 91.2, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 9.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 8759, "unidades": 2, "matriculas": 564, "unidades_por_10k": 2.28, "matriculas_por_10k": 643.91, "categoria": null, "categoria_micro": null}, {"id": 59, "label": "Mangueira", "x": 1667.9921541630504, "y": 5316.347343633654, "microrregiao": "5.1", "taxa_analfabetismo": 8.8, "taxa_alfabetizacao": 91.2, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 8.3, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 11086, "unidades": 1, "matriculas": 96, "unidades_por_10k": 0.9, "matriculas_por_10k": 86.6, "categoria": null, "categoria_micro": null}, {"id": 60, "label": "Monteiro", "x": 5508.695259069908, "y": 2983.86797842637, "microrregiao": "3.1", "taxa_analfabetismo": 5.9, "taxa_alfabetizacao": 94.1, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 5317, "unidades": 2, "matriculas": 114, "unidades_por_10k": 3.76, "matriculas_por_10k": 214.41, "categoria": "bom", "categoria_micro": "bom"}, {"id": 61, "label": "Morro da Concei\u00e7\u00e3o", "x": 1144.119488056606, "y": 3624.2159542855616, "microrregiao": "3.2", "taxa_analfabetismo": 12.6, "taxa_alfabetizacao": 87.4, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 9.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 10182, "unidades": 5, "matriculas": 215, "unidades_por_10k": 4.91, "matriculas_por_10k": 211.16, "categoria": null, "categoria_micro": null}, {"id": 62, "label": "Mustardinha", "x": 1763.9518897301302, "y": 5741.802808525815, "microrregiao": "5.1", "taxa_analfabetismo": 8.5, "taxa_alfabetizacao": 91.5, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 8.3, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 12429, "unidades": 3, "matriculas": 564, "unidades_por_10k": 2.41, "matriculas_por_10k": 453.78, "categoria": null, "categoria_micro": null}, {"id": 63, "label": "Nova Descoberta", "x": 2223.622452912665, "y": 3699.2456194146084, "microrregiao": "3.3", "taxa_analfabetismo": 9.2, "taxa_alfabetizacao": 90.8, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 11.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 9400, "unidades": 17, "matriculas": 2456, "unidades_por_10k": 18.09, "matriculas_por_10k": 2612.77, "categoria": null, "categoria_micro": null}, {"id": 64, "label": "Paissandu", "x": 2164.887956178989, "y": 1205.4923241928232, "microrregiao": "1.2", "taxa_analfabetismo": 5.7, "taxa_alfabetizacao": 94.3, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 3.3, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 507, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "categoria": "bom", "categoria_micro": "bom"}, {"id": 65, "label": "Parnamirim", "x": 5210.281923621055, "y": 3110.6536878081424, "microrregiao": "3.1", "taxa_analfabetismo": 6.4, "taxa_alfabetizacao": 93.6, "faixa_analfabetismo": "Na m\u00e9dia nacional (6% a 8%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 7636, "unidades": 1, "matriculas": 186, "unidades_por_10k": 1.31, "matriculas_por_10k": 243.58, "categoria": "regular", "categoria_micro": "bom"}, {"id": 66, "label": "Passarinho", "x": 2841.7089089053616, "y": 4330.940923220904, "microrregiao": "3.3", "taxa_analfabetismo": 15.7, "taxa_alfabetizacao": 84.3, "faixa_analfabetismo": "Cr\u00edtico (>=15%)", "taxa_analfabetismo_micro": 11.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 5856, "unidades": 6, "matriculas": 822, "unidades_por_10k": 10.25, "matriculas_por_10k": 1403.69, "categoria": null, "categoria_micro": null}, {"id": 67, "label": "Pau-ferro", "x": 2484.025051651799, "y": 4405.547949981178, "microrregiao": "3.3", "taxa_analfabetismo": 7.5, "taxa_alfabetizacao": 92.5, "faixa_analfabetismo": "Na m\u00e9dia nacional (6% a 8%)", "taxa_analfabetismo_micro": 11.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 6884, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "categoria": "regular", "categoria_micro": null}, {"id": 68, "label": "Peixinhos", "x": 30.20826571098336, "y": 2339.7860614472715, "microrregiao": "2.1", "taxa_analfabetismo": 18.6, "taxa_alfabetizacao": 81.4, "faixa_analfabetismo": "Cr\u00edtico (>=15%)", "taxa_analfabetismo_micro": 11.3, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 16717, "unidades": 3, "matriculas": 250, "unidades_por_10k": 1.79, "matriculas_por_10k": 149.55, "categoria": null, "categoria_micro": null}, {"id": 69, "label": "Pina", "x": 1579.5796287682756, "y": 7296.100965575806, "microrregiao": "6.1", "taxa_analfabetismo": 7.8, "taxa_alfabetizacao": 92.2, "faixa_analfabetismo": "Na m\u00e9dia nacional (6% a 8%)", "taxa_analfabetismo_micro": 4.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 29176, "unidades": 8, "matriculas": 1859, "unidades_por_10k": 2.74, "matriculas_por_10k": 637.17, "categoria": "regular", "categoria_micro": "bom"}, {"id": 70, "label": "Ponto de Parada", "x": 596.6030872814093, "y": 2041.634504144584, "microrregiao": "2.1", "taxa_analfabetismo": 4.6, "taxa_alfabetizacao": 95.4, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 11.3, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 1684, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "categoria": "bom", "categoria_micro": null}, {"id": 71, "label": "Porto da Madeira", "x": 1797.0180967116883, "y": 2800.0403565152355, "microrregiao": "2.2", "taxa_analfabetismo": 15.3, "taxa_alfabetizacao": 84.7, "faixa_analfabetismo": "Cr\u00edtico (>=15%)", "taxa_analfabetismo_micro": 10.4, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 5087, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "categoria": null, "categoria_micro": null}, {"id": 72, "label": "Po\u00e7o", "x": 4278.565345206788, "y": 2498.599046331661, "microrregiao": "3.1", "taxa_analfabetismo": 7.2, "taxa_alfabetizacao": 92.8, "faixa_analfabetismo": "Na m\u00e9dia nacional (6% a 8%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 4571, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "categoria": "regular", "categoria_micro": "bom"}, {"id": 73, "label": "Prado", "x": 3958.5201777274224, "y": 3601.2321853730987, "microrregiao": "4.1", "taxa_analfabetismo": 6.2, "taxa_alfabetizacao": 93.8, "faixa_analfabetismo": "Na m\u00e9dia nacional (6% a 8%)", "taxa_analfabetismo_micro": 8.7, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 10814, "unidades": 3, "matriculas": 392, "unidades_por_10k": 2.77, "matriculas_por_10k": 362.49, "categoria": "regular", "categoria_micro": null}, {"id": 74, "label": "Recife", "x": 1297.636762647267, "y": 981.4677880798478, "microrregiao": "1.1", "taxa_analfabetismo": 18.3, "taxa_alfabetizacao": 81.7, "faixa_analfabetismo": "Cr\u00edtico (>=15%)", "taxa_analfabetismo_micro": 9.7, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 602, "unidades": 5, "matriculas": 465, "unidades_por_10k": 83.06, "matriculas_por_10k": 7724.25, "categoria": null, "categoria_micro": null}, {"id": 75, "label": "Rosarinho", "x": 837.5438201028315, "y": 2774.431250367556, "microrregiao": "2.1", "taxa_analfabetismo": 4.7, "taxa_alfabetizacao": 95.3, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 11.3, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 4077, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "categoria": "bom", "categoria_micro": null}, {"id": 76, "label": "San Martin", "x": 2157.7680860552414, "y": 5835.781215213217, "microrregiao": "5.1", "taxa_analfabetismo": 10.2, "taxa_alfabetizacao": 89.8, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 8.3, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 13181, "unidades": 8, "matriculas": 1799, "unidades_por_10k": 6.07, "matriculas_por_10k": 1364.84, "categoria": null, "categoria_micro": null}, {"id": 77, "label": "Sancho", "x": 4668.188058197828, "y": 5654.231238113308, "microrregiao": "5.3", "taxa_analfabetismo": 13.1, "taxa_alfabetizacao": 86.9, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 9.9, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 9111, "unidades": 3, "matriculas": 673, "unidades_por_10k": 3.29, "matriculas_por_10k": 738.67, "categoria": null, "categoria_micro": null}, {"id": 78, "label": "Santana", "x": 4409.562877812729, "y": 2804.919678538061, "microrregiao": "3.1", "taxa_analfabetismo": 11.1, "taxa_alfabetizacao": 88.9, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 3133, "unidades": 1, "matriculas": 0, "unidades_por_10k": 3.19, "matriculas_por_10k": 0.0, "categoria": null, "categoria_micro": "bom"}, {"id": 79, "label": "Santo Amaro", "x": 755.543866529488, "y": 989.5631901060665, "microrregiao": "1.1", "taxa_analfabetismo": 9.5, "taxa_alfabetizacao": 90.5, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 9.7, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 27939, "unidades": 14, "matriculas": 1241, "unidades_por_10k": 5.01, "matriculas_por_10k": 444.18, "categoria": null, "categoria_micro": null}, {"id": 80, "label": "Santo Ant\u00f4nio", "x": 2414.4613914553756, "y": 1418.1818690935352, "microrregiao": "1.2", "taxa_analfabetismo": 0.7, "taxa_alfabetizacao": 99.3, "faixa_analfabetismo": "Quase perfeito (<2%)", "taxa_analfabetismo_micro": 3.3, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 285, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "categoria": "excelente", "categoria_micro": "bom"}, {"id": 81, "label": "Soledade", "x": 2726.7291031207133, "y": 723.7400636216131, "microrregiao": "1.2", "taxa_analfabetismo": 1.8, "taxa_alfabetizacao": 98.2, "faixa_analfabetismo": "Quase perfeito (<2%)", "taxa_analfabetismo_micro": 3.3, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 2495, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "categoria": "excelente", "categoria_micro": "bom"}, {"id": 82, "label": "S\u00e3o Jos\u00e9", "x": 2804.5831538257403, "y": 1334.5508837973014, "microrregiao": "1.2", "taxa_analfabetismo": 6.5, "taxa_alfabetizacao": 93.5, "faixa_analfabetismo": "Na m\u00e9dia nacional (6% a 8%)", "taxa_analfabetismo_micro": 3.3, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 8688, "unidades": 1, "matriculas": 81, "unidades_por_10k": 1.15, "matriculas_por_10k": 93.23, "categoria": "regular", "categoria_micro": "bom"}, {"id": 83, "label": "S\u00edtio dos Pintos", "x": 4777.647453774057, "y": 3161.404635043793, "microrregiao": "3.1", "taxa_analfabetismo": 8.5, "taxa_alfabetizacao": 91.5, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 7276, "unidades": 1, "matriculas": 281, "unidades_por_10k": 1.37, "matriculas_por_10k": 386.2, "categoria": null, "categoria_micro": "bom"}, {"id": 84, "label": "Tamarineira", "x": 4976.505662894006, "y": 1857.2433041085258, "microrregiao": "3.1", "taxa_analfabetismo": 1.1, "taxa_alfabetizacao": 98.9, "faixa_analfabetismo": "Quase perfeito (<2%)", "taxa_analfabetismo_micro": 3.7, "faixa_analfabetismo_micro": "Melhor que a m\u00e9dia nacional (2% a <6%)", "populacao": 23085, "unidades": 4, "matriculas": 165, "unidades_por_10k": 1.73, "matriculas_por_10k": 71.47, "categoria": "excelente", "categoria_micro": "bom"}, {"id": 85, "label": "Tejipi\u00f3", "x": 4950.029201012393, "y": 5137.331412989129, "microrregiao": "5.3", "taxa_analfabetismo": 12.7, "taxa_alfabetizacao": 87.3, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 9.9, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 17770, "unidades": 2, "matriculas": 447, "unidades_por_10k": 1.13, "matriculas_por_10k": 251.55, "categoria": null, "categoria_micro": null}, {"id": 86, "label": "Torre", "x": 4451.454758974054, "y": 3995.88518525874, "microrregiao": "4.1", "taxa_analfabetismo": 5.1, "taxa_alfabetizacao": 94.9, "faixa_analfabetismo": "Melhor que a m\u00e9dia nacional (2% a <6%)", "taxa_analfabetismo_micro": 8.7, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 13904, "unidades": 4, "matriculas": 579, "unidades_por_10k": 2.88, "matriculas_por_10k": 416.43, "categoria": "bom", "categoria_micro": null}, {"id": 87, "label": "Torre\u00e3o", "x": 217.65359696838613, "y": 2062.851825289979, "microrregiao": "2.1", "taxa_analfabetismo": 1.9, "taxa_alfabetizacao": 98.1, "faixa_analfabetismo": "Quase perfeito (<2%)", "taxa_analfabetismo_micro": 11.3, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 1083, "unidades": 1, "matriculas": 132, "unidades_por_10k": 9.23, "matriculas_por_10k": 1218.84, "categoria": "excelente", "categoria_micro": null}, {"id": 88, "label": "Torr\u00f5es", "x": 5230.262128210227, "y": 3983.9302605394964, "microrregiao": "4.2", "taxa_analfabetismo": 11.2, "taxa_alfabetizacao": 88.8, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 9.4, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 32015, "unidades": 10, "matriculas": 1467, "unidades_por_10k": 3.12, "matriculas_por_10k": 458.22, "categoria": null, "categoria_micro": null}, {"id": 89, "label": "Tot\u00f3", "x": 4630.661375465038, "y": 5289.972855014815, "microrregiao": "5.3", "taxa_analfabetismo": 14.8, "taxa_alfabetizacao": 85.2, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 9.9, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 12445, "unidades": 2, "matriculas": 51, "unidades_por_10k": 1.61, "matriculas_por_10k": 40.98, "categoria": null, "categoria_micro": null}, {"id": 90, "label": "Vasco da Gama", "x": 689.7382303498838, "y": 3834.817162998247, "microrregiao": "3.2", "taxa_analfabetismo": 8.2, "taxa_alfabetizacao": 91.8, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 9.0, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 31025, "unidades": 11, "matriculas": 1628, "unidades_por_10k": 3.55, "matriculas_por_10k": 524.74, "categoria": null, "categoria_micro": null}, {"id": 91, "label": "V\u00e1rzea", "x": 839.5149356660895, "y": 5514.987805763945, "microrregiao": "4.3", "taxa_analfabetismo": 12.8, "taxa_alfabetizacao": 87.2, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 11.4, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 34001, "unidades": 16, "matriculas": 2443, "unidades_por_10k": 4.71, "matriculas_por_10k": 718.51, "categoria": null, "categoria_micro": null}, {"id": 92, "label": "Zumbi", "x": 3914.903230494226, "y": 4375.994604846842, "microrregiao": "4.1", "taxa_analfabetismo": 14.1, "taxa_alfabetizacao": 85.9, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 8.7, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 30146, "unidades": 0, "matriculas": 0, "unidades_por_10k": 0.0, "matriculas_por_10k": 0.0, "categoria": null, "categoria_micro": null}, {"id": 93, "label": "\u00c1gua Fria", "x": 1824.8035385246592, "y": 2181.823447128612, "microrregiao": "2.2", "taxa_analfabetismo": 9.6, "taxa_alfabetizacao": 90.4, "faixa_analfabetismo": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "taxa_analfabetismo_micro": 10.4, "faixa_analfabetismo_micro": "Abaixo da m\u00e9dia nacional (>8% e <15%)", "populacao": 43529, "unidades": 15, "matriculas": 2074, "unidades_por_10k": 3.45, "matriculas_por_10k": 476.46, "categoria": null, "categoria_micro": null}];
+        const edges = [{"from": 3, "to": 58, "label": "Rua Aripibu", "peso": 29.85}, {"from": 57, "to": 73, "label": "Praca Na Rua Joao Crescencio", "peso": 37.33}, {"from": 36, "to": 38, "label": "Rua Conselheiro Portela", "peso": 39.05}, {"from": 1, "to": 62, "label": "Rua Orlandia", "peso": 39.93}, {"from": 4, "to": 13, "label": "Rua Alto do Tiro", "peso": 41.0}, {"from": 21, "to": 70, "label": "Rua Professor Jeronimo Gueiros", "peso": 47.09}, {"from": 15, "to": 69, "label": "Rua Dentudo", "peso": 51.9}, {"from": 22, "to": 60, "label": "Rua Iguatama", "peso": 57.87}, {"from": 17, "to": 66, "label": "Avenida Presidente Cafe Filho", "peso": 58.0}, {"from": 35, "to": 66, "label": "Rua Vale Fundo", "peso": 58.94}, {"from": 56, "to": 63, "label": "Rua Nage", "peso": 62.85}, {"from": 5, "to": 60, "label": "Rua Tramandai", "peso": 66.33}, {"from": 31, "to": 52, "label": "Rua Raphael De Oliveira Alves", "peso": 68.49}, {"from": 3, "to": 13, "label": "Rua Campos Belos", "peso": 69.54}, {"from": 4, "to": 2, "label": "Rua Arlindo Cisneiros", "peso": 72.0}, {"from": 4, "to": 55, "label": "Rua Arlindo Cisneiros", "peso": 72.0}, {"from": 47, "to": 45, "label": "Avenida Beira Rio", "peso": 76.03}, {"from": 93, "to": 13, "label": "Rua Turiuba", "peso": 76.43}, {"from": 30, "to": 88, "label": "Rua Daniel Lisboa", "peso": 81.91}, {"from": 16, "to": 32, "label": "Rua Assaituba", "peso": 84.27}, {"from": 79, "to": 80, "label": "Rua Princesa Isabel", "peso": 91.36}, {"from": 80, "to": 82, "label": "Rua Do Porao", "peso": 94.58}, {"from": 17, "to": 35, "label": "Rua Izaltino Lobo", "peso": 95.66}, {"from": 38, "to": 41, "label": "Rua Conselheiro Portela", "peso": 100.77}, {"from": 39, "to": 53, "label": "Rua Cassiano", "peso": 102.45}, {"from": 28, "to": 9, "label": "Rua Jos\u00e9 Caetano", "peso": 108.0}, {"from": 28, "to": 44, "label": "Rua Jos\u00e9 Caetano", "peso": 108.0}, {"from": 17, "to": 63, "label": "Rua Urandi", "peso": 108.15}, {"from": 31, "to": 89, "label": "Rua Garcia", "peso": 108.58}, {"from": 6, "to": 56, "label": "Rua Do Banho", "peso": 109.77}, {"from": 21, "to": 43, "label": "Rua Padre Villemain", "peso": 113.6}, {"from": 16, "to": 66, "label": "Avenida Presidente Cafe Filho", "peso": 114.06}, {"from": 4, "to": 3, "label": "Rua Arlindo Cisneiros", "peso": 115.0}, {"from": 44, "to": 54, "label": "Rua Boquira", "peso": 115.52}, {"from": 26, "to": 91, "label": "Rua Barao De Mamore", "peso": 116.77}, {"from": 75, "to": 84, "label": "Rua Capitao Sampaio Xavier", "peso": 117.37}, {"from": 2, "to": 3, "label": "Rua Corrego Jose Grande", "peso": 120.48}, {"from": 16, "to": 63, "label": "Rua Teolandia", "peso": 121.67}, {"from": 57, "to": 92, "label": "Rua Joao Da Mata", "peso": 123.82}, {"from": 36, "to": 41, "label": "Rua Conselheiro Portela", "peso": 124.63}, {"from": 63, "to": 90, "label": "Rua Bemposta", "peso": 124.87}, {"from": 29, "to": 89, "label": "Rua Escada", "peso": 128.39}, {"from": 36, "to": 87, "label": "Rua Natividade Saldanha", "peso": 128.73}, {"from": 52, "to": 85, "label": "Rua Iraguacu", "peso": 131.23}, {"from": 41, "to": 51, "label": "Rua Antonio Celso Uchoa Cavalcanti", "peso": 132.18}, {"from": 16, "to": 17, "label": "Avenida Presidente Cafe Filho", "peso": 133.4}, {"from": 2, "to": 90, "label": "Rua Aratuba", "peso": 135.17}, {"from": 9, "to": 85, "label": "Rua Capy", "peso": 135.95}, {"from": 10, "to": 55, "label": "Avenida Hildebrando De Vasconcelos", "peso": 142.86}, {"from": 2, "to": 17, "label": "Rua Uriel De Holanda", "peso": 143.9}, {"from": 12, "to": 81, "label": "Rua Bispo Cardoso Ayres", "peso": 144.74}, {"from": 35, "to": 55, "label": "Rua Izaltino Lobo", "peso": 144.74}, {"from": 93, "to": 40, "label": "Rua Contendas", "peso": 145.65}, {"from": 37, "to": 88, "label": "Rua Dr Miguel Vieira Ferreira", "peso": 148.89}, {"from": 17, "to": 55, "label": "Rua Izaltino Lobo", "peso": 154.96}, {"from": 41, "to": 75, "label": "Rua Teles Junior", "peso": 159.83}, {"from": 6, "to": 60, "label": "Rua Mandacaru", "peso": 160.86}, {"from": 33, "to": 47, "label": "Avenida Beira Rio", "peso": 161.09}, {"from": 33, "to": 57, "label": "Avenida Beira Rio", "peso": 161.09}, {"from": 23, "to": 65, "label": "Rua Da Harmonia", "peso": 168.23}, {"from": 8, "to": 13, "label": "Rua Professor Manuel Torres", "peso": 168.69}, {"from": 1, "to": 14, "label": "Rua Professor Celestin Malzac", "peso": 171.82}, {"from": 57, "to": 86, "label": "Avenida Beira Rio", "peso": 177.05}, {"from": 7, "to": 9, "label": "Rua Armando Sales De Oliveira", "peso": 177.53}, {"from": 74, "to": 80, "label": "Ponte Maur\u00edcio de Nassau", "peso": 180.0}, {"from": 11, "to": 69, "label": "Rua Delegado Tercio Soares De Aquino", "peso": 182.89}, {"from": 22, "to": 61, "label": "Rua Joaquim Teixeira", "peso": 188.34}, {"from": 11, "to": 48, "label": "Rua Capitao Vicente Da Mota", "peso": 193.4}, {"from": 22, "to": 23, "label": "Rua Joao Barbalho", "peso": 194.98}, {"from": 74, "to": 82, "label": "Ponte 12 de Setembro", "peso": 195.0}, {"from": 65, "to": 84, "label": "Rua Albino Meira", "peso": 196.16}, {"from": 20, "to": 68, "label": "Rua Jornalista Paulo Matos", "peso": 196.42}, {"from": 43, "to": 70, "label": "Rua Costa Pinto", "peso": 196.92}, {"from": 5, "to": 56, "label": "Rua Aroeira", "peso": 202.19}, {"from": 39, "to": 52, "label": "Rua Alfredo Vieira De Melo", "peso": 205.71}, {"from": 8, "to": 58, "label": "Rua Jacob", "peso": 206.67}, {"from": 14, "to": 62, "label": "Rua Itapolis", "peso": 206.94}, {"from": 62, "to": 76, "label": "Rua Itaquari", "peso": 210.23}, {"from": 0, "to": 41, "label": "Rua Teles Junior", "peso": 212.27}, {"from": 12, "to": 33, "label": "Rua Paissandu", "peso": 212.41}, {"from": 12, "to": 27, "label": "Rua Jornalista Edmundo Bittencourt", "peso": 213.19}, {"from": 32, "to": 56, "label": "Rua Trajano De Morais", "peso": 214.3}, {"from": 51, "to": 84, "label": "Rua Simao Mendes", "peso": 221.7}, {"from": 29, "to": 85, "label": "Rua Tutoia", "peso": 222.82}, {"from": 22, "to": 84, "label": "Rua Desembargador Gois Cavalcante", "peso": 224.14}, {"from": 8, "to": 21, "label": "Rua Petronila Botelho", "peso": 229.73}, {"from": 0, "to": 36, "label": "Rua Samuel Campelo", "peso": 231.42}, {"from": 36, "to": 75, "label": "Rua Teles Junior", "peso": 232.62}, {"from": 18, "to": 82, "label": "Rua Bom Sucesso", "peso": 235.15}, {"from": 7, "to": 39, "label": "Rua Dr Adelino Filho", "peso": 242.09}, {"from": 41, "to": 84, "label": "Rua Capitao Sampaio Xavier", "peso": 244.62}, {"from": 72, "to": 60, "label": "Estrada do Encanamento", "peso": 245.0}, {"from": 46, "to": 64, "label": "Rua Dr Joao Asfora", "peso": 246.51}, {"from": 14, "to": 73, "label": "Rua Professor Mario Ramos", "peso": 248.83}, {"from": 19, "to": 20, "label": "Rua Nadia", "peso": 254.48}, {"from": 0, "to": 38, "label": "Avenida Conselheiro Rosa E Silva", "peso": 263.32}, {"from": 36, "to": 70, "label": "Rua Costa Pinto", "peso": 265.9}, {"from": 13, "to": 58, "label": "Rua Jacob", "peso": 266.48}, {"from": 1, "to": 59, "label": "Rua Vereador Francisco De Paula Santana", "peso": 268.13}, {"from": 59, "to": 76, "label": "Rua Tanguara", "peso": 270.67}, {"from": 93, "to": 20, "label": "Rua Coronel Urbano Ribeiro De Sena", "peso": 272.88}, {"from": 10, "to": 71, "label": "Rua Dona Virtuosa De Lucena", "peso": 276.19}, {"from": 86, "to": 92, "label": "Rua Souza Bandeira", "peso": 277.3}, {"from": 61, "to": 90, "label": "Rua Corrego Do Ouro", "peso": 279.5}, {"from": 22, "to": 65, "label": "Rua Da Estrela", "peso": 280.12}, {"from": 40, "to": 71, "label": "Avenida Anibal Benevolo", "peso": 287.89}, {"from": 36, "to": 43, "label": "Rua Costa Pinto", "peso": 293.18}, {"from": 8, "to": 70, "label": "Rua Petronila Botelho", "peso": 294.86}, {"from": 17, "to": 90, "label": "Rua Grijalva Costa", "peso": 298.99}, {"from": 27, "to": 80, "label": "Rua Doutor Jose Mariano", "peso": 299.14}, {"from": 74, "to": 79, "label": "Ponte do Limoeiro", "peso": 300.0}, {"from": 21, "to": 87, "label": "Rua Da Fronteira", "peso": 309.43}, {"from": 51, "to": 65, "label": "Rua Muniz Tavares", "peso": 311.31}, {"from": 19, "to": 71, "label": "Rua Para", "peso": 315.29}, {"from": 47, "to": 57, "label": "Rua Joao Ivo Da Silva", "peso": 321.53}, {"from": 6, "to": 34, "label": "Entrada Br 101-Avenida Norte", "peso": 325.98}, {"from": 30, "to": 92, "label": "Rua Padre Leonardo Greco", "peso": 330.27}, {"from": 12, "to": 80, "label": "Rua Princesa Isabel", "peso": 334.97}, {"from": 48, "to": 49, "label": "Rua Jose Fernandes Portugal", "peso": 338.65}, {"from": 33, "to": 64, "label": "Rua Viscondessa Do Livramento", "peso": 340.09}, {"from": 29, "to": 77, "label": "Rua Paulino De Farias", "peso": 343.94}, {"from": 21, "to": 36, "label": "Rua Cristovao Jaques", "peso": 344.86}, {"from": 5, "to": 6, "label": "Rua Massaranduba", "peso": 348.17}, {"from": 12, "to": 79, "label": "Rua Do Principe", "peso": 355.79}, {"from": 72, "to": 22, "label": "Rua Engenheiro Oscar Ferreira", "peso": 363.0}, {"from": 12, "to": 64, "label": "Rua General Joaquim Inacio", "peso": 363.79}, {"from": 27, "to": 46, "label": "Rua Jose De Alencar", "peso": 367.04}, {"from": 70, "to": 75, "label": "Rua Almirante Noronha De Carvalho", "peso": 372.98}, {"from": 53, "to": 76, "label": "Rua Cordelia Gois Silva", "peso": 373.33}, {"from": 79, "to": 81, "label": "Rua Bispo Cardoso Ayres", "peso": 377.79}, {"from": 30, "to": 37, "label": "Rua Bom Pastor", "peso": 378.02}, {"from": 93, "to": 8, "label": "Rua Sao Bento", "peso": 379.35}, {"from": 78, "to": 86, "label": "Avenida Beira Rio", "peso": 384.28}, {"from": 2, "to": 55, "label": "Rua Gustavo Barrozo", "peso": 385.65}, {"from": 2, "to": 61, "label": "Rua Corrego Do Ouro", "peso": 394.34}, {"from": 77, "to": 85, "label": "Rua Matoso Da Camara", "peso": 399.87}, {"from": 93, "to": 71, "label": "Rua Conselheiro Barros Barreto", "peso": 413.84}, {"from": 77, "to": 89, "label": "Rua Do Nascente", "peso": 420.9}, {"from": 1, "to": 53, "label": "Rua Bom Jardim", "peso": 424.78}, {"from": 30, "to": 50, "label": "Avenida Camarao", "peso": 428.68}, {"from": 33, "to": 41, "label": "Rua Guilherme Pinto", "peso": 437.43}, {"from": 72, "to": 23, "label": "Estrada do Encanamento", "peso": 444.0}, {"from": 32, "to": 63, "label": "Rua Alto Santa Luzia", "peso": 448.61}, {"from": 12, "to": 46, "label": "Rua Visconde De Goiana", "peso": 450.56}, {"from": 73, "to": 92, "label": "Rua Caratinga", "peso": 457.11}, {"from": 31, "to": 76, "label": "Rua Dr Flavio Ferreira Da Silva Marojo", "peso": 475.99}, {"from": 26, "to": 50, "label": "Rua Mauriceia", "peso": 484.48}, {"from": 14, "to": 76, "label": "Rua Acajutiba", "peso": 488.14}, {"from": 48, "to": 69, "label": "Rua Sao Jose", "peso": 504.4}, {"from": 1, "to": 73, "label": "Rua Santa Edwirges", "peso": 534.89}, {"from": 19, "to": 40, "label": "Avenida Nova Do Fundao", "peso": 550.74}, {"from": 76, "to": 88, "label": "Avenida Recife", "peso": 559.87}, {"from": 83, "to": 34, "label": "Rua Dois Irm\u00e3os", "peso": 602.0}, {"from": 16, "to": 42, "label": "Avenida Embaixador Assis Chateaubriand", "peso": 603.06}, {"from": 26, "to": 37, "label": "Rua General Vargas", "peso": 609.94}, {"from": 31, "to": 88, "label": "Rua Vinte E Um De Abril", "peso": 620.72}, {"from": 5, "to": 22, "label": "Avenida Doutor Eurico Chaves", "peso": 632.25}, {"from": 53, "to": 59, "label": "Rua Bom Jardim", "peso": 645.29}, {"from": 5, "to": 63, "label": "Avenida Norte Miguel Arraes De Alencar", "peso": 655.79}, {"from": 51, "to": 78, "label": "Rua Leonardo Bezerra Cavalcanti", "peso": 666.14}, {"from": 69, "to": 82, "label": "Avenida Ant\u00f4nio de Goes", "peso": 700.0}, {"from": 31, "to": 37, "label": "Avenida Visconde De Sao Leopoldo", "peso": 708.99}, {"from": 65, "to": 78, "label": "Rua Leonardo Bezerra Cavalcanti", "peso": 709.22}, {"from": 4, "to": 93, "label": "Rua Tamboara", "peso": 718.0}, {"from": 44, "to": 48, "label": "Rua Goncalves De Magalhaes", "peso": 734.33}, {"from": 23, "to": 78, "label": "Avenida Dezessete De Agosto", "peso": 739.83}, {"from": 7, "to": 25, "label": "Rua Aurora Cacote", "peso": 752.91}, {"from": 8, "to": 20, "label": "Rua Expedicionario Jamil Dagli", "peso": 759.53}, {"from": 8, "to": 68, "label": "Rua Expedicionario Jamil Dagli", "peso": 771.42}, {"from": 59, "to": 62, "label": "Rua Vinte E Um De Abril", "peso": 783.53}, {"from": 21, "to": 79, "label": "Rua Projetada", "peso": 849.75}, {"from": 18, "to": 69, "label": "Ponte Governador Paulo Guerra", "peso": 850.0}, {"from": 20, "to": 40, "label": "Rua Coronel Urbano Ribeiro De Sena", "peso": 856.13}, {"from": 7, "to": 53, "label": "Avenida Central", "peso": 862.25}, {"from": 10, "to": 35, "label": "Avenida Rio Morno", "peso": 886.9}, {"from": 37, "to": 50, "label": "Rua General Vargas", "peso": 894.11}, {"from": 6, "to": 32, "label": "Avenida Norte Miguel Arraes De Alencar", "peso": 905.91}, {"from": 24, "to": 50, "label": "Rua Ministro Joao Alberto", "peso": 946.87}, {"from": 30, "to": 86, "label": "Rua Souza Bandeira", "peso": 965.6}, {"from": 3, "to": 61, "label": "Avenida Norte Miguel Arraes De Alencar", "peso": 966.85}, {"from": 45, "to": 82, "label": "Rua Cabo Eutropio", "peso": 987.16}, {"from": 50, "to": 91, "label": "Rua Emiliano Braga", "peso": 1015.78}, {"from": 52, "to": 76, "label": "Avenida Recife", "peso": 1069.97}, {"from": 8, "to": 84, "label": "Estrada Velha De Agua Fria", "peso": 1070.64}, {"from": 41, "to": 57, "label": "Avenida Beira Rio", "peso": 1079.0}, {"from": 1, "to": 47, "label": "Rua Padre Teofilo Tworz", "peso": 1094.38}, {"from": 47, "to": 73, "label": "Rua Padre Teofilo Tworz", "peso": 1118.1}, {"from": 38, "to": 87, "label": "Avenida Norte Miguel Arraes De Alencar", "peso": 1135.74}, {"from": 31, "to": 91, "label": "Rua Historiador Luiz Do Nascimento", "peso": 1139.6}, {"from": 12, "to": 38, "label": "Avenida Joao De Barros", "peso": 1172.63}, {"from": 26, "to": 31, "label": "Avenida Professor Luiz Freire", "peso": 1205.38}, {"from": 30, "to": 73, "label": "Avenida General San Martin", "peso": 1224.98}, {"from": 41, "to": 86, "label": "Avenida Beira Rio", "peso": 1240.84}, {"from": 31, "to": 77, "label": "Avenida Liberdade", "peso": 1260.98}, {"from": 22, "to": 58, "label": "Avenida Professor Jose Dos Anjos", "peso": 1291.58}, {"from": 11, "to": 54, "label": "Rua Canal Do Jordao", "peso": 1305.13}, {"from": 93, "to": 10, "label": "Avenida Anibal Benevolo", "peso": 1337.76}, {"from": 72, "to": 78, "label": "Avenida Dezessete de Agosto", "peso": 1360.0}, {"from": 34, "to": 42, "label": "Rua Limite De Municipio", "peso": 1360.47}, {"from": 25, "to": 49, "label": "Avenida Recife", "peso": 1452.3}, {"from": 93, "to": 55, "label": "Avenida Anibal Benevolo", "peso": 1475.7}, {"from": 21, "to": 68, "label": "Avenida Correia De Brito", "peso": 1553.3}, {"from": 38, "to": 79, "label": "Avenida Joao De Barros", "peso": 1596.38}, {"from": 31, "to": 85, "label": "Avenida Liberdade", "peso": 1619.99}, {"from": 1, "to": 18, "label": "Avenida Sul Gov. Cid Sampaio", "peso": 450.0}, {"from": 73, "to": 76, "label": "Avenida General San Martin", "peso": 1899.57}, {"from": 58, "to": 84, "label": "Avenida Professor Jose Dos Anjos", "peso": 1908.33}, {"from": 42, "to": 66, "label": "Rua Limite De Municipio", "peso": 1917.32}, {"from": 6, "to": 24, "label": "Avenida Da Recuperacao", "peso": 2015.43}, {"from": 7, "to": 52, "label": "Avenida Central", "peso": 2039.99}, {"from": 39, "to": 76, "label": "Avenida Recife", "peso": 2102.86}, {"from": 30, "to": 76, "label": "Avenida Engenheiro Abdias De Carvalho", "peso": 2139.0}, {"from": 52, "to": 53, "label": "Avenida Central", "peso": 2317.7}, {"from": 8, "to": 75, "label": "Avenida Professor Jose Dos Anjos", "peso": 2534.02}, {"from": 22, "to": 63, "label": "Avenida Norte Miguel Arraes De Alencar", "peso": 2916.34}, {"from": 9, "to": 52, "label": "Avenida Central", "peso": 3320.07}, {"from": 7, "to": 49, "label": "Avenida Recife", "peso": 3352.46}, {"from": 79, "to": 87, "label": "Avenida Norte Miguel Arraes De Alencar", "peso": 3421.94}, {"from": 3, "to": 22, "label": "Avenida Norte Miguel Arraes De Alencar", "peso": 3445.6}, {"from": 24, "to": 91, "label": "Avenida Caxanga", "peso": 3470.48}, {"from": 22, "to": 90, "label": "Avenida Norte Miguel Arraes De Alencar", "peso": 3686.43}, {"from": 12, "to": 41, "label": "Avenida Governador Agamenon Magalhaes", "peso": 3893.66}, {"from": 24, "to": 34, "label": "Avenida Da Recuperacao", "peso": 4094.03}, {"from": 44, "to": 49, "label": "Avenida Recife", "peso": 4394.66}, {"from": 25, "to": 44, "label": "Avenida Recife", "peso": 4514.06}, {"from": 1, "to": 82, "label": "Avenida Sul Gov. Cid Sampaio", "peso": 4529.21}, {"from": 67, "to": 42, "label": "Estrada do Orfanato", "peso": 4710.0}, {"from": 1, "to": 45, "label": "Avenida Central", "peso": 4928.92}, {"from": 32, "to": 34, "label": "Avenida Da Recuperacao", "peso": 5093.86}, {"from": 11, "to": 44, "label": "Avenida Marechal Mascarenhas De Moraes", "peso": 5557.85}, {"from": 7, "to": 44, "label": "Avenida Recife", "peso": 6414.22}, {"from": 1, "to": 48, "label": "Avenida Sul Gov. Cid Sampaio", "peso": 7645.21}, {"from": 32, "to": 42, "label": "Avenida Da Recuperacao", "peso": 8377.9}];
+        const microregioes = [{"centro_x": 495.33919691876457, "centro_y": 2482.0006348459005, "raio": 610.5037636817206, "taxa_analfabetismo": 11.3, "categoria": null, "bairros": ["Campo Grande", "Rosarinho", "Encruzilhada", "Arruda", "Hip\u00f3dromo", "Peixinhos", "Torre\u00e3o", "Ponto de Parada", "Campina do Barreto"]}, {"centro_x": 2514.9538733961513, "centro_y": 3995.0000269808024, "raio": 596.9366686928347, "taxa_analfabetismo": 11.0, "categoria": null, "bairros": ["Brejo de Beberibe", "Passarinho", "Pau-ferro", "Macaxeira", "Guabiraba", "Nova Descoberta", "C\u00f3rrego do Jenipapo", "Brejo da Guabiraba"]}, {"centro_x": 3510.396952073067, "centro_y": 7008.528019181874, "raio": 337.4797491577783, "taxa_analfabetismo": 8.2, "categoria": null, "bairros": ["Ibura", "Jord\u00e3o"]}, {"centro_x": 3496.8492247275217, "centro_y": 5478.633884471889, "raio": 460.49799283601305, "taxa_analfabetismo": 7.8, "categoria": "regular", "bairros": ["Est\u00e2ncia", "Areias", "Ca\u00e7ote", "Jiqui\u00e1"]}, {"centro_x": 1986.5503116047469, "centro_y": 2502.1204200696916, "raio": 492.059925164717, "taxa_analfabetismo": 10.4, "categoria": null, "bairros": ["Cajueiro", "Alto Santa Teresinha", "Porto da Madeira", "Fund\u00e3o", "\u00c1gua Fria", "Bomba do Hemet\u00e9rio"]}, {"centro_x": 2497.2601638853216, "centro_y": 1003.183145690895, "raio": 554.9327086550385, "taxa_analfabetismo": 3.3, "categoria": "bom", "bairros": ["Ilha do Leite", "S\u00e3o Jos\u00e9", "Santo Ant\u00f4nio", "Paissandu", "Boa Vista", "Cabanga", "Soledade"]}, {"centro_x": 1026.5903145883776, "centro_y": 985.5154890929571, "raio": 371.0766697612169, "taxa_analfabetismo": 9.7, "categoria": null, "bairros": ["Recife", "Santo Amaro"]}, {"centro_x": 4004.474705777637, "centro_y": 3987.7429611523607, "raio": 547.0542067455247, "taxa_analfabetismo": 8.7, "categoria": null, "bairros": ["Torre", "Ilha do Retiro", "Zumbi", "Cordeiro", "Madalena", "Prado", "Iputinga"]}, {"centro_x": 3995.0864247356812, "centro_y": 1002.4803004251387, "raio": 326.11158176393474, "taxa_analfabetismo": 15.1, "categoria": null, "bairros": ["Ilha Joana Bezerra", "Coelhos"]}, {"centro_x": 2004.4783770995014, "centro_y": 5510.584109672183, "raio": 488.52400119831105, "taxa_analfabetismo": 8.3, "categoria": null, "bairros": ["Bongi", "San Martin", "Mustardinha", "Mangueira", "Afogados"]}, {"centro_x": 4998.851610772851, "centro_y": 5506.872171039343, "raio": 548.348005516058, "taxa_analfabetismo": 9.9, "categoria": null, "bairros": ["Curado", "Barro", "Coqueiral", "Sancho", "Tot\u00f3", "Tejipi\u00f3", "Jardim S\u00e3o Paulo"]}, {"centro_x": 4994.118913939623, "centro_y": 2502.2689567423367, "raio": 821.8737612977308, "taxa_analfabetismo": 3.7, "categoria": "bom", "bairros": ["Casa Forte", "Dois Irm\u00e3os", "Monteiro", "Parnamirim", "Jaqueira", "S\u00edtio dos Pintos", "Alto do Mandu", "Santana", "Po\u00e7o", "Apipucos", "Gra\u00e7as", "Derby", "Tamarineira", "Espinheiro", "Aflitos", "Casa Amarela"]}, {"centro_x": 501.80845454812214, "centro_y": 5496.40504119022, "raio": 438.2173657993962, "taxa_analfabetismo": 11.4, "categoria": null, "bairros": ["V\u00e1rzea", "Cidade Universit\u00e1ria", "Caxang\u00e1"]}, {"centro_x": 984.5554112963594, "centro_y": 3998.318128461474, "raio": 506.7101318082628, "taxa_analfabetismo": 9.0, "categoria": null, "bairros": ["Mangabeira", "Alto Jos\u00e9 do Pinho", "Alto Jos\u00e9 Bonif\u00e1cio", "Vasco da Gama", "Morro da Concei\u00e7\u00e3o"]}, {"centro_x": 1503.3584741279706, "centro_y": 6996.947241179984, "raio": 485.3989886309808, "taxa_analfabetismo": 4.7, "categoria": "bom", "bairros": ["Imbiribeira", "Pina", "Bras\u00edlia Teimosa", "Ipsep", "Boa Viagem"]}, {"centro_x": 2991.652842890287, "centro_y": 3002.3813465912117, "raio": 384.73815986833966, "taxa_analfabetismo": 11.0, "categoria": null, "bairros": ["Beberibe", "Dois Unidos", "Linha do Tiro"]}, {"centro_x": 5519.339324673412, "centro_y": 3971.8860238273464, "raio": 389.32799579887376, "taxa_analfabetismo": 9.4, "categoria": null, "bairros": ["Engenho do Meio", "Torr\u00f5es"]}, {"centro_x": 5000.0, "centro_y": 7000.0, "raio": 100, "taxa_analfabetismo": 7.4, "categoria": "regular", "bairros": ["Cohab"]}];
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const tooltip = document.getElementById('tooltip');
+        const selectMicro = document.getElementById('selectMicro');
+        const btnResetFiltro = document.getElementById('btnResetFiltro');
+        const inputBusca = document.getElementById('inputBusca');
+
+        let offsetX = 0;
+        let offsetY = 0;
+        let scale = 1.0;
+        let isDragging = false;
+        let startX, startY;
+        let bairroSelecionado = null;
+        let microSelecionada = 'todas';
+        let bairroBuscado = null;
+
+        // Popular dropdown de microrregiões
+        const microregioesUnicas = [...new Set(nodes.map(n => n.microrregiao))].sort();
+        microregioesUnicas.forEach(micro => {
+            const option = document.createElement('option');
+            option.value = micro;
+            const microInfo = microregioes.find(m => m.bairros && m.bairros.includes(nodes.find(n => n.microrregiao === micro)?.label));
+            const taxa = microInfo ? microInfo.taxa_analfabetismo : 'N/A';
+            option.textContent = `${micro} (Analfabetismo: ${taxa}%)`;
+            selectMicro.appendChild(option);
+        });
+
+        selectMicro.addEventListener('change', (e) => {
+            microSelecionada = e.target.value;
+            bairroSelecionado = null;
+
+            if (microSelecionada !== 'todas') {
+                const microInfo = microregioes.find(m => {
+                    const primeiroNo = nodes.find(n => n.microrregiao === microSelecionada);
+                    return primeiroNo && m.bairros && m.bairros.includes(primeiroNo.label);
+                });
+
+                if (microInfo) {
+                    offsetX = canvas.width / 2 - microInfo.centro_x * scale;
+                    offsetY = canvas.height / 2 - microInfo.centro_y * scale;
+                }
+            }
+
+            draw();
+        });
+
+        // Busca de bairro
+        inputBusca.addEventListener('input', (e) => {
+            const busca = e.target.value.trim().toLowerCase();
+            if (busca.length === 0) {
+                bairroBuscado = null;
+                draw();
+                return;
+            }
+
+            const bairroEncontrado = nodes.find(n =>
+                n.label.toLowerCase().includes(busca)
+            );
+
+            if (bairroEncontrado) {
+                bairroBuscado = bairroEncontrado.label;
+                bairroSelecionado = bairroEncontrado.label;
+
+                offsetX = canvas.width / 2 - bairroEncontrado.x * scale;
+                offsetY = canvas.height / 2 - bairroEncontrado.y * scale;
+
+                draw();
+            } else {
+                bairroBuscado = null;
+                draw();
+            }
+        });
+
+        btnResetFiltro.addEventListener('click', () => {
+            microSelecionada = 'todas';
+            selectMicro.value = 'todas';
+            bairroSelecionado = null;
+            bairroBuscado = null;
+            inputBusca.value = '';
+            scale = 1.0;
+            offsetX = canvas.width / 2 - 3000;
+            offsetY = canvas.height / 2 - 4000;
+            draw();
+        });
+
+        function resizeCanvas() {
+            const container = document.getElementById('canvasContainer');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            offsetX = canvas.width / 2 - 3000;
+            offsetY = canvas.height / 2 - 4000;
+            draw();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let hasMoved = false;
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            hasMoved = false;
+            startX = e.clientX - offsetX;
+            startY = e.clientY - offsetY;
+            canvas.classList.add('dragging');
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                hasMoved = true;
+                offsetX = e.clientX - startX;
+                offsetY = e.clientY - startY;
+                draw();
+            }
+            handleMouseMove(e);
+        });
+
+        canvas.addEventListener('mouseup', (e) => {
+            if (!hasMoved) {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = (e.clientX - rect.left - offsetX) / scale;
+                const mouseY = (e.clientY - rect.top - offsetY) / scale;
+
+                let clicouEmBairro = false;
+                for (const node of nodes) {
+                    const raio = 18;
+                    const dx = mouseX - node.x;
+                    const dy = mouseY - node.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < raio) {
+                        if (bairroSelecionado === node.label) {
+                            bairroSelecionado = null;
+                        } else {
+                            bairroSelecionado = node.label;
+                        }
+                        clicouEmBairro = true;
+                        draw();
+                        break;
+                    }
+                }
+
+                if (!clicouEmBairro && bairroSelecionado) {
+                    bairroSelecionado = null;
+                    draw();
+                }
+            }
+
+            isDragging = false;
+            hasMoved = false;
+            canvas.classList.remove('dragging');
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDragging = false;
+            canvas.classList.remove('dragging');
+            tooltip.style.display = 'none';
+        });
+
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            const worldX = (mouseX - offsetX) / scale;
+            const worldY = (mouseY - offsetY) / scale;
+
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            const newScale = Math.max(0.1, Math.min(5, scale * delta));
+            scale = newScale;
+            offsetX = mouseX - worldX * scale;
+            offsetY = mouseY - worldY * scale;
+            draw();
+        });
+
+        function getCorCategoria(categoria) {
+            switch(categoria) {
+                case 'excelente': return '#27ae60';
+                case 'bom': return '#3498db';
+                case 'regular': return '#f39c12';
+                case 'critico': return '#e74c3c';
+                default: return '#999';
+            }
+        }
+
+        function handleMouseMove(e) {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = (e.clientX - rect.left - offsetX) / scale;
+            const mouseY = (e.clientY - rect.top - offsetY) / scale;
+
+            let found = false;
+            for (const node of nodes) {
+                const raio = 18;
+                const dx = mouseX - node.x;
+                const dy = mouseY - node.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < raio) {
+                    tooltip.innerHTML = `
+                        <div class="tooltip-title">${node.label}</div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Taxa de Analfabetismo:</span>
+                            <strong>${node.taxa_analfabetismo}%</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Taxa de Alfabetização:</span>
+                            <strong>${node.taxa_alfabetizacao}%</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Faixa:</span> ${node.faixa_analfabetismo}
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Analfabetismo Micro:</span>
+                            <strong>${node.taxa_analfabetismo_micro}%</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">População:</span> <strong>${node.populacao.toLocaleString()}</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Unidades Educacionais:</span> <strong>${node.unidades}</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Matrículas:</span> <strong>${node.matriculas.toLocaleString()}</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Unidades/10k hab:</span> <strong>${node.unidades_por_10k}</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Matrículas/10k hab:</span> <strong>${node.matriculas_por_10k}</strong>
+                        </div>
+                        <div class="tooltip-row">
+                            <span class="tooltip-label">Microrregião:</span> ${node.microrregiao}
+                        </div>
+                    `;
+                    tooltip.style.left = (e.clientX + 15) + 'px';
+                    tooltip.style.top = (e.clientY + 15) + 'px';
+                    tooltip.style.display = 'block';
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                tooltip.style.display = 'none';
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(scale, scale);
+
+            // Determinar vizinhos se há bairro selecionado
+            let vizinhosSet = null;
+            let arestasVizinhos = new Set();
+            if (bairroSelecionado) {
+                vizinhosSet = new Set([bairroSelecionado]);
+                edges.forEach(edge => {
+                    const fromNode = nodes[edge.from];
+                    const toNode = nodes[edge.to];
+                    if (fromNode.label === bairroSelecionado) {
+                        vizinhosSet.add(toNode.label);
+                        arestasVizinhos.add(`${edge.from}-${edge.to}`);
+                    } else if (toNode.label === bairroSelecionado) {
+                        vizinhosSet.add(fromNode.label);
+                        arestasVizinhos.add(`${edge.from}-${edge.to}`);
+                    }
+                });
+            }
+
+            // Determinar quais nós devem ser exibidos baseado no filtro
+            const nodesFiltrados = microSelecionada === 'todas'
+                ? nodes
+                : nodes.filter(n => n.microrregiao === microSelecionada);
+
+            const labelsFiltrados = new Set(nodesFiltrados.map(n => n.label));
+
+            // 1. Desenhar halos de microrregiões
+            microregioes.forEach(micro => {
+                const temBairrosVisiveis = micro.bairros.some(b => labelsFiltrados.has(b));
+                if (!temBairrosVisiveis && microSelecionada !== 'todas') return;
+
+                const corMicro = getCorCategoria(micro.categoria);
+
+                const gradient = ctx.createRadialGradient(
+                    micro.centro_x, micro.centro_y, micro.raio * 0.3,
+                    micro.centro_x, micro.centro_y, micro.raio
+                );
+
+                gradient.addColorStop(0, corMicro + '00');
+                gradient.addColorStop(0.6, corMicro + '15');
+                gradient.addColorStop(1, corMicro + '35');
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(micro.centro_x, micro.centro_y, micro.raio, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.strokeStyle = corMicro + '50';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([10, 5]);
+                ctx.beginPath();
+                ctx.arc(micro.centro_x, micro.centro_y, micro.raio, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            });
+
+            // 2. Desenhar arestas
+            edges.forEach(edge => {
+                const fromNode = nodes[edge.from];
+                const toNode = nodes[edge.to];
+
+                if (!labelsFiltrados.has(fromNode.label) || !labelsFiltrados.has(toNode.label)) return;
+
+                const chave = `${edge.from}-${edge.to}`;
+
+                if (vizinhosSet && arestasVizinhos.has(chave)) {
+                    ctx.strokeStyle = '#4ecdc4';
+                    ctx.lineWidth = 3;
+                } else if (vizinhosSet) {
+                    ctx.strokeStyle = '#ddd';
+                    ctx.lineWidth = 0.5;
+                } else {
+                    ctx.strokeStyle = '#999';
+                    ctx.lineWidth = 1;
+                }
+
+                ctx.beginPath();
+                ctx.moveTo(fromNode.x, fromNode.y);
+                ctx.lineTo(toNode.x, toNode.y);
+                ctx.stroke();
+            });
+
+            // 3. Desenhar nós
+            nodes.forEach(node => {
+                if (!labelsFiltrados.has(node.label)) return;
+
+                const raioNo = 18;
+                const raioHalo = node.taxa_analfabetismo > 8 ? 40 : 25;
+                let shouldDim = false;
+
+                if (vizinhosSet && !vizinhosSet.has(node.label)) {
+                    shouldDim = true;
+                }
+
+                // Halo individual
+                if (!shouldDim) {
+                    const corHalo = getCorCategoria(node.categoria);
+                    const gradient = ctx.createRadialGradient(node.x, node.y, raioNo, node.x, node.y, raioHalo);
+                    gradient.addColorStop(0, corHalo + '00');
+                    gradient.addColorStop(0.5, corHalo + '30');
+                    gradient.addColorStop(1, corHalo + '60');
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, raioHalo, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Nó principal
+                ctx.fillStyle = shouldDim ? '#d0d0d0' : getCorCategoria(node.categoria);
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, raioNo, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Borda
+                ctx.strokeStyle = (vizinhosSet && node.label === bairroSelecionado) ? '#4ecdc4' : '#333';
+                ctx.lineWidth = (vizinhosSet && node.label === bairroSelecionado) ? 4 : 2;
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, raioNo, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Label
+                if (scale > 0.4) {
+                    ctx.fillStyle = '#333';
+                    ctx.font = 'bold 14px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(node.label, node.x, node.y + raioNo + 18);
+                }
+            });
+
+            ctx.restore();
+        }
+
+        draw();
+    </script>
+</body>
+</html>
